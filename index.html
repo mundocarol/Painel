@@ -850,18 +850,6 @@
             border: 1px solid #dee2e6;
             text-align: left;
             margin-bottom: 10px;
-            font-family: monospace;
-        }
-        
-        .generated-link-container .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .generated-link-container label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            display: block;
-            color: #444;
         }
         
         .product-row {
@@ -1316,98 +1304,81 @@
         <!-- Página 1: Produtos e Dados Básicos -->
         <div id="page1" class="form-page active">
             <div class="section" id="productSection">
-                <!-- Esta seção fica visível APENAS para quem CRIA o link (não veio de link) -->
-                <div id="productCreationSection">
-                    <div class="section-title">
-                        <span><i class="fas fa-box"></i> Produtos do Pedido</span>
-                        <button type="button" class="btn btn-primary btn-small" id="addProductBtn" onclick="addProductRow()">
-                            <i class="fas fa-plus"></i> Adicionar Produto
+                <div class="section-title">
+                    <span><i class="fas fa-box"></i> Produtos do Pedido</span>
+                    <button type="button" class="btn btn-primary btn-small" id="addProductBtn" onclick="addProductRow()">
+                        <i class="fas fa-plus"></i> Adicionar Produto
+                    </button>
+                </div>
+                
+                <div class="alert alert-info" id="freteInfo">
+                    <p><strong>Frete será calculado após escolha do seu endereço e aparecerá ao final para conferência.</strong></p>
+                </div>
+                
+                <div id="productsContainer">
+                    <!-- Primeira linha de produto -->
+                    <div class="product-row" id="productRow1">
+                        <button class="remove-btn" onclick="removeProductRow('productRow1')" style="display: none;">
+                            <i class="fas fa-times"></i>
                         </button>
-                    </div>
-                    
-                    <div class="alert alert-info" id="freteInfo">
-                        <p><strong>Frete será calculado após escolha do seu endereço e aparecerá ao final para conferência.</strong></p>
-                    </div>
-                    
-                    <div id="productsContainer">
-                        <!-- Primeira linha de produto -->
-                        <div class="product-row" id="productRow1">
-                            <button class="remove-btn" onclick="removeProductRow('productRow1')" style="display: none;">
-                                <i class="fas fa-times"></i>
-                            </button>
-                            <div class="form-row">
-                                <div class="form-group" style="flex: 0.5;">
-                                    <label for="productQuantity1">Qtde</label>
-                                    <input type="number" id="productQuantity1" class="form-control product-quantity" min="1" value="1" onchange="updateProductsSummary(); saveData()">
-                                </div>
-                                <div class="form-group" style="flex: 0.8;">
-                                    <label for="productCode1">Código</label>
-                                    <input type="text" id="productCode1" class="form-control product-code" placeholder="Ex: 060" oninput="updateProductsSummary(); saveData()">
-                                </div>
-                                <div class="form-group" style="flex: 2;">
-                                    <label for="productName1">Descrição</label>
-                                    <input type="text" id="productName1" class="form-control product-name" placeholder="Descrição do produto" required oninput="updateProductsSummary(); saveData()">
-                                </div>
-                                <div class="form-group" style="flex: 1;">
-                                    <label for="productPrice1">Preço (R$)</label>
-                                    <input type="number" id="productPrice1" class="form-control product-price" min="0" step="0.01" placeholder="0,00" required onchange="updateProductsSummary(); saveData()">
-                                </div>
+                        <div class="form-row">
+                            <div class="form-group" style="flex: 0.5;">
+                                <label for="productQuantity1">Qtde</label>
+                                <input type="number" id="productQuantity1" class="form-control product-quantity" min="1" value="1" onchange="updateProductsSummary()">
+                            </div>
+                            <div class="form-group" style="flex: 0.8;">
+                                <label for="productCode1">Código</label>
+                                <input type="text" id="productCode1" class="form-control product-code" placeholder="Ex: 060" oninput="updateProductsSummary()">
+                            </div>
+                            <div class="form-group" style="flex: 2;">
+                                <label for="productName1">Descrição</label>
+                                <input type="text" id="productName1" class="form-control product-name" placeholder="Descrição do produto" required oninput="updateProductsSummary()">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label for="productPrice1">Preço (R$)</label>
+                                <input type="number" id="productPrice1" class="form-control product-price" min="0" step="0.01" placeholder="0,00" required onchange="updateProductsSummary()">
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="action-buttons">
-                        <button type="button" class="btn btn-warning" onclick="clearAllProducts()">
-                            <i class="fas fa-trash-alt"></i> Limpar Produtos
-                        </button>
-                        <button type="button" class="btn btn-danger" onclick="clearAllData()">
-                            <i class="fas fa-broom"></i> Limpar Tudo
-                        </button>
+                </div>
+                
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-warning" onclick="clearAllProducts()">
+                        <i class="fas fa-trash-alt"></i> Limpar Produtos
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="clearAllData()">
+                        <i class="fas fa-broom"></i> Limpar Tudo
+                    </button>
+                </div>
+                
+                <!-- Gerador de Link (só aparece quando não veio de link) -->
+                <div id="linkGeneratorSection">
+                    <div class="link-instructions">
+                        <p><strong>📋 Para enviar para cliente:</strong> Preencha os produtos e clique em "Gerar Link"</p>
                     </div>
+                    <button type="button" class="btn btn-primary" id="generateLinkBtn" onclick="generateClientLink()">Gerar Link para Cliente</button>
                     
-                    <!-- Gerador de Link (só aparece quando não veio de link) -->
-                    <div id="linkGeneratorSection">
-                        <div class="link-instructions">
-                            <p><strong>📋 Para enviar para cliente:</strong> Preencha os produtos e clique em "Gerar Link"</p>
+                    <div id="generatedLinkContainer" class="generated-link-container hidden">
+                        <div class="multi-method-notice">
+                            <p><strong>🎯 Link para enviar ao cliente:</strong></p>
+                            <p>O cliente receberá os produtos já pré-selecionados e não poderá alterá-los.</p>
+                            <p><strong>Validade:</strong> 24 horas ou até ser usado</p>
                         </div>
-                        <button type="button" class="btn btn-primary" id="generateLinkBtn" onclick="generateClientLink()">Gerar Link para Cliente</button>
                         
-                        <div id="generatedLinkContainer" class="generated-link-container hidden">
-                            <div class="multi-method-notice">
-                                <p><strong>🎯 Link para enviar ao cliente:</strong></p>
-                                <p>O cliente receberá os produtos já pré-selecionados e não poderá alterá-los.</p>
-                                <p><strong>Validade:</strong> 24 horas ou até ser usado</p>
-                            </div>
-                            
-                            <h3 class="section-title">Links Gerados:</h3>
-                            
-                            <div class="form-group">
-                                <label>Link Curto (Recomendado):</label>
-                                <div id="generatedShortLink" class="generated-link"></div>
-                                <button type="button" class="btn copy-btn" onclick="copyShortLink()">
-                                    <i class="fas fa-copy"></i> Copiar Link Curto
-                                </button>
-                            </div>
-                            
-                            <div class="form-group" style="margin-top: 20px;">
-                                <label>Link Original (Caso o curto não funcione):</label>
-                                <div id="generatedFullLink" class="generated-link"></div>
-                                <button type="button" class="btn copy-btn" onclick="copyFullLink()">
-                                    <i class="fas fa-copy"></i> Copiar Link Original
-                                </button>
-                            </div>
-                            
-                            <div class="alert alert-warning" style="margin-top: 15px;">
-                                <p><strong>Instruções:</strong></p>
-                                <p>1. Envie o <strong>Link Curto</strong> para seu cliente via WhatsApp</p>
-                                <p>2. Guarde o Link Original como backup</p>
-                                <p>3. O link é válido por 24 horas ou até ser usado</p>
-                                <p>4. O cliente verá produtos já preenchidos</p>
-                                <p>5. Ele só precisará completar seus dados e endereço</p>
-                            </div>
-                            
-                            <p class="copy-success" id="copySuccess">✅ Links gerados com sucesso!</p>
+                        <h3 class="section-title">Link Gerado:</h3>
+                        <div id="generatedLink" class="generated-link"></div>
+                        <button type="button" id="copyLinkBtn" class="btn copy-btn" onclick="copyLinkAgain()">Copiar Link Novamente</button>
+                        
+                        <div class="alert alert-warning" style="margin-top: 15px;">
+                            <p><strong>Instruções:</strong></p>
+                            <p>1. O link foi copiado automaticamente</p>
+                            <p>2. Envie para seu cliente via WhatsApp ou outro app</p>
+                            <p>3. O link é válido por 24 horas ou até ser usado</p>
+                            <p>4. O cliente verá produtos já preenchidos</p>
+                            <p>5. Ele só precisará completar seus dados e endereço</p>
                         </div>
+                        
+                        <p class="copy-success" id="copySuccess">✅ Link copiado automaticamente para a área de transferência!</p>
                     </div>
                 </div>
             </div>
@@ -1530,7 +1501,7 @@
                     
                     <div class="form-group">
                         <label for="neighborhood">Bairro:</label>
-                        <input type="text" id="neighborhood" class="form-control" required oninput="saveData()">
+                            <input type="text" id="neighborhood" class="form-control" required oninput="saveData()">
                     </div>
                     
                     <div class="form-group">
@@ -1858,756 +1829,914 @@
     </div>
 
     <script>
-       // ============================================
-// CONFIGURAÇÕES DO SISTEMA
-// ============================================
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwAM8V_xQ8uxdcmfANaeKTgUDRZtZI9tcXOnm0ou0mnUWwsh3GOT5WJk9GztSiQevEN/exec';
-const CORRECT_PASSWORD = '562938';
-const PIX_KEY = '10648303000179';
-const WHATSAPP_NUMBER = '5531983238087';
-
-// ============================================
-// VARIÁVEIS GLOBAIS
-// ============================================
-let selectedDate = null;
-let selectedTime = null;
-let selectedTimeLabel = null;
-let currentMonth = new Date().getMonth();
-let currentYear = new Date().getFullYear();
-let specialDates = ['03-08', '06-12', '12-25'];
-let holidays = [];
-let avulsoDates = [];
-let noDeliveryDates = [];
-let originalTotal = 0;
-let nightFeeAdded = false;
-let nightFeeAmount = 0;
-let isOtherCity = false;
-let calculatedShipping = 0;
-let selectedCity = '';
-let isSubmitting = false;
-let currentDeliveryType = '';
-
-// IMPORTANTE: Controla se veio de link (produto bloqueado)
-let isFromLink = false;
-let lockedProducts = [];
-let linkExpiration = null;
-let linkUsed = false;
-
-// Sistema de múltiplos produtos
-let productRows = 1;
-let allProducts = [];
-
-// ============================================
-// INICIALIZAÇÃO CORRIGIDA
-// ============================================
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Sistema de Pedidos inicializado - Versão Corrigida');
-    
-    // Configurar auto-save
-    setupAutoSave();
-    
-    // Verificar se veio de link
-    checkIfFromLink();
-    
-    // Configurar eventos do modal
-    setupModalEvents();
-    
-    // Configurar eventos do calendário
-    document.getElementById('prevMonth')?.addEventListener('click', function() {
-        changeMonth(-1);
-    });
-    
-    document.getElementById('nextMonth')?.addEventListener('click', function() {
-        changeMonth(1);
-    });
-    
-    // Configurar botão de gerar link
-    const generateLinkBtn = document.getElementById('generateLinkBtn');
-    if (generateLinkBtn) {
-        generateLinkBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            generateClientLink();
-        });
-    }
-    
-    // Configurar botões de navegação
-    setupNavigationButtons();
-    
-    // Carregar dados salvos
-    loadSavedData();
-    
-    // Renderizar calendário inicial
-    renderCalendar(currentMonth, currentYear);
-    
-    // Esconder cabeçalho nas outras páginas
-    hideHeaderOnOtherPages();
-    
-    // Atualizar resumo inicial
-    updateProductsSummary();
-});
-
-// ============================================
-// SETUP DE BOTÕES DE NAVEGAÇÃO
-// ============================================
-function setupNavigationButtons() {
-    // Página 1
-    const nextPage1Btn = document.querySelector('#page1 .nav-buttons .btn-primary');
-    if (nextPage1Btn) {
-        nextPage1Btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            nextPage(1, 2);
-        });
-    }
-    
-    // Página 2
-    const prevPage2Btn = document.querySelector('#page2 .nav-buttons .btn-secondary');
-    const nextPage2Btn = document.querySelector('#page2 .nav-buttons .btn-primary');
-    
-    if (prevPage2Btn) {
-        prevPage2Btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            prevPage(2, 1);
-        });
-    }
-    
-    if (nextPage2Btn) {
-        nextPage2Btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            nextPage(2, 3);
-        });
-    }
-    
-    // Página 3
-    const prevPage3Btn = document.querySelector('#page3 .nav-buttons .btn-secondary');
-    const nextPage3Btn = document.querySelector('#page3 .nav-buttons .btn-primary');
-    
-    if (prevPage3Btn) {
-        prevPage3Btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            prevPage(3, 2);
-        });
-    }
-    
-    if (nextPage3Btn) {
-        nextPage3Btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            nextPage(3, 4);
-        });
-    }
-    
-    // Página 4
-    const prevPage4Btn = document.querySelector('#page4 .nav-buttons .btn-secondary');
-    const submitBtn = document.querySelector('#page4 .nav-buttons .btn-primary');
-    
-    if (prevPage4Btn) {
-        prevPage4Btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            prevPage(4, 3);
-        });
-    }
-    
-    if (submitBtn) {
-        submitBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            submitForm();
-        });
-    }
-}
-
-// ============================================
-// GERADOR DE LINKS CORRIGIDO
-// ============================================
-async function generateClientLink() {
-    console.log('🔗 Gerando link...');
-    
-    const { products, total } = getAllProducts();
-    
-    if (products.length === 0) {
-        showModalError('Por favor, adicione pelo menos um produto antes de gerar o link.');
-        return;
-    }
-    
-    const invalidProducts = products.filter(p => !p.name || p.price <= 0);
-    if (invalidProducts.length > 0) {
-        showModalError('Por favor, preencha a descrição e preço de todos os produtos.');
-        return;
-    }
-    
-    const encodedProducts = encodeURIComponent(JSON.stringify(products));
-    const timestamp = Date.now();
-    
-    const baseUrl = window.location.origin + window.location.pathname;
-    const fullLink = `${baseUrl}?products=${encodedProducts}&t=${timestamp}`;
-    
-    let shortLink = fullLink;
-    
-    try {
-        shortLink = await shortenLinkNoAds(fullLink);
-    } catch (error) {
-        console.log('Usando link completo:', error);
-    }
-    
-    showGeneratedLink(shortLink, fullLink);
-}
-
-async function shortenLinkNoAds(longUrl) {
-    try {
-        // Usando TinyURL sem preview (modo direto)
-        const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
+        // ============================================
+        // CONFIGURAÇÕES DO SISTEMA
+        // ============================================
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwAM8V_xQ8uxdcmfANaeKTgUDRZtZI9tcXOnm0ou0mnUWwsh3GOT5WJk9GztSiQevEN/exec';
+        const CORRECT_PASSWORD = '562938';
+        const PIX_KEY = '10648303000179';
+        const WHATSAPP_NUMBER = '5531983238087';
         
-        if (response.ok) {
-            const shortUrl = await response.text();
-            if (shortUrl && shortUrl.startsWith('http')) {
-                return shortUrl;
-            }
-        }
+        // ============================================
+        // VARIÁVEIS GLOBAIS
+        // ============================================
+        let selectedDate = null;
+        let selectedTime = null;
+        let selectedTimeLabel = null;
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let specialDates = ['03-08', '06-12', '12-25'];
+        let holidays = [];
+        let avulsoDates = [];
+        let noDeliveryDates = [];
+        let originalTotal = 0;
+        let nightFeeAdded = false;
+        let nightFeeAmount = 0;
+        let isOtherCity = false;
+        let calculatedShipping = 0;
+        let selectedCity = '';
+        let isSubmitting = false;
+        let currentDeliveryType = '';
         
-        // Alternativa: encurtador próprio
-        const shortId = btoa(Date.now().toString()).replace(/[+/=]/g, '').substring(0, 8);
-        const shortLink = `${window.location.origin}${window.location.pathname}?s=${shortId}`;
+        // IMPORTANTE: Controla se veio de link (produto bloqueado)
+        let isFromLink = false;
+        let lockedProducts = [];
+        let linkExpiration = null;
+        let linkUsed = false;
         
-        const urlMappings = JSON.parse(localStorage.getItem('urlMappings') || '{}');
-        urlMappings[shortId] = longUrl;
-        localStorage.setItem('urlMappings', JSON.stringify(urlMappings));
+        // Sistema de múltiplos produtos
+        let productRows = 1;
+        let allProducts = [];
         
-        return shortLink;
+        // ============================================
+        // TABELA DE FRETES ATUALIZADA
+        // ============================================
+        const shippingRates = {
+            'Belo Horizonte': [
+                { min: 1, max: 119.99, cost: 19.90 },
+                { min: 120, max: 179.99, cost: 14.90 },
+                { min: 179, max: 99999, cost: 0.00 }
+            ],
+            'Betim': [
+                { min: 1, max: 119.99, cost: 69.90 },
+                { min: 120, max: 179.99, cost: 54.90 },
+                { min: 179, max: 99999, cost: 44.90 }
+            ],
+            'Contagem': [
+                { min: 1, max: 119.99, cost: 29.90 },
+                { min: 120, max: 179.99, cost: 24.90 },
+                { min: 179, max: 99999, cost: 19.90 }
+            ],
+            'Sabará': [
+                { min: 1, max: 119.99, cost: 29.90 },
+                { min: 120, max: 179.99, cost: 26.90 },
+                { min: 179, max: 99999, cost: 22.90 }
+            ],
+            'Ibirité': [
+                { min: 1, max: 119.99, cost: 69.90 },
+                { min: 120, max: 179.99, cost: 59.90 },
+                { min: 179, max: 99999, cost: 44.90 }
+            ],
+            'Ribeirão das Neves': [
+                { min: 1, max: 119.99, cost: 59.90 },
+                { min: 120, max: 179.99, cost: 54.90 },
+                { min: 179, max: 99999, cost: 44.90 }
+            ],
+            'Santa Luzia': [
+                { min: 1, max: 119.99, cost: 49.90 },
+                { min: 120, max: 179.99, cost: 44.90 },
+                { min: 179, max: 99999, cost: 39.90 }
+            ],
+            'Vespasiano': [
+                { min: 1, max: 119.99, cost: 59.90 },
+                { min: 120, max: 179.99, cost: 49.90 },
+                { min: 179, max: 99999, cost: 39.90 }
+            ],
+            'Lagoa Santa': [
+                { min: 1, max: 119.99, cost: 59.90 },
+                { min: 120, max: 179.99, cost: 54.90 },
+                { min: 179, max: 99999, cost: 44.90 }
+            ],
+            'Nova Lima': [
+                { min: 1, max: 119.99, cost: 69.90 },
+                { min: 120, max: 179.99, cost: 59.90 },
+                { min: 179, max: 99999, cost: 49.90 }
+            ],
+            'Vila da Serra (Nova Lima)': [
+                { min: 1, max: 119.99, cost: 39.90 },
+                { min: 120, max: 179.99, cost: 29.90 },
+                { min: 179, max: 99999, cost: 19.90 }
+            ]
+        };
         
-    } catch (error) {
-        console.error('Erro ao encurtar link:', error);
-        return longUrl;
-    }
-}
-
-function showGeneratedLink(shortLink, fullLink) {
-    const container = document.getElementById('generatedLinkContainer');
-    if (!container) {
-        console.error('Container de link não encontrado');
-        return;
-    }
-    
-    container.innerHTML = `
-        <div class="multi-method-notice">
-            <p><strong>🎯 Link para enviar ao cliente:</strong></p>
-            <p>O cliente receberá os produtos já pré-selecionados e não poderá alterá-los.</p>
-            <p><strong>Validade:</strong> 24 horas ou até ser usado</p>
-        </div>
+        // ============================================
+        // HORÁRIOS ATUALIZADOS
+        // ============================================
+        const routeTimes = {
+            weekday: [
+                { start: '07:30', end: '09:30', label: '07:30 às 09:30' },
+                { start: '09:30', end: '11:30', label: '09:30 às 11:30' },
+                { start: '13:30', end: '15:30', label: '13:30 às 15:30' },
+                { start: '15:30', end: '17:30', label: '15:30 às 17:30' },
+                { start: '19:30', end: '21:30', label: '19:30 às 21:30 (taxa noturna adicional 19,90)', nightFee: true, fee: 19.90 }
+            ],
+            saturday: [
+                { start: '07:30', end: '10:30', label: '07:30 às 10:30' },
+                { start: '10:30', end: '12:30', label: '10:30 às 12:30' },
+                { start: '12:30', end: '16:30', label: '12:30 às 16:30' }
+            ],
+            sunday: [
+                { start: '08:00', end: '10:00', label: '08:00 às 10:00 (taxa adicional 19,90)', sundayFee: true, fee: 19.90 }
+            ],
+            special: [
+                { start: '07:30', end: '12:30', label: '07:30 às 12:30' },
+                { start: '13:30', end: '18:30', label: '13:30 às 18:30' },
+                { start: '19:30', end: '21:30', label: '19:30 às 21:30 (taxa noturna 19,90)', nightFee: true, fee: 19.90 }
+            ],
+            avulso: [
+                { start: '08:00', end: '12:00', label: '08:00 às 12:00' },
+                { start: '13:00', end: '17:00', label: '13:00 às 17:00' },
+                { start: '18:00', end: '21:00', label: '18:00 às 21:00 (taxa adicional 29,90)', avulsoNightFee: true, fee: 29.90 }
+            ]
+        };
         
-        <h3 class="section-title">Links Gerados:</h3>
-        
-        <div class="form-group">
-            <label>Link Curto (Recomendado):</label>
-            <div id="generatedShortLink" class="generated-link">${shortLink}</div>
-            <button type="button" class="btn copy-btn" onclick="copyShortLink()">
-                <i class="fas fa-copy"></i> Copiar Link Curto
-            </button>
-        </div>
-        
-        <div class="form-group" style="margin-top: 20px;">
-            <label>Link Original (Caso o curto não funcione):</label>
-            <div id="generatedFullLink" class="generated-link">${fullLink}</div>
-            <button type="button" class="btn copy-btn" onclick="copyFullLink()">
-                <i class="fas fa-copy"></i> Copiar Link Original
-            </button>
-        </div>
-        
-        <div class="alert alert-warning" style="margin-top: 15px;">
-            <p><strong>Instruções:</strong></p>
-            <p>1. Envie o <strong>Link Curto</strong> para seu cliente via WhatsApp</p>
-            <p>2. Guarde o Link Original como backup</p>
-            <p>3. O link é válido por 24 horas ou até ser usado</p>
-            <p>4. O cliente verá produtos já preenchidos</p>
-            <p>5. Ele só precisará completar seus dados e endereço</p>
-        </div>
-        
-        <p class="copy-success" id="copySuccess">✅ Links gerados com sucesso!</p>
-    `;
-    
-    container.classList.remove('hidden');
-    
-    // Copiar automaticamente
-    copyToClipboard(shortLink);
-    
-    const copySuccess = document.getElementById('copySuccess');
-    if (copySuccess) {
-        copySuccess.textContent = '✅ Link curto copiado automaticamente!';
-        copySuccess.classList.add('show');
-        
-        setTimeout(() => {
-            copySuccess.classList.remove('show');
-        }, 5000);
-    }
-    
-    showSuccessMessage('✅ Links gerados e copiados com sucesso!');
-}
-
-function copyShortLink() {
-    const linkElement = document.getElementById('generatedShortLink');
-    if (!linkElement) return;
-    
-    const link = linkElement.textContent;
-    copyToClipboard(link);
-    
-    const copySuccess = document.getElementById('copySuccess');
-    if (copySuccess) {
-        copySuccess.textContent = '✅ Link curto copiado novamente!';
-        copySuccess.classList.add('show');
-        
-        setTimeout(() => {
-            copySuccess.classList.remove('show');
-        }, 3000);
-    }
-}
-
-function copyFullLink() {
-    const linkElement = document.getElementById('generatedFullLink');
-    if (!linkElement) return;
-    
-    const link = linkElement.textContent;
-    copyToClipboard(link);
-    
-    const copySuccess = document.getElementById('copySuccess');
-    if (copySuccess) {
-        copySuccess.textContent = '✅ Link original copiado!';
-        copySuccess.classList.add('show');
-        
-        setTimeout(() => {
-            copySuccess.classList.remove('show');
-        }, 3000);
-    }
-}
-
-// ============================================
-// VALIDAÇÃO DAS PÁGINAS CORRIGIDA
-// ============================================
-function validatePage1() {
-    const errors = [];
-    const { products } = getAllProducts();
-    
-    // Se não veio de link, verificar produtos
-    if (!isFromLink && products.length === 0) {
-        errors.push('Adicione pelo menos um produto');
-    }
-    
-    // Verificar cada produto
-    products.forEach((product, index) => {
-        if (!product.name || product.name.trim() === '') {
-            errors.push(`Descrição do produto ${index + 1}`);
-        }
-        if (!product.price || product.price <= 0) {
-            errors.push(`Preço do produto ${index + 1}`);
-        }
-    });
-    
-    if (!document.getElementById('buyerName').value.trim()) {
-        errors.push('Nome do Comprador');
-    }
-    
-    if (!document.getElementById('buyerPhone').value.trim()) {
-        errors.push('Telefone do Comprador');
-    }
-    
-    if (!document.getElementById('giftedName').value.trim()) {
-        errors.push('Nome do Presenteado');
-    }
-    
-    if (!document.querySelector('input[name="anonymous"]:checked')) {
-        errors.push('Escolha se quer compra anônima ou não');
-    }
-    
-    if (!document.querySelector('input[name="deliveryType"]:checked')) {
-        errors.push('Escolha o tipo de entrega');
-    }
-    
-    return {
-        valid: errors.length === 0,
-        errors: errors
-    };
-}
-
-function validatePage2() {
-    const errors = [];
-    const deliveryType = document.querySelector('input[name="deliveryType"]:checked')?.value;
-    
-    if (!deliveryType) {
-        errors.push('Tipo de entrega');
-        return { valid: false, errors };
-    }
-    
-    if (deliveryType === 'delivery') {
-        const city = document.getElementById('deliveryCity').value;
-        if (!city) {
-            errors.push('Cidade de entrega');
-        }
-        
-        if (city && city !== 'other') {
-            if (!document.getElementById('street').value.trim()) {
-                errors.push('Rua');
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Sistema de Pedidos inicializado');
+            
+            // Configurar auto-save para todos os campos
+            setupAutoSave();
+            
+            // Verificar sessionStorage primeiro
+            const sessionKey = 'current_session_link';
+            if (sessionStorage.getItem(sessionKey) === 'valid') {
+                loadFromSessionStorage();
+            } else {
+                checkIfFromLink();
             }
             
-            if (!document.getElementById('number').value.trim()) {
-                errors.push('Número');
-            }
+            // Configurar calendário
+            renderCalendar(currentMonth, currentYear);
             
-            if (!document.getElementById('neighborhood').value.trim()) {
-                errors.push('Bairro');
-            }
-        }
-        
-        if (city && city !== 'other' && deliveryType === 'delivery') {
-            if (!selectedDate) {
-                errors.push('Data de entrega');
-            }
+            // Carregar dados salvos
+            loadSavedData();
             
-            if (!document.querySelector('input[name="deliveryTime"]:checked')) {
-                errors.push('Horário de entrega');
+            // Esconder cabeçalho nas outras páginas
+            hideHeaderOnOtherPages();
+            
+            // Configurar eventos do modal
+            setupModalEvents();
+            
+            // Atualizar resumo inicial
+            updateProductsSummary();
+        });
+        
+        // ============================================
+        // AUTO-SAVE SYSTEM
+        // ============================================
+        function setupAutoSave() {
+            // Salvar dados a cada 2 segundos
+            setInterval(saveData, 2000);
+            
+            // Salvar quando a página for fechada/recarregada
+            window.addEventListener('beforeunload', function() {
+                saveData();
+            });
+        }
+        
+        // ============================================
+        // SISTEMA DE MÚLTIPLOS PRODUTOS
+        // ============================================
+        function addProductRow() {
+            productRows++;
+            const container = document.getElementById('productsContainer');
+            
+            const newRow = document.createElement('div');
+            newRow.className = 'product-row';
+            newRow.id = `productRow${productRows}`;
+            
+            newRow.innerHTML = `
+                <button class="remove-btn" onclick="removeProductRow('productRow${productRows}')">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="form-row">
+                    <div class="form-group" style="flex: 0.5;">
+                        <label for="productQuantity${productRows}">Qtde</label>
+                        <input type="number" id="productQuantity${productRows}" class="form-control product-quantity" min="1" value="1" onchange="updateProductsSummary(); saveData()">
+                    </div>
+                    <div class="form-group" style="flex: 0.8;">
+                        <label for="productCode${productRows}">Código</label>
+                        <input type="text" id="productCode${productRows}" class="form-control product-code" placeholder="Ex: 060" oninput="updateProductsSummary(); saveData()">
+                    </div>
+                    <div class="form-group" style="flex: 2;">
+                        <label for="productName${productRows}">Descrição</label>
+                        <input type="text" id="productName${productRows}" class="form-control product-name" placeholder="Descrição do produto" required oninput="updateProductsSummary(); saveData()">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="productPrice${productRows}">Preço (R$)</label>
+                        <input type="number" id="productPrice${productRows}" class="form-control product-price" min="0" step="0.01" placeholder="0,00" required onchange="updateProductsSummary(); saveData()">
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(newRow);
+            updateRemoveButtons();
+            updateProductsSummary();
+            saveData();
+        }
+        
+        function removeProductRow(rowId) {
+            const row = document.getElementById(rowId);
+            if (row && productRows > 1) {
+                row.remove();
+                productRows--;
+                updateRemoveButtons();
+                updateProductsSummary();
+                saveData();
             }
         }
-    }
-    
-    if (deliveryType === 'pickup') {
-        if (!selectedDate) {
-            errors.push('Data de retirada');
+        
+        function updateRemoveButtons() {
+            const rows = document.querySelectorAll('.product-row');
+            const removeButtons = document.querySelectorAll('.remove-btn');
+            
+            removeButtons.forEach(btn => {
+                btn.style.display = rows.length > 1 ? 'block' : 'none';
+            });
         }
         
-        if (!document.querySelector('input[name="deliveryTime"]:checked')) {
-            errors.push('Horário de retirada');
-        }
-    }
-    
-    return {
-        valid: errors.length === 0,
-        errors: errors
-    };
-}
-
-function validatePage3() {
-    const errors = [];
-    
-    if (!document.querySelector('input[name="sendCard"]:checked')) {
-        errors.push('Escolha se quer enviar cartão ou não');
-    }
-    
-    const sendCard = document.querySelector('input[name="sendCard"]:checked')?.value;
-    if (sendCard === 'yes') {
-        if (!document.getElementById('cardMessage').value.trim()) {
-            errors.push('Mensagem do cartão');
-        }
-        
-        if (!document.querySelector('input[name="signedCard"]:checked')) {
-            errors.push('Confirme se assinou o cartão');
-        }
-    }
-    
-    if (!document.querySelector('input[name="acknowledgeTerms"]:checked')) {
-        errors.push('Aceite os termos de ciência');
-    }
-    
-    return {
-        valid: errors.length === 0,
-        errors: errors
-    };
-}
-
-function validatePage4() {
-    const errors = [];
-    
-    if (!document.querySelector('input[name="paymentMethod"]:checked')) {
-        errors.push('Escolha a forma de pagamento');
-    }
-    
-    if (!document.querySelector('input[name="foundUs"]:checked')) {
-        errors.push('Nos informe como nos encontrou');
-    }
-    
-    if (!document.getElementById('confirmData').checked) {
-        errors.push('Confirme que todos os dados estão corretos');
-    }
-    
-    return {
-        valid: errors.length === 0,
-        errors: errors
-    };
-}
-
-// ============================================
-// NAVEGAÇÃO ENTRE PÁGINAS CORRIGIDA
-// ============================================
-function nextPage(current, next) {
-    console.log(`Navegando da página ${current} para ${next}`);
-    
-    let validationResult = null;
-    let errorMessages = [];
-    
-    if (current === 1) {
-        validationResult = validatePage1();
-    } else if (current === 2) {
-        validationResult = validatePage2();
-    } else if (current === 3) {
-        validationResult = validatePage3();
-    } else if (current === 4) {
-        validationResult = validatePage4();
-    }
-    
-    if (!validationResult.valid) {
-        errorMessages = validationResult.errors;
-        showModalError('Preencha os seguintes campos antes de avançar:', errorMessages);
-        return;
-    }
-    
-    if (next === 4) {
-        updateReviewData();
-    }
-    
-    // Esconder página atual
-    const currentPage = document.getElementById(`page${current}`);
-    if (currentPage) {
-        currentPage.classList.remove('active');
-    }
-    
-    // Mostrar próxima página
-    const nextPageElement = document.getElementById(`page${next}`);
-    if (nextPageElement) {
-        nextPageElement.classList.add('active');
-    }
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    saveData();
-}
-
-function prevPage(current, prev) {
-    console.log(`Voltando da página ${current} para ${prev}`);
-    
-    const currentPage = document.getElementById(`page${current}`);
-    if (currentPage) {
-        currentPage.classList.remove('active');
-    }
-    
-    const prevPageElement = document.getElementById(`page${prev}`);
-    if (prevPageElement) {
-        prevPageElement.classList.add('active');
-    }
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    saveData();
-}
-
-// ============================================
-// MODAL DE ERRO CORRIGIDO
-// ============================================
-function setupModalEvents() {
-    const modal = document.getElementById('errorModal');
-    const closeBtn = modal.querySelector('.modal-close');
-    const closeBtn2 = modal.querySelector('.btn-primary');
-    
-    if (closeBtn) {
-        closeBtn.addEventListener('click', closeErrorModal);
-    }
-    
-    if (closeBtn2) {
-        closeBtn2.addEventListener('click', closeErrorModal);
-    }
-    
-    modal.addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeErrorModal();
-        }
-    });
-    
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && modal.classList.contains('active')) {
-            closeErrorModal();
-        }
-    });
-}
-
-function showModalError(message, errors = []) {
-    console.log('Mostrando modal de erro:', errors);
-    
-    const modal = document.getElementById('errorModal');
-    const errorList = document.getElementById('errorList');
-    
-    if (!modal || !errorList) {
-        alert(message + (errors.length > 0 ? '\n' + errors.join('\n') : ''));
-        return;
-    }
-    
-    errorList.innerHTML = '';
-    
-    if (errors.length > 0) {
-        errors.forEach(error => {
-            const li = document.createElement('li');
-            li.textContent = error;
-            errorList.appendChild(li);
-        });
-    } else {
-        const li = document.createElement('li');
-        li.textContent = message;
-        errorList.appendChild(li);
-    }
-    
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeErrorModal() {
-    const modal = document.getElementById('errorModal');
-    if (modal) {
-        modal.classList.remove('active');
-    }
-    document.body.style.overflow = 'auto';
-}
-
-// ============================================
-// AUTO-SAVE CORRIGIDO
-// ============================================
-function setupAutoSave() {
-    // Salvar a cada 2 segundos
-    setInterval(saveData, 2000);
-    
-    // Salvar quando a página for fechada
-    window.addEventListener('beforeunload', function() {
-        saveData();
-    });
-}
-
-function saveData() {
-    // Verificar se é cliente (veio de link)
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('products')) {
-        console.log('Cliente acessando via link. Auto-save desativado.');
-        return;
-    }
-    
-    const { products } = getAllProducts();
-    
-    const formData = {
-        products: products,
-        buyerName: document.getElementById('buyerName')?.value || '',
-        buyerPhone: document.getElementById('buyerPhone')?.value || '',
-        giftedName: document.getElementById('giftedName')?.value || '',
-        giftedPhone: document.getElementById('giftedPhone')?.value || '',
-        anonymous: document.querySelector('input[name="anonymous"]:checked')?.value || '',
-        deliveryType: document.querySelector('input[name="deliveryType"]:checked')?.value || '',
-        deliveryCity: document.getElementById('deliveryCity')?.value || '',
-        street: document.getElementById('street')?.value || '',
-        number: document.getElementById('number')?.value || '',
-        complement: document.getElementById('complement')?.value || '',
-        neighborhood: document.getElementById('neighborhood')?.value || '',
-        referencePoint: document.getElementById('referencePoint')?.value || '',
-        selectedCity: selectedCity || '',
-        calculatedShipping: calculatedShipping || 0,
-        selectedDate: selectedDate ? selectedDate.toISOString() : null,
-        selectedTime: selectedTime || null,
-        selectedTimeLabel: selectedTimeLabel || null,
-        nightFeeAdded: nightFeeAdded || false,
-        nightFeeAmount: nightFeeAmount || 0,
-        sendCard: document.querySelector('input[name="sendCard"]:checked')?.value || '',
-        cardMessage: document.getElementById('cardMessage')?.value || '',
-        signedCard: document.querySelector('input[name="signedCard"]:checked')?.value || '',
-        acknowledgeTerms: document.querySelector('input[name="acknowledgeTerms"]:checked')?.value || '',
-        paymentMethod: document.querySelector('input[name="paymentMethod"]:checked')?.value || '',
-        foundUs: document.querySelector('input[name="foundUs"]:checked')?.value || '',
-        confirmData: document.getElementById('confirmData')?.checked || false,
-        productRows: productRows,
-        timestamp: Date.now()
-    };
-    
-    for (let i = 1; i <= productRows; i++) {
-        formData[`productQuantity${i}`] = document.getElementById(`productQuantity${i}`)?.value || '';
-        formData[`productCode${i}`] = document.getElementById(`productCode${i}`)?.value || '';
-        formData[`productName${i}`] = document.getElementById(`productName${i}`)?.value || '';
-        formData[`productPrice${i}`] = document.getElementById(`productPrice${i}`)?.value || '';
-    }
-    
-    localStorage.setItem('mundoCarolFormData', JSON.stringify(formData));
-    console.log('✅ Dados salvos no localStorage');
-}
-
-// ============================================
-// FUNÇÕES AUXILIARES
-// ============================================
-function copyToClipboard(text) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-            console.log('Texto copiado:', text);
-        }).catch(err => {
-            console.error('Erro ao copiar:', err);
-            copyUsingExecCommand(text);
-        });
-    } else {
-        copyUsingExecCommand(text);
-    }
-}
-
-function copyUsingExecCommand(text) {
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
-    textArea.style.position = 'fixed';
-    textArea.style.left = '-999999px';
-    textArea.style.top = '-999999px';
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    
-    try {
-        document.execCommand('copy');
-        console.log('Texto copiado via execCommand:', text);
-    } catch (err) {
-        alert('⚠️ Não foi possível copiar. Por favor, anote: ' + text);
-    } finally {
-        document.body.removeChild(textArea);
-    }
-}
-
-function showSuccessMessage(message) {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = 'alert alert-warning';
-    alertDiv.innerHTML = `<p>${message}</p>`;
-    alertDiv.style.animation = 'fadeIn 0.3s';
-    
-    const productSection = document.getElementById('productSection');
-    if (productSection) {
-        productSection.insertBefore(alertDiv, productSection.firstChild);
-        
-        setTimeout(() => {
-            alertDiv.style.opacity = '0';
-            alertDiv.style.transition = 'opacity 0.5s';
-            setTimeout(() => {
-                if (alertDiv.parentNode) {
-                    alertDiv.parentNode.removeChild(alertDiv);
-                }
-            }, 500);
-        }, 3000);
-    }
-}
-
-function hideHeaderOnOtherPages() {
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                const currentPage = document.querySelector('.form-page.active');
-                const productsSummary = document.getElementById('productsSummary');
-                const mainHeader = document.getElementById('mainHeader');
+        function getAllProducts() {
+            const products = [];
+            let total = 0;
+            
+            for (let i = 1; i <= productRows; i++) {
+                const quantity = parseInt(document.getElementById(`productQuantity${i}`)?.value) || 0;
+                const code = document.getElementById(`productCode${i}`)?.value || '';
+                const name = document.getElementById(`productName${i}`)?.value || '';
+                const price = parseFloat(document.getElementById(`productPrice${i}`)?.value) || 0;
                 
-                if (currentPage && currentPage.id !== 'page1') {
-                    if (mainHeader) mainHeader.style.display = 'none';
-                    if (productsSummary) productsSummary.style.display = 'none';
-                } else if (currentPage && currentPage.id === 'page1') {
-                    if (mainHeader) mainHeader.style.display = 'block';
-                    if (productsSummary && (isFromLink || getAllProducts().products.length > 0)) {
-                        productsSummary.style.display = 'flex';
+                if (name && price > 0) {
+                    products.push({
+                        quantity,
+                        code,
+                        name,
+                        price,
+                        total: quantity * price
+                    });
+                    total += quantity * price;
+                }
+            }
+            
+            return { products, total };
+        }
+        
+        function updateProductsSummary() {
+            const { products, total } = getAllProducts();
+            
+            if (isFromLink || document.getElementById('page1').classList.contains('active')) {
+                updateProductsSummaryDisplay(products, total);
+            }
+            
+            if (selectedCity && selectedCity !== 'other' && currentDeliveryType === 'delivery') {
+                calculateShipping();
+            }
+            
+            saveData();
+        }
+        
+        function updateProductsSummaryDisplay(products, total) {
+            const productsList = document.getElementById('productsList');
+            const productsSummary = document.getElementById('productsSummary');
+            
+            if (products.length > 0 && isFromLink) {
+                let html = '';
+                products.forEach((product, index) => {
+                    html += `
+                        <div class="product-summary-item">
+                            <span>${product.quantity}x ${product.code ? product.code + ' - ' : ''}${product.name}</span>
+                            <span class="product-price-only">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                    `;
+                });
+                
+                productsList.innerHTML = html;
+                productsSummary.classList.remove('hidden');
+                
+                if (isFromLink) {
+                    const sectionTitle = document.querySelector('#productSection .section-title');
+                    if (sectionTitle) sectionTitle.style.display = 'none';
+                    
+                    document.getElementById('addProductBtn').style.display = 'none';
+                    document.getElementById('linkGeneratorSection').style.display = 'none';
+                    
+                    const actionButtons = document.querySelector('.action-buttons');
+                    if (actionButtons) actionButtons.style.display = 'none';
+                }
+            } else {
+                productsSummary.classList.add('hidden');
+            }
+        }
+        
+        // ============================================
+        // FUNÇÕES PARA LIMPAR DADOS
+        // ============================================
+        function clearAllProducts() {
+            if (confirm('Tem certeza que deseja limpar todos os produtos?')) {
+                // Manter apenas uma linha vazia
+                document.getElementById('productsContainer').innerHTML = '';
+                productRows = 1;
+                
+                const container = document.getElementById('productsContainer');
+                const newRow = document.createElement('div');
+                newRow.className = 'product-row';
+                newRow.id = `productRow1`;
+                
+                newRow.innerHTML = `
+                    <button class="remove-btn" onclick="removeProductRow('productRow1')" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 0.5;">
+                            <label for="productQuantity1">Qtde</label>
+                            <input type="number" id="productQuantity1" class="form-control product-quantity" min="1" value="1" onchange="updateProductsSummary(); saveData()">
+                        </div>
+                        <div class="form-group" style="flex: 0.8;">
+                            <label for="productCode1">Código</label>
+                            <input type="text" id="productCode1" class="form-control product-code" placeholder="Ex: 060" oninput="updateProductsSummary(); saveData()">
+                        </div>
+                        <div class="form-group" style="flex: 2;">
+                            <label for="productName1">Descrição</label>
+                            <input type="text" id="productName1" class="form-control product-name" placeholder="Descrição do produto" required oninput="updateProductsSummary(); saveData()">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="productPrice1">Preço (R$)</label>
+                            <input type="number" id="productPrice1" class="form-control product-price" min="0" step="0.01" placeholder="0,00" required onchange="updateProductsSummary(); saveData()">
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(newRow);
+                updateRemoveButtons();
+                updateProductsSummary();
+                saveData();
+                
+                // Esconder link gerado se estiver visível
+                document.getElementById('generatedLinkContainer').classList.add('hidden');
+                
+                showSuccessMessage('✅ Produtos limpos com sucesso!');
+            }
+        }
+        
+        function clearAllData() {
+            if (confirm('Tem certeza que deseja limpar TODOS os dados (produtos e formulário)?')) {
+                // Limpar produtos
+                clearAllProducts();
+                
+                // Limpar campos do formulário
+                document.getElementById('buyerName').value = '';
+                document.getElementById('buyerPhone').value = '';
+                document.getElementById('giftedName').value = '';
+                document.getElementById('giftedPhone').value = '';
+                document.getElementById('deliveryCity').value = '';
+                document.getElementById('street').value = '';
+                document.getElementById('number').value = '';
+                document.getElementById('complement').value = '';
+                document.getElementById('neighborhood').value = '';
+                document.getElementById('referencePoint').value = '';
+                document.getElementById('cardMessage').value = '';
+                document.getElementById('confirmData').checked = false;
+                
+                // Limpar seleções de radio buttons
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.checked = false;
+                });
+                
+                // Resetar variáveis
+                selectedDate = null;
+                selectedTime = null;
+                selectedTimeLabel = null;
+                currentMonth = new Date().getMonth();
+                currentYear = new Date().getFullYear();
+                nightFeeAdded = false;
+                nightFeeAmount = 0;
+                isOtherCity = false;
+                calculatedShipping = 0;
+                selectedCity = '';
+                currentDeliveryType = '';
+                
+                // Atualizar displays
+                renderCalendar(currentMonth, currentYear);
+                updateDeliveryTypeDisplay();
+                updateCityDisplay();
+                
+                // Esconder link gerado
+                document.getElementById('generatedLinkContainer').classList.add('hidden');
+                
+                // Limpar localStorage
+                localStorage.removeItem('mundoCarolFormData');
+                
+                showSuccessMessage('✅ Todos os dados foram limpos!');
+            }
+        }
+        
+        // ============================================
+        // VERIFICAR SE VEIO DE LINK COMPARTILHADO
+        // ============================================
+        function checkIfFromLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productsData = urlParams.get('products');
+            const timestamp = urlParams.get('t');
+            
+            if (productsData) {
+                const linkKey = `link_${productsData}_${timestamp}`;
+                const linkStatus = localStorage.getItem(linkKey);
+                
+                if (linkStatus === 'used') {
+                    showExpiredMessage();
+                    return;
+                }
+                
+                if (timestamp) {
+                    const linkTime = parseInt(timestamp);
+                    const now = Date.now();
+                    const hoursDiff = (now - linkTime) / (1000 * 60 * 60);
+                    
+                    if (hoursDiff > 24) {
+                        showExpiredMessage();
+                        return;
+                    }
+                }
+                
+                sessionStorage.setItem('current_session_link', 'valid');
+                isFromLink = true;
+                linkExpiration = timestamp ? parseInt(timestamp) + (24 * 60 * 60 * 1000) : null;
+                
+                localStorage.setItem(linkKey, 'in_use');
+                sessionStorage.setItem('current_link_key', linkKey);
+                
+                try {
+                    const decodedProducts = decodeURIComponent(productsData);
+                    lockedProducts = JSON.parse(decodedProducts);
+                    
+                    sessionStorage.setItem('link_products', productsData);
+                    sessionStorage.setItem('link_timestamp', timestamp || '');
+                    
+                    setupFromLink();
+                    
+                } catch (error) {
+                    console.error('Erro ao decodificar produtos:', error);
+                    showExpiredMessage();
+                }
+                
+            } else {
+                sessionStorage.removeItem('current_session_link');
+            }
+        }
+        
+        function loadFromSessionStorage() {
+            const productsData = sessionStorage.getItem('link_products');
+            
+            if (productsData) {
+                try {
+                    const decodedProducts = decodeURIComponent(productsData);
+                    lockedProducts = JSON.parse(decodedProducts);
+                    isFromLink = true;
+                    setupFromLink();
+                } catch (error) {
+                    console.error('Erro ao carregar produtos da sessão:', error);
+                }
+            }
+        }
+        
+        function setupFromLink() {
+            console.log('📌 Carregado de link válido:', lockedProducts);
+            
+            document.getElementById('addProductBtn').style.display = 'none';
+            document.getElementById('linkGeneratorSection').style.display = 'none';
+            
+            const actionButtons = document.querySelector('.action-buttons');
+            if (actionButtons) actionButtons.style.display = 'none';
+            
+            document.getElementById('productsContainer').innerHTML = '';
+            productRows = 0;
+            
+            lockedProducts.forEach((product, index) => {
+                productRows++;
+                const container = document.getElementById('productsContainer');
+                
+                const newRow = document.createElement('div');
+                newRow.className = 'product-row';
+                newRow.id = `productRow${productRows}`;
+                newRow.style.backgroundColor = '#f8f9fa';
+                
+                newRow.innerHTML = `
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 0.5;">
+                            <label for="productQuantity${productRows}">Qtde</label>
+                            <input type="number" id="productQuantity${productRows}" class="form-control product-quantity" min="1" value="${product.quantity}" readonly style="background: #e9ecef; cursor: not-allowed;">
+                        </div>
+                        <div class="form-group" style="flex: 0.8;">
+                            <label for="productCode${productRows}">Código</label>
+                            <input type="text" id="productCode${productRows}" class="form-control product-code" value="${product.code || ''}" readonly style="background: #e9ecef; cursor: not-allowed;">
+                        </div>
+                        <div class="form-group" style="flex: 2;">
+                            <label for="productName${productRows}">Descrição</label>
+                            <input type="text" id="productName${productRows}" class="form-control product-name" value="${product.name}" readonly style="background: #e9ecef; cursor: not-allowed;">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="productPrice${productRows}">Preço (R$)</label>
+                            <input type="number" id="productPrice${productRows}" class="form-control product-price" value="${product.price}" readonly style="background: #e9ecef; cursor: not-allowed;">
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(newRow);
+            });
+            
+            updateProductsSummary();
+        }
+        
+        function markLinkAsUsed() {
+            const currentLinkKey = sessionStorage.getItem('current_link_key');
+            if (currentLinkKey) {
+                localStorage.setItem(currentLinkKey, 'used');
+                console.log('✅ Link marcado como usado:', currentLinkKey);
+            }
+        }
+        
+        function showExpiredMessage() {
+            document.getElementById('expiredMessage').classList.remove('hidden');
+            document.querySelectorAll('.form-page').forEach(page => {
+                page.style.display = 'none';
+            });
+            document.getElementById('mainHeader').style.display = 'none';
+            document.getElementById('productsSummary').style.display = 'none';
+        }
+        
+        function contactWhatsApp() {
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Olá! Recebi um link expirado e preciso de um novo link para fazer um pedido.`, '_blank');
+        }
+        
+        // ============================================
+        // GERADOR DE LINKS
+        // ============================================
+        async function generateClientLink() {
+            const { products, total } = getAllProducts();
+            
+            if (products.length === 0) {
+                showModalError('Por favor, adicione pelo menos um produto antes de gerar o link.');
+                return;
+            }
+            
+            const invalidProducts = products.filter(p => !p.name || p.price <= 0);
+            if (invalidProducts.length > 0) {
+                showModalError('Por favor, preencha a descrição e preço de todos os produtos.');
+                return;
+            }
+            
+            const encodedProducts = encodeURIComponent(JSON.stringify(products));
+            const timestamp = Date.now();
+            
+            const baseUrl = window.location.origin + window.location.pathname;
+            const fullLink = `${baseUrl}?products=${encodedProducts}&t=${timestamp}`;
+            
+            try {
+                const shortLink = await shortenLink(fullLink);
+                showGeneratedLink(shortLink, fullLink);
+                
+            } catch (error) {
+                console.log('Usando link completo:', error);
+                showGeneratedLink(fullLink, fullLink);
+            }
+        }
+        
+        async function shortenLink(longUrl) {
+            try {
+                const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
+                
+                if (response.ok) {
+                    const shortUrl = await response.text();
+                    if (shortUrl && shortUrl.startsWith('http')) {
+                        return shortUrl;
+                    }
+                }
+                
+                throw new Error('Falha ao encurtar link');
+                
+            } catch (error) {
+                console.error('Erro ao encurtar link:', error);
+                throw error;
+            }
+        }
+        
+        function showGeneratedLink(displayLink, fullLink) {
+            document.getElementById('generatedLink').textContent = displayLink;
+            document.getElementById('generatedLinkContainer').classList.remove('hidden');
+            
+            copyToClipboard(displayLink, 'link');
+            
+            const copySuccess = document.getElementById('copySuccess');
+            copySuccess.textContent = '✅ Link copiado automaticamente para a área de transferência!';
+            copySuccess.classList.add('show');
+            
+            setTimeout(() => {
+                copySuccess.classList.remove('show');
+            }, 5000);
+            
+            showSuccessMessage('✅ Link gerado e copiado com sucesso! Válido por 24 horas ou até ser usado.');
+            
+            document.getElementById('generatedLink').dataset.fullLink = fullLink;
+        }
+        
+        function copyLinkAgain() {
+            const linkElement = document.getElementById('generatedLink');
+            const link = linkElement.textContent;
+            
+            if (link) {
+                copyToClipboard(link, 'link');
+                const copySuccess = document.getElementById('copySuccess');
+                copySuccess.textContent = '✅ Link copiado novamente!';
+                copySuccess.classList.add('show');
+                
+                setTimeout(() => {
+                    copySuccess.classList.remove('show');
+                }, 3000);
+            }
+        }
+        
+        // ============================================
+        // MODAL DE ERRO
+        // ============================================
+        function setupModalEvents() {
+            const modal = document.getElementById('errorModal');
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeErrorModal();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeErrorModal();
+                }
+            });
+        }
+        
+        function showModalError(message, errors = []) {
+            const modal = document.getElementById('errorModal');
+            const errorList = document.getElementById('errorList');
+            
+            errorList.innerHTML = '';
+            
+            if (errors.length > 0) {
+                errors.forEach(error => {
+                    const li = document.createElement('li');
+                    li.textContent = error;
+                    errorList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = message;
+                errorList.appendChild(li);
+            }
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeErrorModal() {
+            const modal = document.getElementById('errorModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // ============================================
+        // FUNÇÕES DE NAVEGAÇÃO COM VALIDAÇÃO
+        // ============================================
+        function nextPage(current, next) {
+            let validationResult = true;
+            let errorMessages = [];
+            
+            if (current === 1) {
+                validationResult = validatePage1();
+            } else if (current === 2) {
+                validationResult = validatePage2();
+            } else if (current === 3) {
+                validationResult = validatePage3();
+            } else if (current === 4) {
+                validationResult = validatePage4();
+            }
+            
+            if (!validationResult.valid) {
+                errorMessages = validationResult.errors;
+                showModalError('Preencha os seguintes campos antes de avançar:', errorMessages);
+                return;
+            }
+            
+            if (next === 4) {
+                updateReviewData();
+            }
+            
+            document.getElementById(`page${current}`).classList.remove('active');
+            document.getElementById(`page${next}`).classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            saveData();
+        }
+        
+        function prevPage(current, prev) {
+            document.getElementById(`page${current}`).classList.remove('active');
+            document.getElementById(`page${prev}`).classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            saveData();
+        }
+        
+        // ============================================
+        // FUNÇÕES DE VALIDAÇÃO DETALHADA (CORRIGIDAS)
+        // ============================================
+        function validatePage1() {
+            const errors = [];
+            const { products } = getAllProducts();
+            
+            if (products.length === 0) {
+                errors.push('Adicione pelo menos um produto');
+            }
+            
+            products.forEach((product, index) => {
+                if (!product.name || product.name.trim() === '') {
+                    errors.push(`Descrição do produto ${index + 1}`);
+                }
+                if (!product.price || product.price <= 0) {
+                    errors.push(`Preço do produto ${index + 1}`);
+                }
+            });
+            
+            if (!document.getElementById('buyerName').value.trim()) {
+                errors.push('Nome do Comprador');
+            }
+            
+            if (!document.getElementById('buyerPhone').value.trim()) {
+                errors.push('Telefone do Comprador');
+            }
+            
+            if (!document.getElementById('giftedName').value.trim()) {
+                errors.push('Nome do Presenteado');
+            }
+            
+            if (!document.querySelector('input[name="anonymous"]:checked')) {
+                errors.push('Escolha se quer compra anônima ou não');
+            }
+            
+            if (!document.querySelector('input[name="deliveryType"]:checked')) {
+                errors.push('Escolha o tipo de entrega');
+            }
+            
+            return {
+                valid: errors.length === 0,
+                errors: errors
+            };
+        }
+        
+        function validatePage2() {
+            const errors = [];
+            const deliveryType = document.querySelector('input[name="deliveryType"]:checked')?.value;
+            
+            if (!deliveryType) {
+                errors.push('Tipo de entrega');
+                return { valid: false, errors };
+            }
+            
+            if (deliveryType === 'delivery') {
+                const city = document.getElementById('deliveryCity').value;
+                if (!city) {
+                    errors.push('Cidade de entrega');
+                }
+                
+                if (city && city !== 'other') {
+                    if (!document.getElementById('street').value.trim()) {
+                        errors.push('Rua');
+                    }
+                    
+                    if (!document.getElementById('number').value.trim()) {
+                        errors.push('Número');
+                    }
+                    
+                    if (!document.getElementById('neighborhood').value.trim()) {
+                        errors.push('Bairro');
+                    }
+                }
+                
+                if (city && city !== 'other' && deliveryType === 'delivery') {
+                    if (!selectedDate) {
+                        errors.push('Data de entrega');
+                    }
+                    
+                    if (!document.querySelector('input[name="deliveryTime"]:checked')) {
+                        errors.push('Horário de entrega');
                     }
                 }
             }
-        });
-    });
-    
-    document.querySelectorAll('.form-page').forEach(page => {
-        observer.observe(page, { attributes: true });
-    });
-}
+            
+            if (deliveryType === 'pickup') {
+                if (!selectedDate) {
+                    errors.push('Data de retirada');
+                }
+                
+                if (!document.querySelector('input[name="deliveryTime"]:checked')) {
+                    errors.push('Horário de retirada');
+                }
+            }
+            
+            return {
+                valid: errors.length === 0,
+                errors: errors
+            };
+        }
+        
+        function validatePage3() {
+            const errors = [];
+            
+            if (!document.querySelector('input[name="sendCard"]:checked')) {
+                errors.push('Escolha se quer enviar cartão ou não');
+            }
+            
+            const sendCard = document.querySelector('input[name="sendCard"]:checked')?.value;
+            if (sendCard === 'yes') {
+                if (!document.getElementById('cardMessage').value.trim()) {
+                    errors.push('Mensagem do cartão');
+                }
+                
+                if (!document.querySelector('input[name="signedCard"]:checked')) {
+                    errors.push('Confirme se assinou o cartão');
+                }
+            }
+            
+            if (!document.querySelector('input[name="acknowledgeTerms"]:checked')) {
+                errors.push('Aceite os termos de ciência');
+            }
+            
+            return {
+                valid: errors.length === 0,
+                errors: errors
+            };
+        }
+        
+        function validatePage4() {
+            const errors = [];
+            
+            if (!document.querySelector('input[name="paymentMethod"]:checked')) {
+                errors.push('Escolha a forma de pagamento');
+            }
+            
+            if (!document.querySelector('input[name="foundUs"]:checked')) {
+                errors.push('Nos informe como nos encontrou');
+            }
+            
+            if (!document.getElementById('confirmData').checked) {
+                errors.push('Confirme que todos os dados estão corretos');
+            }
+            
+            return {
+                valid: errors.length === 0,
+                errors: errors
+            };
+        }
+        
+        // ============================================
+        // FUNÇÕES DE ATUALIZAÇÃO DE DISPLAY
+        // ============================================
+        function hideHeaderOnOtherPages() {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        const currentPage = document.querySelector('.form-page.active');
+                        const productsSummary = document.getElementById('productsSummary');
+                        
+                        if (currentPage && currentPage.id !== 'page1') {
+                            document.getElementById('mainHeader').style.display = 'none';
+                            if (productsSummary) {
+                                productsSummary.style.display = 'none';
+                            }
+                        } else if (currentPage && currentPage.id === 'page1') {
+                            document.getElementById('mainHeader').style.display = 'block';
+                            if (productsSummary && (isFromLink || getAllProducts().products.length > 0)) {
+                                productsSummary.style.display = 'flex';
+                            }
+                        }
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.form-page').forEach(page => {
+                observer.observe(page, { attributes: true });
+            });
+        }
         
         function showSuccessMessage(message) {
             const alertDiv = document.createElement('div');
@@ -3576,60 +3705,51 @@ function hideHeaderOnOtherPages() {
         }
         
         // ============================================
-// SALVAR E CARREGAR DADOS (CÓDIGO REVISADO)
-// ============================================
-function saveData() {
-    // Verifica se a página atual é a do cliente (vindo de link)
-    // Se for, NÃO salva no localStorage para não sobrescrever dados de outras sessões
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('products')) {
-        console.log('Cliente acessando via link. Auto-save desativado.');
-        return;
-    }
-    
-    const { products } = getAllProducts();
-    const formData = {
-        products: products,
-        buyerName: document.getElementById('buyerName')?.value || '',
-        buyerPhone: document.getElementById('buyerPhone')?.value || '',
-        giftedName: document.getElementById('giftedName')?.value || '',
-        giftedPhone: document.getElementById('giftedPhone')?.value || '',
-        anonymous: document.querySelector('input[name="anonymous"]:checked')?.value || '',
-        deliveryType: document.querySelector('input[name="deliveryType"]:checked')?.value || '',
-        deliveryCity: document.getElementById('deliveryCity')?.value || '',
-        street: document.getElementById('street')?.value || '',
-        number: document.getElementById('number')?.value || '',
-        complement: document.getElementById('complement')?.value || '',
-        neighborhood: document.getElementById('neighborhood')?.value || '',
-        referencePoint: document.getElementById('referencePoint')?.value || '',
-        selectedCity: selectedCity || '',
-        calculatedShipping: calculatedShipping || 0,
-        selectedDate: selectedDate ? selectedDate.toISOString() : null,
-        selectedTime: selectedTime || null,
-        selectedTimeLabel: selectedTimeLabel || null,
-        nightFeeAdded: nightFeeAdded || false,
-        nightFeeAmount: nightFeeAmount || 0,
-        sendCard: document.querySelector('input[name="sendCard"]:checked')?.value || '',
-        cardMessage: document.getElementById('cardMessage')?.value || '',
-        signedCard: document.querySelector('input[name="signedCard"]:checked')?.value || '',
-        acknowledgeTerms: document.querySelector('input[name="acknowledgeTerms"]:checked')?.value || '',
-        paymentMethod: document.querySelector('input[name="paymentMethod"]:checked')?.value || '',
-        foundUs: document.querySelector('input[name="foundUs"]:checked')?.value || '',
-        confirmData: document.getElementById('confirmData')?.checked || false,
-        productRows: productRows,
-        timestamp: Date.now() // Adiciona timestamp para controle
-    };
-    
-    for (let i = 1; i <= productRows; i++) {
-        formData[`productQuantity${i}`] = document.getElementById(`productQuantity${i}`)?.value || '';
-        formData[`productCode${i}`] = document.getElementById(`productCode${i}`)?.value || '';
-        formData[`productName${i}`] = document.getElementById(`productName${i}`)?.value || '';
-        formData[`productPrice${i}`] = document.getElementById(`productPrice${i}`)?.value || '';
-    }
-    
-    localStorage.setItem('mundoCarolFormData', JSON.stringify(formData));
-    console.log('✅ Dados salvos no localStorage');
-}
+        // SALVAR E CARREGAR DADOS
+        // ============================================
+        function saveData() {
+            const { products } = getAllProducts();
+            
+            const formData = {
+                products: products,
+                buyerName: document.getElementById('buyerName').value,
+                buyerPhone: document.getElementById('buyerPhone').value,
+                giftedName: document.getElementById('giftedName').value,
+                giftedPhone: document.getElementById('giftedPhone').value,
+                anonymous: document.querySelector('input[name="anonymous"]:checked')?.value,
+                deliveryType: document.querySelector('input[name="deliveryType"]:checked')?.value,
+                deliveryCity: document.getElementById('deliveryCity').value,
+                street: document.getElementById('street').value,
+                number: document.getElementById('number').value,
+                complement: document.getElementById('complement').value,
+                neighborhood: document.getElementById('neighborhood').value,
+                referencePoint: document.getElementById('referencePoint').value,
+                selectedCity: selectedCity,
+                calculatedShipping: calculatedShipping,
+                selectedDate: selectedDate ? selectedDate.toISOString() : null,
+                selectedTime: selectedTime,
+                selectedTimeLabel: selectedTimeLabel,
+                nightFeeAdded: nightFeeAdded,
+                nightFeeAmount: nightFeeAmount,
+                sendCard: document.querySelector('input[name="sendCard"]:checked')?.value,
+                cardMessage: document.getElementById('cardMessage').value,
+                signedCard: document.querySelector('input[name="signedCard"]:checked')?.value,
+                acknowledgeTerms: document.querySelector('input[name="acknowledgeTerms"]:checked')?.value,
+                paymentMethod: document.querySelector('input[name="paymentMethod"]:checked')?.value,
+                foundUs: document.querySelector('input[name="foundUs"]:checked')?.value,
+                confirmData: document.getElementById('confirmData').checked,
+                productRows: productRows
+            };
+            
+            for (let i = 1; i <= productRows; i++) {
+                formData[`productQuantity${i}`] = document.getElementById(`productQuantity${i}`)?.value || '';
+                formData[`productCode${i}`] = document.getElementById(`productCode${i}`)?.value || '';
+                formData[`productName${i}`] = document.getElementById(`productName${i}`)?.value || '';
+                formData[`productPrice${i}`] = document.getElementById(`productPrice${i}`)?.value || '';
+            }
+            
+            localStorage.setItem('mundoCarolFormData', JSON.stringify(formData));
+        }
         
         function loadSavedData() {
             const savedData = localStorage.getItem('mundoCarolFormData');
@@ -3781,5 +3901,3 @@ function saveData() {
     </script>
 </body>
 </html>
-
-
