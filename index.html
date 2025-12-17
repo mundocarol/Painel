@@ -1303,7 +1303,8 @@
         
         <!-- Página 1: Produtos e Dados Básicos -->
         <div id="page1" class="form-page active">
-            <div class="section" id="productSection">
+            <!-- SESSÃO DE PRODUTOS (APENAS PARA VENDEDOR) -->
+            <div id="productSectionForSeller" class="section">
                 <div class="section-title">
                     <span><i class="fas fa-box"></i> Produtos do Pedido</span>
                     <button type="button" class="btn btn-primary btn-small" id="addProductBtn" onclick="addProductRow()">
@@ -1365,9 +1366,16 @@
                             <p><strong>Validade:</strong> 24 horas ou até ser usado</p>
                         </div>
                         
-                        <h3 class="section-title">Link Gerado:</h3>
-                        <div id="generatedLink" class="generated-link"></div>
-                        <button type="button" id="copyLinkBtn" class="btn copy-btn" onclick="copyLinkAgain()">Copiar Link Novamente</button>
+                        <h3 class="section-title">Link Encurtado (abre.ai):</h3>
+                        <div id="generatedLinkShort" class="generated-link"></div>
+                        
+                        <h3 class="section-title">Link Original (completo):</h3>
+                        <div id="generatedLinkFull" class="generated-link"></div>
+                        
+                        <div class="action-buttons" style="margin-top: 15px;">
+                            <button type="button" id="copyLinkShortBtn" class="btn copy-btn" onclick="copyLink('short')">Copiar Link Encurtado</button>
+                            <button type="button" id="copyLinkFullBtn" class="btn btn-secondary" onclick="copyLink('full')">Copiar Link Original</button>
+                        </div>
                         
                         <div class="alert alert-warning" style="margin-top: 15px;">
                             <p><strong>Instruções:</strong></p>
@@ -1378,22 +1386,23 @@
                             <p>5. Ele só precisará completar seus dados e endereço</p>
                         </div>
                         
-                        <p class="copy-success" id="copySuccess">✅ Link copiado automaticamente para a área de transferência!</p>
+                        <p class="copy-success" id="copySuccess"></p>
                     </div>
                 </div>
             </div>
             
-            <div class="section">
+            <!-- SESSÃO DE DADOS DO COMPRADOR (VISÍVEL PARA TODOS) -->
+            <div class="section" id="buyerDataSection">
                 <h2 class="section-title"><i class="fas fa-user"></i> Dados do Comprador</h2>
                 
                 <div class="form-group">
                     <label for="buyerName">Nome do Comprador:</label>
-                    <input type="text" id="buyerName" class="form-control" required oninput="saveData()">
+                    <input type="text" id="buyerName" class="form-control" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="buyerPhone">Telefone:</label>
-                    <input type="text" id="buyerPhone" class="form-control" placeholder="Ex: (31) 98323-8087 ou 31983238087" required oninput="saveData()">
+                    <input type="text" id="buyerPhone" class="form-control" placeholder="Ex: (31) 98323-8087 ou 31983238087" required>
                     <small style="color: #666; font-size: 12px;">Qualquer formato de telefone é aceito</small>
                 </div>
             </div>
@@ -1407,12 +1416,12 @@
                 
                 <div class="form-group">
                     <label for="giftedName">Nome da Pessoa Presenteada:</label>
-                    <input type="text" id="giftedName" class="form-control" required oninput="saveData()">
+                    <input type="text" id="giftedName" class="form-control" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="giftedPhone">Telefone do Presenteado:</label>
-                    <input type="text" id="giftedPhone" class="form-control" placeholder="Ex: (31) 98323-8087 ou 31983238087" oninput="saveData()">
+                    <input type="text" id="giftedPhone" class="form-control" placeholder="Ex: (31) 98323-8087 ou 31983238087">
                     <small style="color: #666; font-size: 12px;">Qualquer formato de telefone é aceito</small>
                 </div>
             </div>
@@ -1422,11 +1431,11 @@
                 <div class="radio-group">
                     <p>Quer seu nome aparecendo no seu Pedido?</p>
                     <div class="radio-option">
-                        <input type="radio" name="anonymous" id="anonymousNo" value="no" onchange="saveData()">
+                        <input type="radio" name="anonymous" id="anonymousNo" value="no">
                         <label for="anonymousNo">Sim, sem problemas</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="anonymous" id="anonymousYes" value="yes" onchange="saveData()">
+                        <input type="radio" name="anonymous" id="anonymousYes" value="yes">
                         <label for="anonymousYes">Quero uma compra Anônima</label>
                     </div>
                 </div>
@@ -1437,11 +1446,11 @@
                 <div class="radio-group">
                     <p>Confirme se será entrega ou Retirada na Loja</p>
                     <div class="radio-option">
-                        <input type="radio" name="deliveryType" id="delivery" value="delivery" onchange="saveData(); updateDeliveryTypeDisplay()">
+                        <input type="radio" name="deliveryType" id="delivery" value="delivery">
                         <label for="delivery">Quero que envie para o endereço que vou fornecer</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="deliveryType" id="pickup" value="pickup" onchange="saveData(); updateDeliveryTypeDisplay()">
+                        <input type="radio" name="deliveryType" id="pickup" value="pickup">
                         <label for="pickup">Vou retirar na loja (Bairro São Geraldo - BH)</label>
                     </div>
                 </div>
@@ -1460,7 +1469,7 @@
                 
                 <div class="form-group">
                     <label for="deliveryCity">Para qual cidade enviaremos seu pedido?</label>
-                    <select id="deliveryCity" class="form-control" required onchange="updateCityDisplay(); saveData()">
+                    <select id="deliveryCity" class="form-control" required>
                         <option value="">Selecione sua cidade</option>
                         <option value="Belo Horizonte">Belo Horizonte</option>
                         <option value="Betim">Betim</option>
@@ -1484,29 +1493,29 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="street">Rua:</label>
-                            <input type="text" id="street" class="form-control" placeholder="Ex: Rua das Flores" required oninput="saveData()">
+                            <input type="text" id="street" class="form-control" placeholder="Ex: Rua das Flores" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="number">Número:</label>
-                            <input type="text" id="number" class="form-control" placeholder="Ex: 123" required oninput="saveData()">
+                            <input type="text" id="number" class="form-control" placeholder="Ex: 123" required>
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label for="complement">Complemento (ap/bloco/loja/etc):</label>
-                        <input type="text" id="complement" class="form-control" oninput="saveData()">
+                        <input type="text" id="complement" class="form-control">
                         <small>Se não tem complemento, pode deixar em branco</small>
                     </div>
                     
                     <div class="form-group">
                         <label for="neighborhood">Bairro:</label>
-                            <input type="text" id="neighborhood" class="form-control" required oninput="saveData()">
+                            <input type="text" id="neighborhood" class="form-control" required>
                     </div>
                     
                     <div class="form-group">
                         <label for="referencePoint">Ponto de referência ou CEP (não é obrigatório):</label>
-                        <input type="text" id="referencePoint" class="form-control" placeholder="Ex: Próximo ao supermercado X ou 30130-000" oninput="saveData()">
+                        <input type="text" id="referencePoint" class="form-control" placeholder="Ex: Próximo ao supermercado X ou 30130-000">
                     </div>
                 </div>
             </div>
@@ -1555,11 +1564,11 @@
                 <div class="radio-group">
                     <p>Gostaria de Enviar um Cartão? (Sem custo adicional)</p>
                     <div class="radio-option">
-                        <input type="radio" name="sendCard" value="yes" id="sendCardYes" onchange="saveData()">
+                        <input type="radio" name="sendCard" value="yes" id="sendCardYes">
                         <label for="sendCardYes">Sim, quero enviar um cartão</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="sendCard" value="no" id="sendCardNo" onchange="saveData()">
+                        <input type="radio" name="sendCard" value="no" id="sendCardNo">
                         <label for="sendCardNo">Não, não quero cartão</label>
                     </div>
                 </div>
@@ -1567,17 +1576,17 @@
                 <div id="cardMessageSection">
                     <div class="form-group">
                         <label for="cardMessage">Escreva o Texto do seu Cartão:</label>
-                        <textarea id="cardMessage" class="form-control" rows="5" placeholder="Digite sua mensagem aqui..." oninput="saveData()"></textarea>
+                        <textarea id="cardMessage" class="form-control" rows="5" placeholder="Digite sua mensagem aqui..."></textarea>
                     </div>
                     
                     <div class="radio-group">
                         <p>Você lembrou de assinar seu cartão na mensagem acima?</p>
                         <div class="radio-option">
-                            <input type="radio" name="signedCard" value="yes" id="signedCardYes" onchange="saveData()">
+                            <input type="radio" name="signedCard" value="yes" id="signedCardYes">
                             <label for="signedCardYes">Sim, assinei</label>
                         </div>
                         <div class="radio-option">
-                            <input type="radio" name="signedCard" value="no" id="signedCardNo" onchange="saveData()">
+                            <input type="radio" name="signedCard" value="no" id="signedCardNo">
                             <label for="signedCardNo">Não, não quero assinar</label>
                         </div>
                     </div>
@@ -1585,7 +1594,7 @@
                     <div class="alert alert-warning">
                         <p><strong>Termo de Ciência:</strong> Todas as mensagens para o cartão não podem ser corrigidas ou alteradas, por se tratar de algo particular. <strong>Então se atente à gramática.</strong></p>
                         <div class="radio-option">
-                            <input type="radio" name="acknowledgeTerms" value="yes" id="acknowledgeTermsYes" onchange="saveData()">
+                            <input type="radio" name="acknowledgeTerms" value="yes" id="acknowledgeTermsYes">
                             <label for="acknowledgeTermsYes">Sim, estou ciente e concordo</label>
                         </div>
                     </div>
@@ -1606,11 +1615,11 @@
                 <div class="radio-group">
                     <p>Como gostaria de finalizar o pagamento do seu pedido?</p>
                     <div class="radio-option">
-                        <input type="radio" name="paymentMethod" value="pix" id="paymentPix" onchange="saveData()">
+                        <input type="radio" name="paymentMethod" value="pix" id="paymentPix">
                         <label for="paymentPix">PIX direto para nosso CNPJ (Liberação imediata)</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="paymentMethod" value="creditCard" id="paymentCreditCard" onchange="saveData()">
+                        <input type="radio" name="paymentMethod" value="creditCard" id="paymentCreditCard">
                         <label for="paymentCreditCard">Link de Cartão de Crédito online (enviaremos o link)</label>
                     </div>
                 </div>
@@ -1622,27 +1631,27 @@
                 <div class="radio-group">
                     <p>Nos ajude a melhorar cada vez mais!</p>
                     <div class="radio-option">
-                        <input type="radio" name="foundUs" value="google" id="foundUsGoogle" onchange="saveData()">
+                        <input type="radio" name="foundUs" value="google" id="foundUsGoogle">
                         <label for="foundUsGoogle">Google</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="foundUs" value="instagram" id="foundUsInstagram" onchange="saveData()">
+                        <input type="radio" name="foundUs" value="instagram" id="foundUsInstagram">
                         <label for="foundUsInstagram">Instagram</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="foundUs" value="facebook" id="foundUsFacebook" onchange="saveData()">
+                        <input type="radio" name="foundUs" value="facebook" id="foundUsFacebook">
                         <label for="foundUsFacebook">Facebook</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="foundUs" value="indicacao" id="foundUsIndicacao" onchange="saveData()">
+                        <input type="radio" name="foundUs" value="indicacao" id="foundUsIndicacao">
                         <label for="foundUsIndicacao">Indicação de amigo/familiar</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="foundUs" value="cliente_antigo" id="foundUsClienteAntigo" onchange="saveData()">
+                        <input type="radio" name="foundUs" value="cliente_antigo" id="foundUsClienteAntigo">
                         <label for="foundUsClienteAntigo">Já sou cliente antigo</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="foundUs" value="outro" id="foundUsOutro" onchange="saveData()">
+                        <input type="radio" name="foundUs" value="outro" id="foundUsOutro">
                         <label for="foundUsOutro">Outro</label>
                     </div>
                 </div>
@@ -1664,7 +1673,7 @@
                 
                 <div class="checkbox-confirm">
                     <label>
-                        <input type="checkbox" id="confirmData" onchange="saveData(); document.getElementById('submitButton').disabled = !this.checked;">
+                        <input type="checkbox" id="confirmData">
                         <span>Revisei e confirmo que todos os dados estão corretos</span>
                     </label>
                 </div>
@@ -1836,6 +1845,7 @@
         const CORRECT_PASSWORD = '562938';
         const PIX_KEY = '10648303000179';
         const WHATSAPP_NUMBER = '5531983238087';
+        const SHORTENER_API = 'https://abre.ai/api'; // API do abre.ai (Brasileiro, sem propagandas)
         
         // ============================================
         // VARIÁVEIS GLOBAIS
@@ -1867,6 +1877,37 @@
         // Sistema de múltiplos produtos
         let productRows = 1;
         let allProducts = [];
+        
+        // Armazenamento de dados temporário
+        let formData = {
+            products: [],
+            buyerName: '',
+            buyerPhone: '',
+            giftedName: '',
+            giftedPhone: '',
+            anonymous: '',
+            deliveryType: '',
+            deliveryCity: '',
+            street: '',
+            number: '',
+            complement: '',
+            neighborhood: '',
+            referencePoint: '',
+            selectedCity: '',
+            calculatedShipping: 0,
+            selectedDate: null,
+            selectedTime: '',
+            selectedTimeLabel: '',
+            nightFeeAdded: false,
+            nightFeeAmount: 0,
+            sendCard: '',
+            cardMessage: '',
+            signedCard: '',
+            acknowledgeTerms: '',
+            paymentMethod: '',
+            foundUs: '',
+            confirmData: false
+        };
         
         // ============================================
         // TABELA DE FRETES ATUALIZADA
@@ -1966,7 +2007,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Sistema de Pedidos inicializado');
             
-            // Configurar auto-save para todos os campos
+            // Configurar eventos para auto-save
             setupAutoSave();
             
             // Verificar sessionStorage primeiro
@@ -1991,19 +2032,407 @@
             
             // Atualizar resumo inicial
             updateProductsSummary();
+            
+            // Configurar eventos de input para auto-save
+            setupInputEvents();
+            
+            // Ajustar exibição inicial
+            adjustInitialDisplay();
         });
         
         // ============================================
-        // AUTO-SAVE SYSTEM
+        // AUTO-SAVE SYSTEM (CORRIGIDO)
         // ============================================
         function setupAutoSave() {
-            // Salvar dados a cada 2 segundos
-            setInterval(saveData, 2000);
+            // Salvar dados quando o usuário sair da página
+            window.addEventListener('beforeunload', saveAllDataToStorage);
             
-            // Salvar quando a página for fechada/recarregada
-            window.addEventListener('beforeunload', function() {
-                saveData();
+            // Salvar dados periodicamente a cada 30 segundos
+            setInterval(saveAllDataToStorage, 30000);
+            
+            // Salvar dados também quando houver mudança de página
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'hidden') {
+                    saveAllDataToStorage();
+                }
             });
+        }
+        
+        function setupInputEvents() {
+            // Capturar eventos em todos os campos
+            document.querySelectorAll('input, textarea, select').forEach(element => {
+                element.addEventListener('input', handleInputChange);
+                element.addEventListener('change', handleInputChange);
+            });
+            
+            // Para radio buttons
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', handleInputChange);
+            });
+            
+            // Para checkbox
+            document.getElementById('confirmData')?.addEventListener('change', handleInputChange);
+        }
+        
+        function handleInputChange(e) {
+            const element = e.target;
+            const id = element.id;
+            const type = element.type;
+            const name = element.name;
+            
+            // Atualizar formData imediatamente
+            updateFormDataFromElement(element);
+            
+            // Salvar no localStorage com timestamp
+            saveToLocalStorage();
+            
+            // Atualizar dependências específicas
+            if (id === 'deliveryCity' || name === 'deliveryType') {
+                updateCityDisplay();
+                updateDeliveryTypeDisplay();
+            }
+            
+            if (id.startsWith('product')) {
+                updateProductsSummary();
+            }
+            
+            if (id === 'confirmData') {
+                document.getElementById('submitButton').disabled = !element.checked;
+            }
+        }
+        
+        function updateFormDataFromElement(element) {
+            const id = element.id;
+            const type = element.type;
+            const name = element.name;
+            let value = element.value;
+            
+            if (type === 'checkbox') {
+                value = element.checked;
+            } else if (type === 'radio') {
+                if (element.checked) {
+                    formData[name] = value;
+                }
+                return;
+            } else if (type === 'number') {
+                value = parseFloat(value) || 0;
+            }
+            
+            // Mapear IDs para propriedades do formData
+            const fieldMap = {
+                'buyerName': 'buyerName',
+                'buyerPhone': 'buyerPhone',
+                'giftedName': 'giftedName',
+                'giftedPhone': 'giftedPhone',
+                'deliveryCity': 'deliveryCity',
+                'street': 'street',
+                'number': 'number',
+                'complement': 'complement',
+                'neighborhood': 'neighborhood',
+                'referencePoint': 'referencePoint',
+                'cardMessage': 'cardMessage',
+                'confirmData': 'confirmData'
+            };
+            
+            if (fieldMap[id]) {
+                formData[fieldMap[id]] = value;
+            }
+        }
+        
+        function saveAllDataToStorage() {
+            // Coletar todos os dados atuais
+            collectAllFormData();
+            // Salvar no localStorage
+            saveToLocalStorage();
+        }
+        
+        function collectAllFormData() {
+            // Coletar produtos
+            const { products } = getAllProducts();
+            formData.products = products;
+            
+            // Coletar campos de texto
+            formData.buyerName = document.getElementById('buyerName')?.value || '';
+            formData.buyerPhone = document.getElementById('buyerPhone')?.value || '';
+            formData.giftedName = document.getElementById('giftedName')?.value || '';
+            formData.giftedPhone = document.getElementById('giftedPhone')?.value || '';
+            formData.deliveryCity = document.getElementById('deliveryCity')?.value || '';
+            formData.street = document.getElementById('street')?.value || '';
+            formData.number = document.getElementById('number')?.value || '';
+            formData.complement = document.getElementById('complement')?.value || '';
+            formData.neighborhood = document.getElementById('neighborhood')?.value || '';
+            formData.referencePoint = document.getElementById('referencePoint')?.value || '';
+            formData.cardMessage = document.getElementById('cardMessage')?.value || '';
+            formData.confirmData = document.getElementById('confirmData')?.checked || false;
+            
+            // Coletar radio buttons
+            formData.anonymous = document.querySelector('input[name="anonymous"]:checked')?.value || '';
+            formData.deliveryType = document.querySelector('input[name="deliveryType"]:checked')?.value || '';
+            formData.sendCard = document.querySelector('input[name="sendCard"]:checked')?.value || '';
+            formData.signedCard = document.querySelector('input[name="signedCard"]:checked')?.value || '';
+            formData.acknowledgeTerms = document.querySelector('input[name="acknowledgeTerms"]:checked')?.value || '';
+            formData.paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || '';
+            formData.foundUs = document.querySelector('input[name="foundUs"]:checked')?.value || '';
+            
+            // Coletar outras variáveis
+            formData.selectedCity = selectedCity;
+            formData.calculatedShipping = calculatedShipping;
+            formData.selectedDate = selectedDate ? selectedDate.toISOString() : null;
+            formData.selectedTime = selectedTime;
+            formData.selectedTimeLabel = selectedTimeLabel;
+            formData.nightFeeAdded = nightFeeAdded;
+            formData.nightFeeAmount = nightFeeAmount;
+        }
+        
+        function saveToLocalStorage() {
+            try {
+                const storageData = {
+                    ...formData,
+                    productRows: productRows,
+                    timestamp: Date.now(),
+                    isFromLink: isFromLink
+                };
+                
+                // Salvar cada produto individualmente
+                for (let i = 1; i <= productRows; i++) {
+                    storageData[`productQuantity${i}`] = document.getElementById(`productQuantity${i}`)?.value || '';
+                    storageData[`productCode${i}`] = document.getElementById(`productCode${i}`)?.value || '';
+                    storageData[`productName${i}`] = document.getElementById(`productName${i}`)?.value || '';
+                    storageData[`productPrice${i}`] = document.getElementById(`productPrice${i}`)?.value || '';
+                }
+                
+                localStorage.setItem('mundoCarolFormData', JSON.stringify(storageData));
+                console.log('✅ Dados salvos no localStorage');
+            } catch (error) {
+                console.error('❌ Erro ao salvar no localStorage:', error);
+            }
+        }
+        
+        // ============================================
+        // CARREGAMENTO DE DADOS SALVOS
+        // ============================================
+        function loadSavedData() {
+            try {
+                const savedData = localStorage.getItem('mundoCarolFormData');
+                if (!savedData) return;
+                
+                const data = JSON.parse(savedData);
+                
+                // Verificar se os dados são recentes (últimas 24 horas)
+                const now = Date.now();
+                if (data.timestamp && (now - data.timestamp) > 24 * 60 * 60 * 1000) {
+                    console.log('⚠️ Dados antigos, ignorando...');
+                    localStorage.removeItem('mundoCarolFormData');
+                    return;
+                }
+                
+                // Restaurar apenas se não vier de link
+                if (!isFromLink) {
+                    restoreFormData(data);
+                } else {
+                    // Se veio de link, restaurar apenas dados pessoais
+                    restorePersonalDataOnly(data);
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro ao carregar dados:', error);
+            }
+        }
+        
+        function restoreFormData(data) {
+            console.log('🔄 Restaurando dados do formulário...');
+            
+            // Restaurar campos de texto
+            document.getElementById('buyerName').value = data.buyerName || '';
+            document.getElementById('buyerPhone').value = data.buyerPhone || '';
+            document.getElementById('giftedName').value = data.giftedName || '';
+            document.getElementById('giftedPhone').value = data.giftedPhone || '';
+            document.getElementById('deliveryCity').value = data.deliveryCity || '';
+            document.getElementById('street').value = data.street || '';
+            document.getElementById('number').value = data.number || '';
+            document.getElementById('complement').value = data.complement || '';
+            document.getElementById('neighborhood').value = data.neighborhood || '';
+            document.getElementById('referencePoint').value = data.referencePoint || '';
+            document.getElementById('cardMessage').value = data.cardMessage || '';
+            
+            // Restaurar checkbox
+            if (data.confirmData) {
+                document.getElementById('confirmData').checked = true;
+                document.getElementById('submitButton').disabled = false;
+            }
+            
+            // Restaurar radio buttons
+            if (data.anonymous) {
+                const radio = document.querySelector(`input[name="anonymous"][value="${data.anonymous}"]`);
+                if (radio) radio.checked = true;
+            }
+            
+            if (data.deliveryType) {
+                const radio = document.querySelector(`input[name="deliveryType"][value="${data.deliveryType}"]`);
+                if (radio) radio.checked = true;
+                currentDeliveryType = data.deliveryType;
+            }
+            
+            if (data.sendCard) {
+                const radio = document.querySelector(`input[name="sendCard"][value="${data.sendCard}"]`);
+                if (radio) radio.checked = true;
+            }
+            
+            if (data.signedCard) {
+                const radio = document.querySelector(`input[name="signedCard"][value="${data.signedCard}"]`);
+                if (radio) radio.checked = true;
+            }
+            
+            if (data.acknowledgeTerms) {
+                const radio = document.querySelector(`input[name="acknowledgeTerms"][value="${data.acknowledgeTerms}"]`);
+                if (radio) radio.checked = true;
+            }
+            
+            if (data.paymentMethod) {
+                const radio = document.querySelector(`input[name="paymentMethod"][value="${data.paymentMethod}"]`);
+                if (radio) radio.checked = true;
+            }
+            
+            if (data.foundUs) {
+                const radio = document.querySelector(`input[name="foundUs"][value="${data.foundUs}"]`);
+                if (radio) radio.checked = true;
+            }
+            
+            // Restaurar variáveis
+            selectedCity = data.selectedCity || '';
+            calculatedShipping = data.calculatedShipping || 0;
+            nightFeeAdded = data.nightFeeAdded || false;
+            nightFeeAmount = data.nightFeeAmount || 0;
+            
+            if (data.selectedDate) {
+                selectedDate = new Date(data.selectedDate);
+                selectedTime = data.selectedTime;
+                selectedTimeLabel = data.selectedTimeLabel;
+                
+                currentMonth = selectedDate.getMonth();
+                currentYear = selectedDate.getFullYear();
+            }
+            
+            // Restaurar produtos (apenas se não vier de link)
+            if (data.products && Array.isArray(data.products) && !isFromLink) {
+                restoreProducts(data);
+            }
+            
+            // Atualizar displays
+            updateProductsSummary();
+            if (selectedCity && selectedCity !== 'other' && currentDeliveryType === 'delivery') {
+                calculateShipping();
+            }
+            
+            if (currentDeliveryType) {
+                updateDeliveryTypeDisplay();
+            }
+            
+            if (selectedCity) {
+                updateCityDisplay();
+            }
+            
+            updateRemoveButtons();
+            
+            // Renderizar calendário com mês correto
+            renderCalendar(currentMonth, currentYear);
+            
+            console.log('✅ Dados restaurados com sucesso');
+        }
+        
+        function restorePersonalDataOnly(data) {
+            // Apenas dados pessoais para cliente que veio de link
+            document.getElementById('buyerName').value = data.buyerName || '';
+            document.getElementById('buyerPhone').value = data.buyerPhone || '';
+            document.getElementById('giftedName').value = data.giftedName || '';
+            document.getElementById('giftedPhone').value = data.giftedPhone || '';
+            
+            // Restaurar radio buttons básicos
+            if (data.anonymous) {
+                const radio = document.querySelector(`input[name="anonymous"][value="${data.anonymous}"]`);
+                if (radio) radio.checked = true;
+            }
+            
+            if (data.deliveryType) {
+                const radio = document.querySelector(`input[name="deliveryType"][value="${data.deliveryType}"]`);
+                if (radio) radio.checked = true;
+                currentDeliveryType = data.deliveryType;
+            }
+            
+            console.log('✅ Dados pessoais restaurados para cliente de link');
+        }
+        
+        function restoreProducts(data) {
+            // Limpar container
+            document.getElementById('productsContainer').innerHTML = '';
+            productRows = 0;
+            
+            // Restaurar produtos
+            data.products.forEach((product, index) => {
+                productRows++;
+                const container = document.getElementById('productsContainer');
+                
+                const newRow = document.createElement('div');
+                newRow.className = 'product-row';
+                newRow.id = `productRow${productRows}`;
+                
+                newRow.innerHTML = `
+                    <button class="remove-btn" onclick="removeProductRow('productRow${productRows}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 0.5;">
+                            <label for="productQuantity${productRows}">Qtde</label>
+                            <input type="number" id="productQuantity${productRows}" class="form-control product-quantity" min="1" value="${product.quantity}">
+                        </div>
+                        <div class="form-group" style="flex: 0.8;">
+                            <label for="productCode${productRows}">Código</label>
+                            <input type="text" id="productCode${productRows}" class="form-control product-code" value="${product.code || ''}">
+                        </div>
+                        <div class="form-group" style="flex: 2;">
+                            <label for="productName${productRows}">Descrição</label>
+                            <input type="text" id="productName${productRows}" class="form-control product-name" value="${product.name}">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="productPrice${productRows}">Preço (R$)</label>
+                            <input type="number" id="productPrice${productRows}" class="form-control product-price" value="${product.price}">
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(newRow);
+                
+                // Adicionar event listeners aos novos campos
+                const quantityInput = document.getElementById(`productQuantity${productRows}`);
+                const codeInput = document.getElementById(`productCode${productRows}`);
+                const nameInput = document.getElementById(`productName${productRows}`);
+                const priceInput = document.getElementById(`productPrice${productRows}`);
+                
+                if (quantityInput) quantityInput.addEventListener('input', handleInputChange);
+                if (codeInput) codeInput.addEventListener('input', handleInputChange);
+                if (nameInput) nameInput.addEventListener('input', handleInputChange);
+                if (priceInput) priceInput.addEventListener('input', handleInputChange);
+            });
+        }
+        
+        // ============================================
+        // AJUSTES DE EXIBIÇÃO INICIAL
+        // ============================================
+        function adjustInitialDisplay() {
+            if (isFromLink) {
+                // Se veio de link, esconder a seção de produtos para vendedor
+                document.getElementById('productSectionForSeller').style.display = 'none';
+                
+                // Mostrar apenas os dados do comprador
+                document.getElementById('buyerDataSection').style.display = 'block';
+                
+                // Atualizar resumo dos produtos
+                updateProductsSummary();
+            } else {
+                // Se é vendedor, mostrar tudo
+                document.getElementById('productSectionForSeller').style.display = 'block';
+                document.getElementById('buyerDataSection').style.display = 'block';
+            }
         }
         
         // ============================================
@@ -2024,27 +2453,39 @@
                 <div class="form-row">
                     <div class="form-group" style="flex: 0.5;">
                         <label for="productQuantity${productRows}">Qtde</label>
-                        <input type="number" id="productQuantity${productRows}" class="form-control product-quantity" min="1" value="1" onchange="updateProductsSummary(); saveData()">
+                        <input type="number" id="productQuantity${productRows}" class="form-control product-quantity" min="1" value="1">
                     </div>
                     <div class="form-group" style="flex: 0.8;">
                         <label for="productCode${productRows}">Código</label>
-                        <input type="text" id="productCode${productRows}" class="form-control product-code" placeholder="Ex: 060" oninput="updateProductsSummary(); saveData()">
+                        <input type="text" id="productCode${productRows}" class="form-control product-code" placeholder="Ex: 060">
                     </div>
                     <div class="form-group" style="flex: 2;">
                         <label for="productName${productRows}">Descrição</label>
-                        <input type="text" id="productName${productRows}" class="form-control product-name" placeholder="Descrição do produto" required oninput="updateProductsSummary(); saveData()">
+                        <input type="text" id="productName${productRows}" class="form-control product-name" placeholder="Descrição do produto" required>
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label for="productPrice${productRows}">Preço (R$)</label>
-                        <input type="number" id="productPrice${productRows}" class="form-control product-price" min="0" step="0.01" placeholder="0,00" required onchange="updateProductsSummary(); saveData()">
+                        <input type="number" id="productPrice${productRows}" class="form-control product-price" min="0" step="0.01" placeholder="0,00" required>
                     </div>
                 </div>
             `;
             
             container.appendChild(newRow);
+            
+            // Adicionar event listeners aos novos campos
+            const quantityInput = document.getElementById(`productQuantity${productRows}`);
+            const codeInput = document.getElementById(`productCode${productRows}`);
+            const nameInput = document.getElementById(`productName${productRows}`);
+            const priceInput = document.getElementById(`productPrice${productRows}`);
+            
+            if (quantityInput) quantityInput.addEventListener('input', handleInputChange);
+            if (codeInput) codeInput.addEventListener('input', handleInputChange);
+            if (nameInput) nameInput.addEventListener('input', handleInputChange);
+            if (priceInput) priceInput.addEventListener('input', handleInputChange);
+            
             updateRemoveButtons();
             updateProductsSummary();
-            saveData();
+            saveAllDataToStorage();
         }
         
         function removeProductRow(rowId) {
@@ -2054,7 +2495,7 @@
                 productRows--;
                 updateRemoveButtons();
                 updateProductsSummary();
-                saveData();
+                saveAllDataToStorage();
             }
         }
         
@@ -2095,7 +2536,7 @@
         function updateProductsSummary() {
             const { products, total } = getAllProducts();
             
-            if (isFromLink || document.getElementById('page1').classList.contains('active')) {
+            if (isFromLink) {
                 updateProductsSummaryDisplay(products, total);
             }
             
@@ -2103,7 +2544,7 @@
                 calculateShipping();
             }
             
-            saveData();
+            saveAllDataToStorage();
         }
         
         function updateProductsSummaryDisplay(products, total) {
@@ -2123,121 +2564,8 @@
                 
                 productsList.innerHTML = html;
                 productsSummary.classList.remove('hidden');
-                
-                if (isFromLink) {
-                    const sectionTitle = document.querySelector('#productSection .section-title');
-                    if (sectionTitle) sectionTitle.style.display = 'none';
-                    
-                    document.getElementById('addProductBtn').style.display = 'none';
-                    document.getElementById('linkGeneratorSection').style.display = 'none';
-                    
-                    const actionButtons = document.querySelector('.action-buttons');
-                    if (actionButtons) actionButtons.style.display = 'none';
-                }
             } else {
                 productsSummary.classList.add('hidden');
-            }
-        }
-        
-        // ============================================
-        // FUNÇÕES PARA LIMPAR DADOS
-        // ============================================
-        function clearAllProducts() {
-            if (confirm('Tem certeza que deseja limpar todos os produtos?')) {
-                // Manter apenas uma linha vazia
-                document.getElementById('productsContainer').innerHTML = '';
-                productRows = 1;
-                
-                const container = document.getElementById('productsContainer');
-                const newRow = document.createElement('div');
-                newRow.className = 'product-row';
-                newRow.id = `productRow1`;
-                
-                newRow.innerHTML = `
-                    <button class="remove-btn" onclick="removeProductRow('productRow1')" style="display: none;">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    <div class="form-row">
-                        <div class="form-group" style="flex: 0.5;">
-                            <label for="productQuantity1">Qtde</label>
-                            <input type="number" id="productQuantity1" class="form-control product-quantity" min="1" value="1" onchange="updateProductsSummary(); saveData()">
-                        </div>
-                        <div class="form-group" style="flex: 0.8;">
-                            <label for="productCode1">Código</label>
-                            <input type="text" id="productCode1" class="form-control product-code" placeholder="Ex: 060" oninput="updateProductsSummary(); saveData()">
-                        </div>
-                        <div class="form-group" style="flex: 2;">
-                            <label for="productName1">Descrição</label>
-                            <input type="text" id="productName1" class="form-control product-name" placeholder="Descrição do produto" required oninput="updateProductsSummary(); saveData()">
-                        </div>
-                        <div class="form-group" style="flex: 1;">
-                            <label for="productPrice1">Preço (R$)</label>
-                            <input type="number" id="productPrice1" class="form-control product-price" min="0" step="0.01" placeholder="0,00" required onchange="updateProductsSummary(); saveData()">
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(newRow);
-                updateRemoveButtons();
-                updateProductsSummary();
-                saveData();
-                
-                // Esconder link gerado se estiver visível
-                document.getElementById('generatedLinkContainer').classList.add('hidden');
-                
-                showSuccessMessage('✅ Produtos limpos com sucesso!');
-            }
-        }
-        
-        function clearAllData() {
-            if (confirm('Tem certeza que deseja limpar TODOS os dados (produtos e formulário)?')) {
-                // Limpar produtos
-                clearAllProducts();
-                
-                // Limpar campos do formulário
-                document.getElementById('buyerName').value = '';
-                document.getElementById('buyerPhone').value = '';
-                document.getElementById('giftedName').value = '';
-                document.getElementById('giftedPhone').value = '';
-                document.getElementById('deliveryCity').value = '';
-                document.getElementById('street').value = '';
-                document.getElementById('number').value = '';
-                document.getElementById('complement').value = '';
-                document.getElementById('neighborhood').value = '';
-                document.getElementById('referencePoint').value = '';
-                document.getElementById('cardMessage').value = '';
-                document.getElementById('confirmData').checked = false;
-                
-                // Limpar seleções de radio buttons
-                document.querySelectorAll('input[type="radio"]').forEach(radio => {
-                    radio.checked = false;
-                });
-                
-                // Resetar variáveis
-                selectedDate = null;
-                selectedTime = null;
-                selectedTimeLabel = null;
-                currentMonth = new Date().getMonth();
-                currentYear = new Date().getFullYear();
-                nightFeeAdded = false;
-                nightFeeAmount = 0;
-                isOtherCity = false;
-                calculatedShipping = 0;
-                selectedCity = '';
-                currentDeliveryType = '';
-                
-                // Atualizar displays
-                renderCalendar(currentMonth, currentYear);
-                updateDeliveryTypeDisplay();
-                updateCityDisplay();
-                
-                // Esconder link gerado
-                document.getElementById('generatedLinkContainer').classList.add('hidden');
-                
-                // Limpar localStorage
-                localStorage.removeItem('mundoCarolFormData');
-                
-                showSuccessMessage('✅ Todos os dados foram limpos!');
             }
         }
         
@@ -2313,12 +2641,17 @@
         function setupFromLink() {
             console.log('📌 Carregado de link válido:', lockedProducts);
             
+            // Esconder elementos do vendedor
             document.getElementById('addProductBtn').style.display = 'none';
             document.getElementById('linkGeneratorSection').style.display = 'none';
             
             const actionButtons = document.querySelector('.action-buttons');
             if (actionButtons) actionButtons.style.display = 'none';
             
+            // Esconder a seção de produtos para vendedor
+            document.getElementById('productSectionForSeller').style.display = 'none';
+            
+            // Limpar e criar produtos bloqueados
             document.getElementById('productsContainer').innerHTML = '';
             productRows = 0;
             
@@ -2380,7 +2713,7 @@
         }
         
         // ============================================
-        // GERADOR DE LINKS
+        // GERADOR DE LINKS COM ABRE.AI
         // ============================================
         async function generateClientLink() {
             const { products, total } = getAllProducts();
@@ -2403,42 +2736,68 @@
             const fullLink = `${baseUrl}?products=${encodedProducts}&t=${timestamp}`;
             
             try {
-                const shortLink = await shortenLink(fullLink);
+                // Tentar encurtar com abre.ai
+                const shortLink = await shortenLinkWithAbreAi(fullLink);
                 showGeneratedLink(shortLink, fullLink);
                 
             } catch (error) {
-                console.log('Usando link completo:', error);
+                console.log('Usando link completo (fallback):', error);
+                // Se falhar, usar o link completo
                 showGeneratedLink(fullLink, fullLink);
             }
         }
         
-        async function shortenLink(longUrl) {
+        async function shortenLinkWithAbreAi(longUrl) {
             try {
-                const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
+                // O abre.ai permite encurtamento via API simples
+                // Formato: https://abre.ai/api?url=URL_COMPLETA
+                const response = await fetch(`https://abre.ai/api?url=${encodeURIComponent(longUrl)}`);
                 
                 if (response.ok) {
                     const shortUrl = await response.text();
                     if (shortUrl && shortUrl.startsWith('http')) {
-                        return shortUrl;
+                        return shortUrl.trim();
+                    }
+                }
+                
+                // Fallback: usar outra API se a primeira falhar
+                return await shortenLinkFallback(longUrl);
+                
+            } catch (error) {
+                console.error('Erro ao encurtar com abre.ai:', error);
+                throw error;
+            }
+        }
+        
+        async function shortenLinkFallback(longUrl) {
+            try {
+                // Tentar com is.gd como fallback
+                const response = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}`);
+                
+                if (response.ok) {
+                    const shortUrl = await response.text();
+                    if (shortUrl && shortUrl.startsWith('http')) {
+                        return shortUrl.trim();
                     }
                 }
                 
                 throw new Error('Falha ao encurtar link');
                 
             } catch (error) {
-                console.error('Erro ao encurtar link:', error);
                 throw error;
             }
         }
         
-        function showGeneratedLink(displayLink, fullLink) {
-            document.getElementById('generatedLink').textContent = displayLink;
+        function showGeneratedLink(shortLink, fullLink) {
+            document.getElementById('generatedLinkShort').textContent = shortLink;
+            document.getElementById('generatedLinkFull').textContent = fullLink;
             document.getElementById('generatedLinkContainer').classList.remove('hidden');
             
-            copyToClipboard(displayLink, 'link');
+            // Copiar automaticamente o link encurtado
+            copyToClipboard(shortLink, 'short');
             
             const copySuccess = document.getElementById('copySuccess');
-            copySuccess.textContent = '✅ Link copiado automaticamente para a área de transferência!';
+            copySuccess.textContent = '✅ Link encurtado copiado automaticamente!';
             copySuccess.classList.add('show');
             
             setTimeout(() => {
@@ -2447,17 +2806,27 @@
             
             showSuccessMessage('✅ Link gerado e copiado com sucesso! Válido por 24 horas ou até ser usado.');
             
-            document.getElementById('generatedLink').dataset.fullLink = fullLink;
+            // Salvar referências dos links
+            document.getElementById('generatedLinkShort').dataset.fullLink = fullLink;
+            document.getElementById('generatedLinkFull').dataset.fullLink = fullLink;
         }
         
-        function copyLinkAgain() {
-            const linkElement = document.getElementById('generatedLink');
-            const link = linkElement.textContent;
+        function copyLink(type) {
+            let link = '';
+            let message = '';
+            
+            if (type === 'short') {
+                link = document.getElementById('generatedLinkShort').textContent;
+                message = '✅ Link encurtado copiado!';
+            } else {
+                link = document.getElementById('generatedLinkFull').textContent;
+                message = '✅ Link original copiado!';
+            }
             
             if (link) {
-                copyToClipboard(link, 'link');
+                copyToClipboard(link, type);
                 const copySuccess = document.getElementById('copySuccess');
-                copySuccess.textContent = '✅ Link copiado novamente!';
+                copySuccess.textContent = message;
                 copySuccess.classList.add('show');
                 
                 setTimeout(() => {
@@ -2467,54 +2836,7 @@
         }
         
         // ============================================
-        // MODAL DE ERRO
-        // ============================================
-        function setupModalEvents() {
-            const modal = document.getElementById('errorModal');
-            
-            modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeErrorModal();
-                }
-            });
-            
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeErrorModal();
-                }
-            });
-        }
-        
-        function showModalError(message, errors = []) {
-            const modal = document.getElementById('errorModal');
-            const errorList = document.getElementById('errorList');
-            
-            errorList.innerHTML = '';
-            
-            if (errors.length > 0) {
-                errors.forEach(error => {
-                    const li = document.createElement('li');
-                    li.textContent = error;
-                    errorList.appendChild(li);
-                });
-            } else {
-                const li = document.createElement('li');
-                li.textContent = message;
-                errorList.appendChild(li);
-            }
-            
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeErrorModal() {
-            const modal = document.getElementById('errorModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-        
-        // ============================================
-        // FUNÇÕES DE NAVEGAÇÃO COM VALIDAÇÃO
+        // FUNÇÕES DE NAVEGAÇÃO E VALIDAÇÃO
         // ============================================
         function nextPage(current, next) {
             let validationResult = true;
@@ -2545,7 +2867,7 @@
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
-            saveData();
+            saveAllDataToStorage();
         }
         
         function prevPage(current, prev) {
@@ -2554,12 +2876,10 @@
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
-            saveData();
+            saveAllDataToStorage();
         }
         
-        // ============================================
-        // FUNÇÕES DE VALIDAÇÃO DETALHADA (CORRIGIDAS)
-        // ============================================
+        // Funções de validação (mantidas do código original)
         function validatePage1() {
             const errors = [];
             const { products } = getAllProducts();
@@ -2709,179 +3029,80 @@
         }
         
         // ============================================
-        // FUNÇÕES DE ATUALIZAÇÃO DE DISPLAY
+        // FUNÇÕES RESTANTES (mantidas do código original)
         // ============================================
-        function hideHeaderOnOtherPages() {
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                        const currentPage = document.querySelector('.form-page.active');
-                        const productsSummary = document.getElementById('productsSummary');
-                        
-                        if (currentPage && currentPage.id !== 'page1') {
-                            document.getElementById('mainHeader').style.display = 'none';
-                            if (productsSummary) {
-                                productsSummary.style.display = 'none';
-                            }
-                        } else if (currentPage && currentPage.id === 'page1') {
-                            document.getElementById('mainHeader').style.display = 'block';
-                            if (productsSummary && (isFromLink || getAllProducts().products.length > 0)) {
-                                productsSummary.style.display = 'flex';
-                            }
-                        }
-                    }
-                });
-            });
-            
-            document.querySelectorAll('.form-page').forEach(page => {
-                observer.observe(page, { attributes: true });
-            });
-        }
         
-        function showSuccessMessage(message) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-warning';
-            alertDiv.innerHTML = `<p>${message}</p>`;
-            alertDiv.style.animation = 'fadeIn 0.3s';
-            
-            const productSection = document.getElementById('productSection');
-            productSection.insertBefore(alertDiv, productSection.firstChild);
-            
-            setTimeout(() => {
-                alertDiv.style.opacity = '0';
-                alertDiv.style.transition = 'opacity 0.5s';
-                setTimeout(() => {
-                    if (alertDiv.parentNode) {
-                        alertDiv.parentNode.removeChild(alertDiv);
-                    }
-                }, 500);
-            }, 3000);
-        }
-        
-        function updateDeliveryTypeDisplay() {
-            const deliveryType = document.querySelector('input[name="deliveryType"]:checked')?.value;
-            const citySection = document.getElementById('citySection');
-            const calendarSection = document.getElementById('calendarSection');
-            
-            if (deliveryType === 'pickup') {
-                citySection.style.display = 'none';
-                calendarSection.style.display = 'block';
-                calculatedShipping = 0;
-                selectedDate = null;
-                selectedTime = null;
-                isOtherCity = false;
-            } else {
-                citySection.style.display = 'block';
-                calendarSection.style.display = 'block';
+        // Funções de limpeza de dados
+        function clearAllProducts() {
+            if (confirm('Tem certeza que deseja limpar todos os produtos?')) {
+                // Manter apenas uma linha vazia
+                document.getElementById('productsContainer').innerHTML = '';
+                productRows = 1;
                 
-                if (selectedCity && selectedCity !== 'other') {
-                    calculateShipping();
-                }
-            }
-            
-            updateNextButtonState();
-        }
-        
-        function updateCityDisplay() {
-            const otherCityMessage = document.getElementById('otherCityMessage');
-            const calendarContainer = document.getElementById('calendarContainer');
-            const timeOptions = document.getElementById('timeOptions');
-            const shippingInfo = document.getElementById('shippingInfo');
-            
-            selectedCity = document.getElementById('deliveryCity').value;
-            isOtherCity = selectedCity === 'other';
-            
-            if (isOtherCity) {
-                otherCityMessage.classList.remove('hidden');
-                calendarContainer.classList.add('hidden');
-                timeOptions.classList.add('hidden');
-                shippingInfo.classList.add('hidden');
-                calculatedShipping = 0;
-                selectedDate = null;
-                selectedTime = null;
-                selectedTimeLabel = null;
-            } else {
-                otherCityMessage.classList.add('hidden');
-                calendarContainer.classList.remove('hidden');
-                if (selectedCity && currentDeliveryType === 'delivery') {
-                    shippingInfo.classList.remove('hidden');
-                    calculateShipping();
-                }
-            }
-            
-            updateNextButtonState();
-        }
-        
-        // ============================================
-        // FUNÇÕES DE CÁLCULO
-        // ============================================
-        function calculateShipping() {
-            const { total } = getAllProducts();
-            const cityRates = shippingRates[selectedCity];
-            
-            if (cityRates) {
-                for (const rate of cityRates) {
-                    if (total >= rate.min && total <= rate.max) {
-                        calculatedShipping = rate.cost;
-                        document.getElementById('freteValue').textContent = `R$ ${rate.cost.toFixed(2).replace('.', ',')}`;
-                        break;
-                    }
-                }
-            }
-            
-            updateNextButtonState();
-            saveData();
-        }
-        
-        function getTotalWithShipping() {
-            const { total } = getAllProducts();
-            return total + calculatedShipping + (nightFeeAmount || 0);
-        }
-        
-        function getShippingForSpreadsheet() {
-            return calculatedShipping + (nightFeeAmount || 0);
-        }
-        
-        function addNightFee(amount) {
-            nightFeeAmount = amount;
-            nightFeeAdded = true;
-            updateNextButtonState();
-            saveData();
-        }
-        
-        function removeNightFee() {
-            nightFeeAmount = 0;
-            nightFeeAdded = false;
-            updateNextButtonState();
-            saveData();
-        }
-        
-        function updateNextButtonState() {
-            const nextButton = document.getElementById('nextPage2Button');
-            const deliveryType = document.querySelector('input[name="deliveryType"]:checked')?.value;
-            
-            if (!deliveryType) {
-                nextButton.disabled = true;
-                return;
-            }
-            
-            if (deliveryType === 'pickup') {
-                nextButton.disabled = !(selectedDate && document.querySelector('input[name="deliveryTime"]:checked'));
-            } else if (deliveryType === 'delivery' && isOtherCity) {
-                nextButton.disabled = false;
-            } else if (deliveryType === 'delivery') {
-                const street = document.getElementById('street').value.trim();
-                const number = document.getElementById('number').value.trim();
-                const neighborhood = document.getElementById('neighborhood').value.trim();
-                const city = document.getElementById('deliveryCity').value;
+                const container = document.getElementById('productsContainer');
+                const newRow = document.createElement('div');
+                newRow.className = 'product-row';
+                newRow.id = `productRow1`;
                 
-                nextButton.disabled = !(city && street && number && neighborhood && selectedDate && selectedTime);
+                newRow.innerHTML = `
+                    <button class="remove-btn" onclick="removeProductRow('productRow1')" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 0.5;">
+                            <label for="productQuantity1">Qtde</label>
+                            <input type="number" id="productQuantity1" class="form-control product-quantity" min="1" value="1">
+                        </div>
+                        <div class="form-group" style="flex: 0.8;">
+                            <label for="productCode1">Código</label>
+                            <input type="text" id="productCode1" class="form-control product-code" placeholder="Ex: 060">
+                        </div>
+                        <div class="form-group" style="flex: 2;">
+                            <label for="productName1">Descrição</label>
+                            <input type="text" id="productName1" class="form-control product-name" placeholder="Descrição do produto" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="productPrice1">Preço (R$)</label>
+                            <input type="number" id="productPrice1" class="form-control product-price" min="0" step="0.01" placeholder="0,00" required>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(newRow);
+                
+                // Adicionar event listeners
+                const quantityInput = document.getElementById('productQuantity1');
+                const codeInput = document.getElementById('productCode1');
+                const nameInput = document.getElementById('productName1');
+                const priceInput = document.getElementById('productPrice1');
+                
+                if (quantityInput) quantityInput.addEventListener('input', handleInputChange);
+                if (codeInput) codeInput.addEventListener('input', handleInputChange);
+                if (nameInput) nameInput.addEventListener('input', handleInputChange);
+                if (priceInput) priceInput.addEventListener('input', handleInputChange);
+                
+                updateRemoveButtons();
+                updateProductsSummary();
+                saveAllDataToStorage();
+                
+                // Esconder link gerado se estiver visível
+                document.getElementById('generatedLinkContainer').classList.add('hidden');
+                
+                showSuccessMessage('✅ Produtos limpos com sucesso!');
             }
         }
         
-        // ============================================
-        // CALENDÁRIO E HORÁRIOS (CORRIGIDO)
-        // ============================================
+        function clearAllData() {
+            if (confirm('Tem certeza que deseja limpar TODOS os dados (produtos e formulário)?')) {
+                // Limpar localStorage
+                localStorage.removeItem('mundoCarolFormData');
+                
+                // Recarregar a página
+                location.reload();
+            }
+        }
+        
+        // Funções de calendário e horários (mantidas do original)
         function changeMonth(delta) {
             currentMonth += delta;
             if (currentMonth < 0) {
@@ -2892,6 +3113,7 @@
                 currentYear++;
             }
             renderCalendar(currentMonth, currentYear);
+            saveAllDataToStorage();
         }
         
         function renderCalendar(month, year) {
@@ -2958,15 +3180,6 @@
                         e.stopPropagation();
                         selectDate(currentDate, isSpecialDate, isHoliday, isNoDeliveryDate, isAvulsoDate);
                     });
-                    
-                    // Prevenir arrastar e selecionar texto
-                    dayElement.addEventListener('mousedown', function(e) {
-                        e.preventDefault();
-                    });
-                    
-                    dayElement.addEventListener('touchstart', function(e) {
-                        e.preventDefault();
-                    }, { passive: false });
                 }
                 
                 if (selectedDate && 
@@ -3100,13 +3313,8 @@
                     }
                     
                     updateNextButtonState();
-                    saveData();
+                    saveAllDataToStorage();
                 });
-                
-                // Prevenir comportamento indesejado no mobile
-                input.addEventListener('touchstart', function(e) {
-                    e.stopPropagation();
-                }, { passive: true });
                 
                 label.addEventListener('touchstart', function(e) {
                     e.preventDefault();
@@ -3117,7 +3325,7 @@
             });
             
             updateNextButtonState();
-            saveData();
+            saveAllDataToStorage();
         }
         
         function resetCalendar() {
@@ -3133,12 +3341,128 @@
             });
             
             updateNextButtonState();
-            saveData();
+            saveAllDataToStorage();
         }
         
-        // ============================================
-        // REVISÃO DE DADOS
-        // ============================================
+        function updateDeliveryTypeDisplay() {
+            const deliveryType = document.querySelector('input[name="deliveryType"]:checked')?.value;
+            const citySection = document.getElementById('citySection');
+            const calendarSection = document.getElementById('calendarSection');
+            
+            if (deliveryType === 'pickup') {
+                citySection.style.display = 'none';
+                calendarSection.style.display = 'block';
+                calculatedShipping = 0;
+                selectedDate = null;
+                selectedTime = null;
+                isOtherCity = false;
+            } else {
+                citySection.style.display = 'block';
+                calendarSection.style.display = 'block';
+                
+                if (selectedCity && selectedCity !== 'other') {
+                    calculateShipping();
+                }
+            }
+            
+            updateNextButtonState();
+        }
+        
+        function updateCityDisplay() {
+            const otherCityMessage = document.getElementById('otherCityMessage');
+            const calendarContainer = document.getElementById('calendarContainer');
+            const timeOptions = document.getElementById('timeOptions');
+            const shippingInfo = document.getElementById('shippingInfo');
+            
+            selectedCity = document.getElementById('deliveryCity').value;
+            isOtherCity = selectedCity === 'other';
+            
+            if (isOtherCity) {
+                otherCityMessage.classList.remove('hidden');
+                calendarContainer.classList.add('hidden');
+                timeOptions.classList.add('hidden');
+                shippingInfo.classList.add('hidden');
+                calculatedShipping = 0;
+                selectedDate = null;
+                selectedTime = null;
+                selectedTimeLabel = null;
+            } else {
+                otherCityMessage.classList.add('hidden');
+                calendarContainer.classList.remove('hidden');
+                if (selectedCity && currentDeliveryType === 'delivery') {
+                    shippingInfo.classList.remove('hidden');
+                    calculateShipping();
+                }
+            }
+            
+            updateNextButtonState();
+        }
+        
+        function calculateShipping() {
+            const { total } = getAllProducts();
+            const cityRates = shippingRates[selectedCity];
+            
+            if (cityRates) {
+                for (const rate of cityRates) {
+                    if (total >= rate.min && total <= rate.max) {
+                        calculatedShipping = rate.cost;
+                        document.getElementById('freteValue').textContent = `R$ ${rate.cost.toFixed(2).replace('.', ',')}`;
+                        break;
+                    }
+                }
+            }
+            
+            updateNextButtonState();
+            saveAllDataToStorage();
+        }
+        
+        function getTotalWithShipping() {
+            const { total } = getAllProducts();
+            return total + calculatedShipping + (nightFeeAmount || 0);
+        }
+        
+        function getShippingForSpreadsheet() {
+            return calculatedShipping + (nightFeeAmount || 0);
+        }
+        
+        function addNightFee(amount) {
+            nightFeeAmount = amount;
+            nightFeeAdded = true;
+            updateNextButtonState();
+            saveAllDataToStorage();
+        }
+        
+        function removeNightFee() {
+            nightFeeAmount = 0;
+            nightFeeAdded = false;
+            updateNextButtonState();
+            saveAllDataToStorage();
+        }
+        
+        function updateNextButtonState() {
+            const nextButton = document.getElementById('nextPage2Button');
+            const deliveryType = document.querySelector('input[name="deliveryType"]:checked')?.value;
+            
+            if (!deliveryType) {
+                nextButton.disabled = true;
+                return;
+            }
+            
+            if (deliveryType === 'pickup') {
+                nextButton.disabled = !(selectedDate && document.querySelector('input[name="deliveryTime"]:checked'));
+            } else if (deliveryType === 'delivery' && isOtherCity) {
+                nextButton.disabled = false;
+            } else if (deliveryType === 'delivery') {
+                const street = document.getElementById('street').value.trim();
+                const number = document.getElementById('number').value.trim();
+                const neighborhood = document.getElementById('neighborhood').value.trim();
+                const city = document.getElementById('deliveryCity').value;
+                
+                nextButton.disabled = !(city && street && number && neighborhood && selectedDate && selectedTime);
+            }
+        }
+        
+        // Funções de revisão (mantidas do original)
         function updateReviewData() {
             const reviewDiv = document.getElementById('reviewData');
             const totalSection = document.getElementById('finalTotalSection');
@@ -3283,9 +3607,70 @@
             totalSection.classList.remove('hidden');
         }
         
-        // ============================================
-        // SISTEMA DE ENVIO PARA PLANILHA
-        // ============================================
+        // Funções de envio para planilha (mantidas do original)
+        async function submitForm() {
+            if (isSubmitting) return;
+            
+            const validation = validateForm();
+            if (!validation.valid) {
+                showModalError('Por favor, corrija os erros no formulário:', validation.errors);
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitButton');
+            const loadingSection = document.getElementById('loadingSection');
+            
+            submitBtn.disabled = true;
+            isSubmitting = true;
+            loadingSection.style.display = 'block';
+            
+            try {
+                const excelData = prepareExcelData();
+                console.log('📦 Dados para envio:', excelData);
+                
+                const result = await enviarDadosParaPlanilha(excelData);
+                
+                if (result.success) {
+                    if (isFromLink) {
+                        markLinkAsUsed();
+                    }
+                    
+                    submitBtn.innerHTML = '✅ ENVIADO';
+                    submitBtn.classList.add('btn-success');
+                    
+                    setTimeout(() => {
+                        document.getElementById('page4').classList.remove('active');
+                        
+                        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value;
+                        if (paymentMethod === 'pix') {
+                            document.getElementById('thankYouPagePix').classList.add('active');
+                            showPaymentConfirmation('pix');
+                        } else {
+                            document.getElementById('thankYouPageCard').classList.add('active');
+                            showPaymentConfirmation('card');
+                        }
+                        
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }, 1000);
+                    
+                    setTimeout(() => {
+                        clearSavedData();
+                    }, 5000);
+                    
+                } else {
+                    throw new Error(result.message || 'Erro desconhecido');
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro no envio:', error);
+                showModalError(`Erro: ${error.message || 'Falha na conexão'}`);
+                submitBtn.disabled = false;
+                isSubmitting = false;
+            } finally {
+                loadingSection.style.display = 'none';
+            }
+        }
+        
         function prepareExcelData() {
             const now = new Date();
             const formattedDateTime = `${now.getDate().toString().padStart(2, '0')}/` +
@@ -3391,69 +3776,6 @@
             return data;
         }
         
-        async function submitForm() {
-            if (isSubmitting) return;
-            
-            const validation = validateForm();
-            if (!validation.valid) {
-                showModalError('Por favor, corrija os erros no formulário:', validation.errors);
-                return;
-            }
-            
-            const submitBtn = document.getElementById('submitButton');
-            const loadingSection = document.getElementById('loadingSection');
-            
-            submitBtn.disabled = true;
-            isSubmitting = true;
-            loadingSection.style.display = 'block';
-            
-            try {
-                const excelData = prepareExcelData();
-                console.log('📦 Dados para envio:', excelData);
-                
-                const result = await enviarDadosParaPlanilha(excelData);
-                
-                if (result.success) {
-                    if (isFromLink) {
-                        markLinkAsUsed();
-                    }
-                    
-                    submitBtn.innerHTML = '✅ ENVIADO';
-                    submitBtn.classList.add('btn-success');
-                    
-                    setTimeout(() => {
-                        document.getElementById('page4').classList.remove('active');
-                        
-                        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value;
-                        if (paymentMethod === 'pix') {
-                            document.getElementById('thankYouPagePix').classList.add('active');
-                            showPaymentConfirmation('pix');
-                        } else {
-                            document.getElementById('thankYouPageCard').classList.add('active');
-                            showPaymentConfirmation('card');
-                        }
-                        
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }, 1000);
-                    
-                    setTimeout(() => {
-                        clearSavedData();
-                    }, 5000);
-                    
-                } else {
-                    throw new Error(result.message || 'Erro desconhecido');
-                }
-                
-            } catch (error) {
-                console.error('❌ Erro no envio:', error);
-                showModalError(`Erro: ${error.message || 'Falha na conexão'}`);
-                submitBtn.disabled = false;
-                isSubmitting = false;
-            } finally {
-                loadingSection.style.display = 'none';
-            }
-        }
-        
         async function enviarDadosParaPlanilha(dados) {
             try {
                 const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(WEB_APP_URL)}`;
@@ -3507,9 +3829,21 @@
             });
         }
         
-        // ============================================
-        // FUNÇÕES AUXILIARES
-        // ============================================
+        function validateForm() {
+            const page1 = validatePage1();
+            if (!page1.valid) return page1;
+            
+            const page2 = validatePage2();
+            if (!page2.valid) return page2;
+            
+            const page3 = validatePage3();
+            if (!page3.valid) return page3;
+            
+            const page4 = validatePage4();
+            return page4;
+        }
+        
+        // Funções auxiliares (mantidas do original)
         function showPaymentConfirmation(type) {
             const buyerName = document.getElementById('buyerName').value;
             const paymentDetailsDiv = type === 'pix' ? document.getElementById('paymentDetails') : document.getElementById('paymentDetailsCard');
@@ -3657,7 +3991,7 @@
         function copyToClipboard(text, type) {
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text).then(() => {
-                    if (type === 'link') {
+                    if (type === 'short' || type === 'full') {
                         const copySuccess = document.getElementById('copySuccess');
                         if (copySuccess) {
                             copySuccess.textContent = '✅ Copiado para a área de transferência!';
@@ -3687,7 +4021,7 @@
             
             try {
                 document.execCommand('copy');
-                if (type === 'link') {
+                if (type === 'short' || type === 'full') {
                     const copySuccess = document.getElementById('copySuccess');
                     if (copySuccess) {
                         copySuccess.textContent = '✅ Copiado para a área de transferência!';
@@ -3704,199 +4038,106 @@
             }
         }
         
-        // ============================================
-        // SALVAR E CARREGAR DADOS
-        // ============================================
-        function saveData() {
-            const { products } = getAllProducts();
+        // Funções do modal (mantidas do original)
+        function setupModalEvents() {
+            const modal = document.getElementById('errorModal');
             
-            const formData = {
-                products: products,
-                buyerName: document.getElementById('buyerName').value,
-                buyerPhone: document.getElementById('buyerPhone').value,
-                giftedName: document.getElementById('giftedName').value,
-                giftedPhone: document.getElementById('giftedPhone').value,
-                anonymous: document.querySelector('input[name="anonymous"]:checked')?.value,
-                deliveryType: document.querySelector('input[name="deliveryType"]:checked')?.value,
-                deliveryCity: document.getElementById('deliveryCity').value,
-                street: document.getElementById('street').value,
-                number: document.getElementById('number').value,
-                complement: document.getElementById('complement').value,
-                neighborhood: document.getElementById('neighborhood').value,
-                referencePoint: document.getElementById('referencePoint').value,
-                selectedCity: selectedCity,
-                calculatedShipping: calculatedShipping,
-                selectedDate: selectedDate ? selectedDate.toISOString() : null,
-                selectedTime: selectedTime,
-                selectedTimeLabel: selectedTimeLabel,
-                nightFeeAdded: nightFeeAdded,
-                nightFeeAmount: nightFeeAmount,
-                sendCard: document.querySelector('input[name="sendCard"]:checked')?.value,
-                cardMessage: document.getElementById('cardMessage').value,
-                signedCard: document.querySelector('input[name="signedCard"]:checked')?.value,
-                acknowledgeTerms: document.querySelector('input[name="acknowledgeTerms"]:checked')?.value,
-                paymentMethod: document.querySelector('input[name="paymentMethod"]:checked')?.value,
-                foundUs: document.querySelector('input[name="foundUs"]:checked')?.value,
-                confirmData: document.getElementById('confirmData').checked,
-                productRows: productRows
-            };
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeErrorModal();
+                }
+            });
             
-            for (let i = 1; i <= productRows; i++) {
-                formData[`productQuantity${i}`] = document.getElementById(`productQuantity${i}`)?.value || '';
-                formData[`productCode${i}`] = document.getElementById(`productCode${i}`)?.value || '';
-                formData[`productName${i}`] = document.getElementById(`productName${i}`)?.value || '';
-                formData[`productPrice${i}`] = document.getElementById(`productPrice${i}`)?.value || '';
-            }
-            
-            localStorage.setItem('mundoCarolFormData', JSON.stringify(formData));
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeErrorModal();
+                }
+            });
         }
         
-        function loadSavedData() {
-            const savedData = localStorage.getItem('mundoCarolFormData');
-            if (!savedData) return;
+        function showModalError(message, errors = []) {
+            const modal = document.getElementById('errorModal');
+            const errorList = document.getElementById('errorList');
             
-            try {
-                const data = JSON.parse(savedData);
-                
-                if (data.products && Array.isArray(data.products) && !isFromLink) {
-                    document.getElementById('productsContainer').innerHTML = '';
-                    productRows = 0;
-                    
-                    data.products.forEach((product, index) => {
-                        productRows++;
-                        const container = document.getElementById('productsContainer');
+            errorList.innerHTML = '';
+            
+            if (errors.length > 0) {
+                errors.forEach(error => {
+                    const li = document.createElement('li');
+                    li.textContent = error;
+                    errorList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = message;
+                errorList.appendChild(li);
+            }
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeErrorModal() {
+            const modal = document.getElementById('errorModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        function hideHeaderOnOtherPages() {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        const currentPage = document.querySelector('.form-page.active');
+                        const productsSummary = document.getElementById('productsSummary');
                         
-                        const newRow = document.createElement('div');
-                        newRow.className = 'product-row';
-                        newRow.id = `productRow${productRows}`;
-                        
-                        newRow.innerHTML = `
-                            <button class="remove-btn" onclick="removeProductRow('productRow${productRows}')">
-                                <i class="fas fa-times"></i>
-                            </button>
-                            <div class="form-row">
-                                <div class="form-group" style="flex: 0.5;">
-                                    <label for="productQuantity${productRows}">Qtde</label>
-                                    <input type="number" id="productQuantity${productRows}" class="form-control product-quantity" min="1" value="${product.quantity}" onchange="updateProductsSummary(); saveData()">
-                                </div>
-                                <div class="form-group" style="flex: 0.8;">
-                                    <label for="productCode${productRows}">Código</label>
-                                    <input type="text" id="productCode${productRows}" class="form-control product-code" value="${product.code || ''}" oninput="updateProductsSummary(); saveData()">
-                                </div>
-                                <div class="form-group" style="flex: 2;">
-                                    <label for="productName${productRows}">Descrição</label>
-                                    <input type="text" id="productName${productRows}" class="form-control product-name" value="${product.name}" required oninput="updateProductsSummary(); saveData()">
-                                </div>
-                                <div class="form-group" style="flex: 1;">
-                                    <label for="productPrice${productRows}">Preço (R$)</label>
-                                    <input type="number" id="productPrice${productRows}" class="form-control product-price" value="${product.price}" required onchange="updateProductsSummary(); saveData()">
-                                </div>
-                            </div>
-                        `;
-                        
-                        container.appendChild(newRow);
-                    });
-                }
-                
-                document.getElementById('buyerName').value = data.buyerName || '';
-                document.getElementById('buyerPhone').value = data.buyerPhone || '';
-                document.getElementById('giftedName').value = data.giftedName || '';
-                document.getElementById('giftedPhone').value = data.giftedPhone || '';
-                document.getElementById('deliveryCity').value = data.deliveryCity || '';
-                document.getElementById('street').value = data.street || '';
-                document.getElementById('number').value = data.number || '';
-                document.getElementById('complement').value = data.complement || '';
-                document.getElementById('neighborhood').value = data.neighborhood || '';
-                document.getElementById('referencePoint').value = data.referencePoint || '';
-                document.getElementById('cardMessage').value = data.cardMessage || '';
-                document.getElementById('confirmData').checked = data.confirmData || false;
-                
-                if (data.confirmData) {
-                    document.getElementById('submitButton').disabled = false;
-                }
-                
-                selectedCity = data.selectedCity || '';
-                calculatedShipping = data.calculatedShipping || 0;
-                nightFeeAdded = data.nightFeeAdded || false;
-                nightFeeAmount = data.nightFeeAmount || 0;
-                currentDeliveryType = data.deliveryType || '';
-                
-                const radios = [
-                    { name: 'anonymous', value: data.anonymous },
-                    { name: 'deliveryType', value: data.deliveryType },
-                    { name: 'sendCard', value: data.sendCard },
-                    { name: 'signedCard', value: data.signedCard },
-                    { name: 'acknowledgeTerms', value: data.acknowledgeTerms },
-                    { name: 'paymentMethod', value: data.paymentMethod },
-                    { name: 'foundUs', value: data.foundUs }
-                ];
-                
-                radios.forEach(radio => {
-                    if (radio.value) {
-                        const element = document.querySelector(`input[name="${radio.name}"][value="${radio.value}"]`);
-                        if (element) element.checked = true;
+                        if (currentPage && currentPage.id !== 'page1') {
+                            document.getElementById('mainHeader').style.display = 'none';
+                            if (productsSummary) {
+                                productsSummary.style.display = 'none';
+                            }
+                        } else if (currentPage && currentPage.id === 'page1') {
+                            document.getElementById('mainHeader').style.display = 'block';
+                            if (productsSummary && (isFromLink || getAllProducts().products.length > 0)) {
+                                productsSummary.style.display = 'flex';
+                            }
+                        }
                     }
                 });
+            });
+            
+            document.querySelectorAll('.form-page').forEach(page => {
+                observer.observe(page, { attributes: true });
+            });
+        }
+        
+        function showSuccessMessage(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-warning';
+            alertDiv.innerHTML = `<p>${message}</p>`;
+            alertDiv.style.animation = 'fadeIn 0.3s';
+            
+            const productSection = document.getElementById('productSectionForSeller');
+            if (productSection) {
+                productSection.insertBefore(alertDiv, productSection.firstChild);
                 
-                if (data.selectedDate) {
-                    selectedDate = new Date(data.selectedDate);
-                    selectedTime = data.selectedTime;
-                    selectedTimeLabel = data.selectedTimeLabel;
-                    
-                    currentMonth = selectedDate.getMonth();
-                    currentYear = selectedDate.getFullYear();
-                }
-                
-                updateProductsSummary();
-                if (selectedCity && selectedCity !== 'other' && currentDeliveryType === 'delivery') {
-                    calculateShipping();
-                }
-                
-                if (currentDeliveryType) {
-                    updateDeliveryTypeDisplay();
-                }
-                
-                if (selectedCity) {
-                    updateCityDisplay();
-                }
-                
-                updateRemoveButtons();
-                
-            } catch (e) {
-                console.error('Erro ao carregar dados:', e);
+                setTimeout(() => {
+                    alertDiv.style.opacity = '0';
+                    alertDiv.style.transition = 'opacity 0.5s';
+                    setTimeout(() => {
+                        if (alertDiv.parentNode) {
+                            alertDiv.parentNode.removeChild(alertDiv);
+                        }
+                    }, 500);
+                }, 3000);
             }
         }
         
         function clearSavedData() {
             localStorage.removeItem('mundoCarolFormData');
-            
-            selectedDate = null;
-            selectedTime = null;
-            selectedTimeLabel = null;
-            currentMonth = new Date().getMonth();
-            currentYear = new Date().getFullYear();
-            originalTotal = 0;
-            nightFeeAdded = false;
-            nightFeeAmount = 0;
-            isOtherCity = false;
-            calculatedShipping = 0;
-            selectedCity = '';
-            currentDeliveryType = '';
-            productRows = 1;
-        }
-        
-        function validateForm() {
-            const page1 = validatePage1();
-            if (!page1.valid) return page1;
-            
-            const page2 = validatePage2();
-            if (!page2.valid) return page2;
-            
-            const page3 = validatePage3();
-            if (!page3.valid) return page3;
-            
-            const page4 = validatePage4();
-            return page4;
+            sessionStorage.removeItem('current_session_link');
+            sessionStorage.removeItem('current_link_key');
+            sessionStorage.removeItem('link_products');
+            sessionStorage.removeItem('link_timestamp');
         }
     </script>
 </body>
