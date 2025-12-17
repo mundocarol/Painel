@@ -75,21 +75,19 @@
             border-left: 4px solid var(--success);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 5px;
         }
         
         .products-summary h3 {
             color: #155724;
             font-size: 16px;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
         
         .products-list {
-            max-height: 150px;
-            overflow-y: auto;
             margin: 5px 0;
         }
         
@@ -105,14 +103,9 @@
             border-bottom: none;
         }
         
-        .products-total {
-            background: #155724;
-            color: white;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 700;
-            text-align: center;
+        .product-price-only {
+            color: #155724;
+            font-weight: 600;
         }
         
         .form-page {
@@ -1266,9 +1259,8 @@
         
         <!-- Resumo dos Produtos (visível apenas na página 1 quando veio de link) -->
         <div id="productsSummary" class="products-summary hidden">
-            <h3><i class="fas fa-box"></i> Produtos Selecionados</h3>
+            <h3><i class="fas fa-gift"></i> Produtos Escolhidos</h3>
             <div id="productsList" class="products-list"></div>
-            <div id="productsTotal" class="products-total"></div>
         </div>
         
         <!-- Status de Envio -->
@@ -1315,7 +1307,7 @@
                     </div>
                 </div>
                 
-                <div id="totalProductsSection" class="total-section">
+                <div id="totalProductsSection" class="total-section" style="display: none;">
                     <h3 class="section-title"><i class="fas fa-calculator"></i> Total do Pedido</h3>
                     <div id="productsTotalDetails">
                         <div class="total-item">
@@ -1446,6 +1438,7 @@
                         <option value="Vespasiano">Vespasiano</option>
                         <option value="Lagoa Santa">Lagoa Santa</option>
                         <option value="Nova Lima">Nova Lima</option>
+                        <option value="Vila da Serra (Nova Lima)">Vila da Serra (Nova Lima)</option>
                         <option value="other">Outra Localidade ou Cidade</option>
                     </select>
                     <div id="shippingInfo" class="frete-display hidden">
@@ -1809,6 +1802,7 @@
         const CORRECT_PASSWORD = '562938';
         const PIX_KEY = '10648303000179';
         const WHATSAPP_NUMBER = '5531983238087';
+        const SHORT_LINK_API = 'https://api.tinyurl.com/create'; // API para encurtar links
         
         // ============================================
         // VARIÁVEIS GLOBAIS
@@ -1835,64 +1829,70 @@
         let isFromLink = false;
         let lockedProducts = [];
         let linkExpiration = null;
+        let linkUsed = false; // Nova variável para controlar se link foi usado
         
         // Sistema de múltiplos produtos
         let productRows = 1;
         let allProducts = [];
         
         // ============================================
-        // TABELA DE FRETES ATUALIZADA
+        // TABELA DE FRETES ATUALIZADA (CORRIGIDA)
         // ============================================
         const shippingRates = {
             'Belo Horizonte': [
                 { min: 1, max: 119.99, cost: 19.90 },
                 { min: 120, max: 179.99, cost: 14.90 },
-                { min: 180, max: 99999, cost: 0.00 }
+                { min: 179, max: 99999, cost: 0.00 }
             ],
             'Betim': [
                 { min: 1, max: 119.99, cost: 69.90 },
                 { min: 120, max: 179.99, cost: 54.90 },
-                { min: 180, max: 99999, cost: 44.90 }
+                { min: 179, max: 99999, cost: 44.90 }
             ],
             'Contagem': [
                 { min: 1, max: 119.99, cost: 29.90 },
                 { min: 120, max: 179.99, cost: 24.90 },
-                { min: 180, max: 99999, cost: 19.90 }
+                { min: 179, max: 99999, cost: 19.90 }
             ],
             'Sabará': [
                 { min: 1, max: 119.99, cost: 29.90 },
                 { min: 120, max: 179.99, cost: 26.90 },
-                { min: 180, max: 99999, cost: 22.90 }
+                { min: 179, max: 99999, cost: 22.90 }
             ],
             'Ibirité': [
                 { min: 1, max: 119.99, cost: 69.90 },
                 { min: 120, max: 179.99, cost: 59.90 },
-                { min: 180, max: 99999, cost: 44.90 }
+                { min: 179, max: 99999, cost: 44.90 }
             ],
             'Ribeirão das Neves': [
                 { min: 1, max: 119.99, cost: 59.90 },
                 { min: 120, max: 179.99, cost: 54.90 },
-                { min: 180, max: 99999, cost: 44.90 }
+                { min: 179, max: 99999, cost: 44.90 }
             ],
             'Santa Luzia': [
                 { min: 1, max: 119.99, cost: 49.90 },
                 { min: 120, max: 179.99, cost: 44.90 },
-                { min: 180, max: 99999, cost: 39.90 }
+                { min: 179, max: 99999, cost: 39.90 }
             ],
             'Vespasiano': [
                 { min: 1, max: 119.99, cost: 59.90 },
                 { min: 120, max: 179.99, cost: 49.90 },
-                { min: 180, max: 99999, cost: 39.90 }
+                { min: 179, max: 99999, cost: 39.90 }
             ],
             'Lagoa Santa': [
                 { min: 1, max: 119.99, cost: 59.90 },
                 { min: 120, max: 179.99, cost: 54.90 },
-                { min: 180, max: 99999, cost: 44.90 }
+                { min: 179, max: 99999, cost: 44.90 }
             ],
             'Nova Lima': [
                 { min: 1, max: 119.99, cost: 69.90 },
                 { min: 120, max: 179.99, cost: 59.90 },
-                { min: 180, max: 99999, cost: 49.90 }
+                { min: 179, max: 99999, cost: 49.90 }
+            ],
+            'Vila da Serra (Nova Lima)': [
+                { min: 1, max: 119.99, cost: 39.90 },
+                { min: 120, max: 179.99, cost: 29.90 },
+                { min: 179, max: 99999, cost: 19.90 }
             ]
         };
         
@@ -2115,7 +2115,7 @@
         function updateProductsSummary() {
             const { products, total } = getAllProducts();
             
-            // Atualizar subtotal
+            // Atualizar subtotal (oculto para cliente)
             document.getElementById('productsSubtotal').textContent = 
                 `R$ ${total.toFixed(2).replace('.', ',')}`;
             
@@ -2134,7 +2134,6 @@
         
         function updateProductsSummaryDisplay(products, total) {
             const productsList = document.getElementById('productsList');
-            const productsTotal = document.getElementById('productsTotal');
             const productsSummary = document.getElementById('productsSummary');
             
             if (products.length > 0) {
@@ -2143,21 +2142,29 @@
                     html += `
                         <div class="product-summary-item">
                             <span>${product.quantity}x ${product.code ? product.code + ' - ' : ''}${product.name}</span>
-                            <span>R$ ${product.total.toFixed(2).replace('.', ',')}</span>
+                            <span class="product-price-only">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
                         </div>
                     `;
                 });
                 
                 productsList.innerHTML = html;
-                productsTotal.textContent = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
                 productsSummary.classList.remove('hidden');
+                
+                // Esconder "Produtos do Pedido" e "Subtotal" quando veio de link
+                if (isFromLink) {
+                    const sectionTitle = document.querySelector('#productSection .section-title');
+                    const totalSection = document.getElementById('totalProductsSection');
+                    
+                    if (sectionTitle) sectionTitle.style.display = 'none';
+                    if (totalSection) totalSection.style.display = 'none';
+                }
             } else {
                 productsSummary.classList.add('hidden');
             }
         }
         
         // ============================================
-        // VERIFICAR SE VEIO DE LINK COMPARTILHADO
+        // VERIFICAR SE VEIO DE LINK COMPARTILHADO (CORRIGIDO)
         // ============================================
         function checkIfFromLink() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -2166,24 +2173,27 @@
             const used = urlParams.get('used');
             
             if (productsData) {
-                // Verificar se o link expirou
+                // Verificar se o link já foi usado (marcado no localStorage)
+                const linkKey = `link_${productsData}_${timestamp}`;
+                const linkStatus = localStorage.getItem(linkKey);
+                
+                if (linkStatus === 'used') {
+                    // Link já foi usado
+                    showExpiredMessage();
+                    return;
+                }
+                
+                // Verificar se o link expirou (24 horas)
                 if (timestamp) {
                     const linkTime = parseInt(timestamp);
                     const now = Date.now();
                     const hoursDiff = (now - linkTime) / (1000 * 60 * 60);
                     
-                    if (hoursDiff > 24 || used === 'true') {
-                        // Link expirado ou já usado
+                    if (hoursDiff > 24) {
+                        // Link expirado
                         showExpiredMessage();
                         return;
                     }
-                }
-                
-                // Verificar se já foi usado (marcado no localStorage)
-                const linkKey = `link_used_${productsData}_${timestamp}`;
-                if (localStorage.getItem(linkKey) === 'true') {
-                    showExpiredMessage();
-                    return;
                 }
                 
                 // Marcar como válido na sessão atual
@@ -2193,8 +2203,9 @@
                 isFromLink = true;
                 linkExpiration = timestamp ? parseInt(timestamp) + (24 * 60 * 60 * 1000) : null;
                 
-                // Marcar como usado no localStorage
-                localStorage.setItem(linkKey, 'true');
+                // Salvar que está usando este link
+                localStorage.setItem(linkKey, 'in_use');
+                sessionStorage.setItem('current_link_key', linkKey);
                 
                 // Decodificar produtos
                 try {
@@ -2282,9 +2293,17 @@
             
             // Atualizar resumo
             updateProductsSummary();
-            
-            // Calcular total inicial
-            updateProductsSummary();
+        }
+        
+        // ============================================
+        // FUNÇÃO PARA MARCAR LINK COMO USADO (NOVA)
+        // ============================================
+        function markLinkAsUsed() {
+            const currentLinkKey = sessionStorage.getItem('current_link_key');
+            if (currentLinkKey) {
+                localStorage.setItem(currentLinkKey, 'used');
+                console.log('✅ Link marcado como usado:', currentLinkKey);
+            }
         }
         
         function showExpiredMessage() {
@@ -2301,9 +2320,9 @@
         }
         
         // ============================================
-        // GERADOR DE LINKS COM VALIDADE
+        // GERADOR DE LINKS COM VALIDADE E ENCURTAMENTO
         // ============================================
-        function generateClientLink() {
+        async function generateClientLink() {
             const { products, total } = getAllProducts();
             
             if (products.length === 0) {
@@ -2324,14 +2343,47 @@
             
             // Criar URL com parâmetros
             const baseUrl = window.location.origin + window.location.pathname;
-            const clientLink = `${baseUrl}?products=${encodedProducts}&t=${timestamp}`;
+            const fullLink = `${baseUrl}?products=${encodedProducts}&t=${timestamp}`;
             
+            try {
+                // Tentar encurtar o link
+                const shortLink = await shortenLink(fullLink);
+                showGeneratedLink(shortLink, fullLink);
+                
+            } catch (error) {
+                console.log('Usando link completo:', error);
+                // Se falhar, usar o link completo
+                showGeneratedLink(fullLink, fullLink);
+            }
+        }
+        
+        async function shortenLink(longUrl) {
+            try {
+                // Usando TinyURL API (gratuita, não precisa de chave para uso básico)
+                const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
+                
+                if (response.ok) {
+                    const shortUrl = await response.text();
+                    if (shortUrl && shortUrl.startsWith('http')) {
+                        return shortUrl;
+                    }
+                }
+                
+                throw new Error('Falha ao encurtar link');
+                
+            } catch (error) {
+                console.error('Erro ao encurtar link:', error);
+                throw error;
+            }
+        }
+        
+        function showGeneratedLink(displayLink, fullLink) {
             // Mostrar link
-            document.getElementById('generatedLink').textContent = clientLink;
+            document.getElementById('generatedLink').textContent = displayLink;
             document.getElementById('generatedLinkContainer').classList.remove('hidden');
             
             // Copiar automaticamente para área de transferência
-            copyToClipboard(clientLink, 'link');
+            copyToClipboard(displayLink, 'link');
             
             // Mostrar mensagem de confirmação
             const copySuccess = document.getElementById('copySuccess');
@@ -2344,10 +2396,15 @@
             
             // Mostrar mensagem de sucesso
             showSuccessMessage('✅ Link gerado e copiado com sucesso! Válido por 24 horas ou até ser usado.');
+            
+            // Salvar o link completo para cópia posterior
+            document.getElementById('generatedLink').dataset.fullLink = fullLink;
         }
         
         function copyLinkAgain() {
-            const link = document.getElementById('generatedLink').textContent;
+            const linkElement = document.getElementById('generatedLink');
+            const link = linkElement.textContent;
+            
             if (link) {
                 copyToClipboard(link, 'link');
                 const copySuccess = document.getElementById('copySuccess');
@@ -2762,7 +2819,7 @@
         }
         
         // ============================================
-        // FUNÇÕES DE CÁLCULO
+        // FUNÇÕES DE CÁLCULO COM FRETE CORRIGIDO
         // ============================================
         function calculateShipping() {
             const { total } = getAllProducts();
@@ -3257,7 +3314,6 @@
             const formattedPrice = total.toFixed(2).replace('.', ',');
             
             // IMPORTANTE: Formatando produtos para a planilha conforme solicitado
-            // Exemplo: (3 Kits 2x060 1x124) - 2x 060 cesta cafe com flor / 1x124 cesta cerveja
             let productsDescription = '';
             let kitsCount = 0;
             const productDetails = [];
@@ -3315,9 +3371,9 @@
             data[0] = formattedDateTime;
             data[1] = buyerName;
             data[2] = buyerPhone;
-            data[3] = productsDescription; // Produtos formatados conforme solicitado
+            data[3] = productsDescription;
             data[4] = formattedPrice;
-            data[5] = formattedShipping; // Frete + taxas juntos
+            data[5] = formattedShipping;
             data[6] = 'FORMULÁRIO MANUAL';
             data[7] = '';
             data[8] = giftedName;
@@ -3365,6 +3421,11 @@
                 const result = await enviarDadosParaPlanilha(excelData);
                 
                 if (result.success) {
+                    // MARCA LINK COMO USADO
+                    if (isFromLink) {
+                        markLinkAsUsed();
+                    }
+                    
                     submitBtn.innerHTML = '✅ ENVIADO';
                     submitBtn.classList.add('btn-success');
                     
