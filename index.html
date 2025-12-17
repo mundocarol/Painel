@@ -35,6 +35,8 @@
             min-height: 100vh;
             padding: 10px;
             -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         .container {
@@ -273,6 +275,9 @@
             text-align: center;
             text-decoration: none;
             width: 100%;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
         
         .btn-primary {
@@ -312,6 +317,16 @@
         
         .btn-danger:hover {
             background: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            background: #e0a800;
             transform: translateY(-2px);
         }
         
@@ -397,6 +412,8 @@
             font-weight: 600;
             transition: all 0.3s;
             font-size: 14px;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         .calendar-nav:hover {
@@ -432,6 +449,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         .calendar-day:hover:not(.disabled) {
@@ -1108,6 +1127,18 @@
             border-top: 1px solid var(--border);
         }
         
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons .btn {
+            flex: 1;
+            min-width: 120px;
+        }
+        
         /* Ajustes para mobile */
         @media (max-width: 480px) {
             .header h1 {
@@ -1198,6 +1229,10 @@
             .product-row .form-group {
                 width: 100%;
             }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
         }
         
         @media (min-width: 768px) {
@@ -1257,7 +1292,7 @@
             <p>Preencha os dados abaixo para realizar seu pedido</p>
         </div>
         
-        <!-- Resumo dos Produtos (visível apenas na página 1 quando veio de link) -->
+        <!-- Resumo dos Produtos (visível apenas quando veio de link) -->
         <div id="productsSummary" class="products-summary hidden">
             <h3><i class="fas fa-gift"></i> Produtos Escolhidos</h3>
             <div id="productsList" class="products-list"></div>
@@ -1276,7 +1311,7 @@
                     </button>
                 </div>
                 
-                <div class="alert alert-info">
+                <div class="alert alert-info" id="freteInfo">
                     <p><strong>Frete será calculado após escolha do seu endereço e aparecerá ao final para conferência.</strong></p>
                 </div>
                 
@@ -1307,14 +1342,13 @@
                     </div>
                 </div>
                 
-                <div id="totalProductsSection" class="total-section" style="display: none;">
-                    <h3 class="section-title"><i class="fas fa-calculator"></i> Total do Pedido</h3>
-                    <div id="productsTotalDetails">
-                        <div class="total-item">
-                            <span>Subtotal dos Produtos:</span>
-                            <span id="productsSubtotal">R$ 0,00</span>
-                        </div>
-                    </div>
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-warning" onclick="clearAllProducts()">
+                        <i class="fas fa-trash-alt"></i> Limpar Produtos
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="clearAllData()">
+                        <i class="fas fa-broom"></i> Limpar Tudo
+                    </button>
                 </div>
                 
                 <!-- Gerador de Link (só aparece quando não veio de link) -->
@@ -1354,12 +1388,12 @@
                 
                 <div class="form-group">
                     <label for="buyerName">Nome do Comprador:</label>
-                    <input type="text" id="buyerName" class="form-control" required>
+                    <input type="text" id="buyerName" class="form-control" required oninput="saveData()">
                 </div>
                 
                 <div class="form-group">
                     <label for="buyerPhone">Telefone:</label>
-                    <input type="text" id="buyerPhone" class="form-control" placeholder="Ex: (31) 98323-8087 ou 31983238087" required>
+                    <input type="text" id="buyerPhone" class="form-control" placeholder="Ex: (31) 98323-8087 ou 31983238087" required oninput="saveData()">
                     <small style="color: #666; font-size: 12px;">Qualquer formato de telefone é aceito</small>
                 </div>
             </div>
@@ -1373,12 +1407,12 @@
                 
                 <div class="form-group">
                     <label for="giftedName">Nome da Pessoa Presenteada:</label>
-                    <input type="text" id="giftedName" class="form-control" required>
+                    <input type="text" id="giftedName" class="form-control" required oninput="saveData()">
                 </div>
                 
                 <div class="form-group">
                     <label for="giftedPhone">Telefone do Presenteado:</label>
-                    <input type="text" id="giftedPhone" class="form-control" placeholder="Ex: (31) 98323-8087 ou 31983238087">
+                    <input type="text" id="giftedPhone" class="form-control" placeholder="Ex: (31) 98323-8087 ou 31983238087" oninput="saveData()">
                     <small style="color: #666; font-size: 12px;">Qualquer formato de telefone é aceito</small>
                 </div>
             </div>
@@ -1388,11 +1422,11 @@
                 <div class="radio-group">
                     <p>Quer seu nome aparecendo no seu Pedido?</p>
                     <div class="radio-option">
-                        <input type="radio" name="anonymous" id="anonymousNo" value="no">
+                        <input type="radio" name="anonymous" id="anonymousNo" value="no" onchange="saveData()">
                         <label for="anonymousNo">Sim, sem problemas</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="anonymous" id="anonymousYes" value="yes">
+                        <input type="radio" name="anonymous" id="anonymousYes" value="yes" onchange="saveData()">
                         <label for="anonymousYes">Quero uma compra Anônima</label>
                     </div>
                 </div>
@@ -1403,11 +1437,11 @@
                 <div class="radio-group">
                     <p>Confirme se será entrega ou Retirada na Loja</p>
                     <div class="radio-option">
-                        <input type="radio" name="deliveryType" id="delivery" value="delivery">
+                        <input type="radio" name="deliveryType" id="delivery" value="delivery" onchange="saveData(); updateDeliveryTypeDisplay()">
                         <label for="delivery">Quero que envie para o endereço que vou fornecer</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="deliveryType" id="pickup" value="pickup">
+                        <input type="radio" name="deliveryType" id="pickup" value="pickup" onchange="saveData(); updateDeliveryTypeDisplay()">
                         <label for="pickup">Vou retirar na loja (Bairro São Geraldo - BH)</label>
                     </div>
                 </div>
@@ -1426,7 +1460,7 @@
                 
                 <div class="form-group">
                     <label for="deliveryCity">Para qual cidade enviaremos seu pedido?</label>
-                    <select id="deliveryCity" class="form-control" required>
+                    <select id="deliveryCity" class="form-control" required onchange="updateCityDisplay(); saveData()">
                         <option value="">Selecione sua cidade</option>
                         <option value="Belo Horizonte">Belo Horizonte</option>
                         <option value="Betim">Betim</option>
@@ -1450,29 +1484,29 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="street">Rua:</label>
-                            <input type="text" id="street" class="form-control" placeholder="Ex: Rua das Flores" required>
+                            <input type="text" id="street" class="form-control" placeholder="Ex: Rua das Flores" required oninput="saveData()">
                         </div>
                         
                         <div class="form-group">
                             <label for="number">Número:</label>
-                            <input type="text" id="number" class="form-control" placeholder="Ex: 123" required>
+                            <input type="text" id="number" class="form-control" placeholder="Ex: 123" required oninput="saveData()">
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label for="complement">Complemento (ap/bloco/loja/etc):</label>
-                        <input type="text" id="complement" class="form-control">
+                        <input type="text" id="complement" class="form-control" oninput="saveData()">
                         <small>Se não tem complemento, pode deixar em branco</small>
                     </div>
                     
                     <div class="form-group">
                         <label for="neighborhood">Bairro:</label>
-                        <input type="text" id="neighborhood" class="form-control" required>
+                            <input type="text" id="neighborhood" class="form-control" required oninput="saveData()">
                     </div>
                     
                     <div class="form-group">
                         <label for="referencePoint">Ponto de referência ou CEP (não é obrigatório):</label>
-                        <input type="text" id="referencePoint" class="form-control" placeholder="Ex: Próximo ao supermercado X ou 30130-000">
+                        <input type="text" id="referencePoint" class="form-control" placeholder="Ex: Próximo ao supermercado X ou 30130-000" oninput="saveData()">
                     </div>
                 </div>
             </div>
@@ -1489,9 +1523,9 @@
                 
                 <div id="calendarContainer" class="calendar-container">
                     <div class="calendar-nav-container">
-                        <span class="calendar-nav" id="prevMonth"><i class="fas fa-chevron-left"></i> Mês Anterior</span>
+                        <span class="calendar-nav" id="prevMonth" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i> Mês Anterior</span>
                         <span id="currentMonthYear" class="calendar-month-year"></span>
-                        <span class="calendar-nav" id="nextMonth">Próximo Mês <i class="fas fa-chevron-right"></i></span>
+                        <span class="calendar-nav" id="nextMonth" onclick="changeMonth(1)">Próximo Mês <i class="fas fa-chevron-right"></i></span>
                     </div>
                     <div id="calendar" class="calendar"></div>
                 </div>
@@ -1521,11 +1555,11 @@
                 <div class="radio-group">
                     <p>Gostaria de Enviar um Cartão? (Sem custo adicional)</p>
                     <div class="radio-option">
-                        <input type="radio" name="sendCard" value="yes" id="sendCardYes">
+                        <input type="radio" name="sendCard" value="yes" id="sendCardYes" onchange="saveData()">
                         <label for="sendCardYes">Sim, quero enviar um cartão</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="sendCard" value="no" id="sendCardNo">
+                        <input type="radio" name="sendCard" value="no" id="sendCardNo" onchange="saveData()">
                         <label for="sendCardNo">Não, não quero cartão</label>
                     </div>
                 </div>
@@ -1533,17 +1567,17 @@
                 <div id="cardMessageSection">
                     <div class="form-group">
                         <label for="cardMessage">Escreva o Texto do seu Cartão:</label>
-                        <textarea id="cardMessage" class="form-control" rows="5" placeholder="Digite sua mensagem aqui..."></textarea>
+                        <textarea id="cardMessage" class="form-control" rows="5" placeholder="Digite sua mensagem aqui..." oninput="saveData()"></textarea>
                     </div>
                     
                     <div class="radio-group">
                         <p>Você lembrou de assinar seu cartão na mensagem acima?</p>
                         <div class="radio-option">
-                            <input type="radio" name="signedCard" value="yes" id="signedCardYes">
+                            <input type="radio" name="signedCard" value="yes" id="signedCardYes" onchange="saveData()">
                             <label for="signedCardYes">Sim, assinei</label>
                         </div>
                         <div class="radio-option">
-                            <input type="radio" name="signedCard" value="no" id="signedCardNo">
+                            <input type="radio" name="signedCard" value="no" id="signedCardNo" onchange="saveData()">
                             <label for="signedCardNo">Não, não quero assinar</label>
                         </div>
                     </div>
@@ -1551,7 +1585,7 @@
                     <div class="alert alert-warning">
                         <p><strong>Termo de Ciência:</strong> Todas as mensagens para o cartão não podem ser corrigidas ou alteradas, por se tratar de algo particular. <strong>Então se atente à gramática.</strong></p>
                         <div class="radio-option">
-                            <input type="radio" name="acknowledgeTerms" value="yes" id="acknowledgeTermsYes">
+                            <input type="radio" name="acknowledgeTerms" value="yes" id="acknowledgeTermsYes" onchange="saveData()">
                             <label for="acknowledgeTermsYes">Sim, estou ciente e concordo</label>
                         </div>
                     </div>
@@ -1572,11 +1606,11 @@
                 <div class="radio-group">
                     <p>Como gostaria de finalizar o pagamento do seu pedido?</p>
                     <div class="radio-option">
-                        <input type="radio" name="paymentMethod" value="pix" id="paymentPix">
+                        <input type="radio" name="paymentMethod" value="pix" id="paymentPix" onchange="saveData()">
                         <label for="paymentPix">PIX direto para nosso CNPJ (Liberação imediata)</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="paymentMethod" value="creditCard" id="paymentCreditCard">
+                        <input type="radio" name="paymentMethod" value="creditCard" id="paymentCreditCard" onchange="saveData()">
                         <label for="paymentCreditCard">Link de Cartão de Crédito online (enviaremos o link)</label>
                     </div>
                 </div>
@@ -1588,27 +1622,27 @@
                 <div class="radio-group">
                     <p>Nos ajude a melhorar cada vez mais!</p>
                     <div class="radio-option">
-                        <input type="radio" name="foundUs" value="google" id="foundUsGoogle">
+                        <input type="radio" name="foundUs" value="google" id="foundUsGoogle" onchange="saveData()">
                         <label for="foundUsGoogle">Google</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="foundUs" value="instagram" id="foundUsInstagram">
+                        <input type="radio" name="foundUs" value="instagram" id="foundUsInstagram" onchange="saveData()">
                         <label for="foundUsInstagram">Instagram</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="foundUs" value="facebook" id="foundUsFacebook">
+                        <input type="radio" name="foundUs" value="facebook" id="foundUsFacebook" onchange="saveData()">
                         <label for="foundUsFacebook">Facebook</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="foundUs" value="indicacao" id="foundUsIndicacao">
+                        <input type="radio" name="foundUs" value="indicacao" id="foundUsIndicacao" onchange="saveData()">
                         <label for="foundUsIndicacao">Indicação de amigo/familiar</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="foundUs" value="cliente_antigo" id="foundUsClienteAntigo">
+                        <input type="radio" name="foundUs" value="cliente_antigo" id="foundUsClienteAntigo" onchange="saveData()">
                         <label for="foundUsClienteAntigo">Já sou cliente antigo</label>
                     </div>
                     <div class="radio-option">
-                        <input type="radio" name="foundUs" value="outro" id="foundUsOutro">
+                        <input type="radio" name="foundUs" value="outro" id="foundUsOutro" onchange="saveData()">
                         <label for="foundUsOutro">Outro</label>
                     </div>
                 </div>
@@ -1630,7 +1664,7 @@
                 
                 <div class="checkbox-confirm">
                     <label>
-                        <input type="checkbox" id="confirmData">
+                        <input type="checkbox" id="confirmData" onchange="saveData(); document.getElementById('submitButton').disabled = !this.checked;">
                         <span>Revisei e confirmo que todos os dados estão corretos</span>
                     </label>
                 </div>
@@ -1802,7 +1836,6 @@
         const CORRECT_PASSWORD = '562938';
         const PIX_KEY = '10648303000179';
         const WHATSAPP_NUMBER = '5531983238087';
-        const SHORT_LINK_API = 'https://api.tinyurl.com/create'; // API para encurtar links
         
         // ============================================
         // VARIÁVEIS GLOBAIS
@@ -1829,14 +1862,14 @@
         let isFromLink = false;
         let lockedProducts = [];
         let linkExpiration = null;
-        let linkUsed = false; // Nova variável para controlar se link foi usado
+        let linkUsed = false;
         
         // Sistema de múltiplos produtos
         let productRows = 1;
         let allProducts = [];
         
         // ============================================
-        // TABELA DE FRETES ATUALIZADA (CORRIGIDA)
+        // TABELA DE FRETES ATUALIZADA
         // ============================================
         const shippingRates = {
             'Belo Horizonte': [
@@ -1928,102 +1961,50 @@
         };
         
         // ============================================
-        // INICIALIZAÇÃO - VERIFICA SE VEIO DE LINK
+        // INICIALIZAÇÃO
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Sistema de Pedidos inicializado - Versão Múltiplos Produtos');
+            console.log('🚀 Sistema de Pedidos inicializado');
             
-            // Verificar sessionStorage primeiro (evita mostrar expirado ao atualizar)
+            // Configurar auto-save para todos os campos
+            setupAutoSave();
+            
+            // Verificar sessionStorage primeiro
             const sessionKey = 'current_session_link';
             if (sessionStorage.getItem(sessionKey) === 'valid') {
-                // Já validamos nesta sessão, não mostrar expirado
                 loadFromSessionStorage();
             } else {
-                // Verificar se veio de link compartilhado
                 checkIfFromLink();
             }
             
-            // Configurar eventos da página 2
-            document.getElementById('deliveryCity').addEventListener('change', function() {
-                selectedCity = this.value;
-                isOtherCity = this.value === 'other';
-                
-                updateCityDisplay();
-                saveData();
-            });
-            
-            // Configurar eventos do tipo de entrega
-            document.querySelectorAll('input[name="deliveryType"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    currentDeliveryType = this.value;
-                    updateDeliveryTypeDisplay();
-                    saveData();
-                });
-            });
-            
             // Configurar calendário
-            document.getElementById('prevMonth').addEventListener('click', function() {
-                currentMonth--;
-                if (currentMonth < 0) {
-                    currentMonth = 11;
-                    currentYear--;
-                }
-                renderCalendar(currentMonth, currentYear);
-            });
-            
-            document.getElementById('nextMonth').addEventListener('click', function() {
-                currentMonth++;
-                if (currentMonth > 11) {
-                    currentMonth = 0;
-                    currentYear++;
-                }
-                renderCalendar(currentMonth, currentYear);
-            });
-            
-            // Configurar confirmação
-            document.getElementById('confirmData').addEventListener('change', function() {
-                document.getElementById('submitButton').disabled = !this.checked;
-                saveData();
-            });
-            
-            // Event listeners para gerar link
-            document.getElementById('copyLinkBtn')?.addEventListener('click', function() {
-                copyLinkAgain();
-            });
+            renderCalendar(currentMonth, currentYear);
             
             // Carregar dados salvos
             loadSavedData();
             
-            // Renderizar calendário inicial
-            renderCalendar(currentMonth, currentYear);
-            
-            // Inicializar tipo de entrega
-            const deliveryTypeRadio = document.querySelector('input[name="deliveryType"]:checked');
-            if (deliveryTypeRadio) {
-                currentDeliveryType = deliveryTypeRadio.value;
-                updateDeliveryTypeDisplay();
-            }
-            
             // Esconder cabeçalho nas outras páginas
             hideHeaderOnOtherPages();
             
-            // Fechar modal ao clicar fora
-            document.getElementById('errorModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeErrorModal();
-                }
-            });
-            
-            // Fechar modal com ESC
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeErrorModal();
-                }
-            });
+            // Configurar eventos do modal
+            setupModalEvents();
             
             // Atualizar resumo inicial
             updateProductsSummary();
         });
+        
+        // ============================================
+        // AUTO-SAVE SYSTEM
+        // ============================================
+        function setupAutoSave() {
+            // Salvar dados a cada 2 segundos
+            setInterval(saveData, 2000);
+            
+            // Salvar quando a página for fechada/recarregada
+            window.addEventListener('beforeunload', function() {
+                saveData();
+            });
+        }
         
         // ============================================
         // SISTEMA DE MÚLTIPLOS PRODUTOS
@@ -2043,19 +2024,19 @@
                 <div class="form-row">
                     <div class="form-group" style="flex: 0.5;">
                         <label for="productQuantity${productRows}">Qtde</label>
-                        <input type="number" id="productQuantity${productRows}" class="form-control product-quantity" min="1" value="1" onchange="updateProductsSummary()">
+                        <input type="number" id="productQuantity${productRows}" class="form-control product-quantity" min="1" value="1" onchange="updateProductsSummary(); saveData()">
                     </div>
                     <div class="form-group" style="flex: 0.8;">
                         <label for="productCode${productRows}">Código</label>
-                        <input type="text" id="productCode${productRows}" class="form-control product-code" placeholder="Ex: 060" oninput="updateProductsSummary()">
+                        <input type="text" id="productCode${productRows}" class="form-control product-code" placeholder="Ex: 060" oninput="updateProductsSummary(); saveData()">
                     </div>
                     <div class="form-group" style="flex: 2;">
                         <label for="productName${productRows}">Descrição</label>
-                        <input type="text" id="productName${productRows}" class="form-control product-name" placeholder="Descrição do produto" required oninput="updateProductsSummary()">
+                        <input type="text" id="productName${productRows}" class="form-control product-name" placeholder="Descrição do produto" required oninput="updateProductsSummary(); saveData()">
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label for="productPrice${productRows}">Preço (R$)</label>
-                        <input type="number" id="productPrice${productRows}" class="form-control product-price" min="0" step="0.01" placeholder="0,00" required onchange="updateProductsSummary()">
+                        <input type="number" id="productPrice${productRows}" class="form-control product-price" min="0" step="0.01" placeholder="0,00" required onchange="updateProductsSummary(); saveData()">
                     </div>
                 </div>
             `;
@@ -2081,7 +2062,6 @@
             const rows = document.querySelectorAll('.product-row');
             const removeButtons = document.querySelectorAll('.remove-btn');
             
-            // Mostrar botão de remover apenas se tiver mais de uma linha
             removeButtons.forEach(btn => {
                 btn.style.display = rows.length > 1 ? 'block' : 'none';
             });
@@ -2115,16 +2095,10 @@
         function updateProductsSummary() {
             const { products, total } = getAllProducts();
             
-            // Atualizar subtotal (oculto para cliente)
-            document.getElementById('productsSubtotal').textContent = 
-                `R$ ${total.toFixed(2).replace('.', ',')}`;
-            
-            // Atualizar resumo para link (apenas na página 1)
             if (isFromLink || document.getElementById('page1').classList.contains('active')) {
                 updateProductsSummaryDisplay(products, total);
             }
             
-            // Calcular frete se necessário
             if (selectedCity && selectedCity !== 'other' && currentDeliveryType === 'delivery') {
                 calculateShipping();
             }
@@ -2136,7 +2110,7 @@
             const productsList = document.getElementById('productsList');
             const productsSummary = document.getElementById('productsSummary');
             
-            if (products.length > 0) {
+            if (products.length > 0 && isFromLink) {
                 let html = '';
                 products.forEach((product, index) => {
                     html += `
@@ -2150,13 +2124,15 @@
                 productsList.innerHTML = html;
                 productsSummary.classList.remove('hidden');
                 
-                // Esconder "Produtos do Pedido" e "Subtotal" quando veio de link
                 if (isFromLink) {
                     const sectionTitle = document.querySelector('#productSection .section-title');
-                    const totalSection = document.getElementById('totalProductsSection');
-                    
                     if (sectionTitle) sectionTitle.style.display = 'none';
-                    if (totalSection) totalSection.style.display = 'none';
+                    
+                    document.getElementById('addProductBtn').style.display = 'none';
+                    document.getElementById('linkGeneratorSection').style.display = 'none';
+                    
+                    const actionButtons = document.querySelector('.action-buttons');
+                    if (actionButtons) actionButtons.style.display = 'none';
                 }
             } else {
                 productsSummary.classList.add('hidden');
@@ -2164,55 +2140,146 @@
         }
         
         // ============================================
-        // VERIFICAR SE VEIO DE LINK COMPARTILHADO (CORRIGIDO)
+        // FUNÇÕES PARA LIMPAR DADOS
+        // ============================================
+        function clearAllProducts() {
+            if (confirm('Tem certeza que deseja limpar todos os produtos?')) {
+                // Manter apenas uma linha vazia
+                document.getElementById('productsContainer').innerHTML = '';
+                productRows = 1;
+                
+                const container = document.getElementById('productsContainer');
+                const newRow = document.createElement('div');
+                newRow.className = 'product-row';
+                newRow.id = `productRow1`;
+                
+                newRow.innerHTML = `
+                    <button class="remove-btn" onclick="removeProductRow('productRow1')" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 0.5;">
+                            <label for="productQuantity1">Qtde</label>
+                            <input type="number" id="productQuantity1" class="form-control product-quantity" min="1" value="1" onchange="updateProductsSummary(); saveData()">
+                        </div>
+                        <div class="form-group" style="flex: 0.8;">
+                            <label for="productCode1">Código</label>
+                            <input type="text" id="productCode1" class="form-control product-code" placeholder="Ex: 060" oninput="updateProductsSummary(); saveData()">
+                        </div>
+                        <div class="form-group" style="flex: 2;">
+                            <label for="productName1">Descrição</label>
+                            <input type="text" id="productName1" class="form-control product-name" placeholder="Descrição do produto" required oninput="updateProductsSummary(); saveData()">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="productPrice1">Preço (R$)</label>
+                            <input type="number" id="productPrice1" class="form-control product-price" min="0" step="0.01" placeholder="0,00" required onchange="updateProductsSummary(); saveData()">
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(newRow);
+                updateRemoveButtons();
+                updateProductsSummary();
+                saveData();
+                
+                // Esconder link gerado se estiver visível
+                document.getElementById('generatedLinkContainer').classList.add('hidden');
+                
+                showSuccessMessage('✅ Produtos limpos com sucesso!');
+            }
+        }
+        
+        function clearAllData() {
+            if (confirm('Tem certeza que deseja limpar TODOS os dados (produtos e formulário)?')) {
+                // Limpar produtos
+                clearAllProducts();
+                
+                // Limpar campos do formulário
+                document.getElementById('buyerName').value = '';
+                document.getElementById('buyerPhone').value = '';
+                document.getElementById('giftedName').value = '';
+                document.getElementById('giftedPhone').value = '';
+                document.getElementById('deliveryCity').value = '';
+                document.getElementById('street').value = '';
+                document.getElementById('number').value = '';
+                document.getElementById('complement').value = '';
+                document.getElementById('neighborhood').value = '';
+                document.getElementById('referencePoint').value = '';
+                document.getElementById('cardMessage').value = '';
+                document.getElementById('confirmData').checked = false;
+                
+                // Limpar seleções de radio buttons
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.checked = false;
+                });
+                
+                // Resetar variáveis
+                selectedDate = null;
+                selectedTime = null;
+                selectedTimeLabel = null;
+                currentMonth = new Date().getMonth();
+                currentYear = new Date().getFullYear();
+                nightFeeAdded = false;
+                nightFeeAmount = 0;
+                isOtherCity = false;
+                calculatedShipping = 0;
+                selectedCity = '';
+                currentDeliveryType = '';
+                
+                // Atualizar displays
+                renderCalendar(currentMonth, currentYear);
+                updateDeliveryTypeDisplay();
+                updateCityDisplay();
+                
+                // Esconder link gerado
+                document.getElementById('generatedLinkContainer').classList.add('hidden');
+                
+                // Limpar localStorage
+                localStorage.removeItem('mundoCarolFormData');
+                
+                showSuccessMessage('✅ Todos os dados foram limpos!');
+            }
+        }
+        
+        // ============================================
+        // VERIFICAR SE VEIO DE LINK COMPARTILHADO
         // ============================================
         function checkIfFromLink() {
             const urlParams = new URLSearchParams(window.location.search);
             const productsData = urlParams.get('products');
             const timestamp = urlParams.get('t');
-            const used = urlParams.get('used');
             
             if (productsData) {
-                // Verificar se o link já foi usado (marcado no localStorage)
                 const linkKey = `link_${productsData}_${timestamp}`;
                 const linkStatus = localStorage.getItem(linkKey);
                 
                 if (linkStatus === 'used') {
-                    // Link já foi usado
                     showExpiredMessage();
                     return;
                 }
                 
-                // Verificar se o link expirou (24 horas)
                 if (timestamp) {
                     const linkTime = parseInt(timestamp);
                     const now = Date.now();
                     const hoursDiff = (now - linkTime) / (1000 * 60 * 60);
                     
                     if (hoursDiff > 24) {
-                        // Link expirado
                         showExpiredMessage();
                         return;
                     }
                 }
                 
-                // Marcar como válido na sessão atual
                 sessionStorage.setItem('current_session_link', 'valid');
-                
-                // Veio de link válido
                 isFromLink = true;
                 linkExpiration = timestamp ? parseInt(timestamp) + (24 * 60 * 60 * 1000) : null;
                 
-                // Salvar que está usando este link
                 localStorage.setItem(linkKey, 'in_use');
                 sessionStorage.setItem('current_link_key', linkKey);
                 
-                // Decodificar produtos
                 try {
                     const decodedProducts = decodeURIComponent(productsData);
                     lockedProducts = JSON.parse(decodedProducts);
                     
-                    // Salvar produtos na sessionStorage
                     sessionStorage.setItem('link_products', productsData);
                     sessionStorage.setItem('link_timestamp', timestamp || '');
                     
@@ -2224,7 +2291,6 @@
                 }
                 
             } else {
-                // Não veio de link, limpar sessionStorage
                 sessionStorage.removeItem('current_session_link');
             }
         }
@@ -2247,17 +2313,15 @@
         function setupFromLink() {
             console.log('📌 Carregado de link válido:', lockedProducts);
             
-            // Ocultar botão de adicionar produto
             document.getElementById('addProductBtn').style.display = 'none';
-            
-            // Ocultar campos de produto e gerador de link
             document.getElementById('linkGeneratorSection').style.display = 'none';
             
-            // Limpar container atual
+            const actionButtons = document.querySelector('.action-buttons');
+            if (actionButtons) actionButtons.style.display = 'none';
+            
             document.getElementById('productsContainer').innerHTML = '';
             productRows = 0;
             
-            // Adicionar produtos bloqueados
             lockedProducts.forEach((product, index) => {
                 productRows++;
                 const container = document.getElementById('productsContainer');
@@ -2291,13 +2355,9 @@
                 container.appendChild(newRow);
             });
             
-            // Atualizar resumo
             updateProductsSummary();
         }
         
-        // ============================================
-        // FUNÇÃO PARA MARCAR LINK COMO USADO (NOVA)
-        // ============================================
         function markLinkAsUsed() {
             const currentLinkKey = sessionStorage.getItem('current_link_key');
             if (currentLinkKey) {
@@ -2320,7 +2380,7 @@
         }
         
         // ============================================
-        // GERADOR DE LINKS COM VALIDADE E ENCURTAMENTO
+        // GERADOR DE LINKS
         // ============================================
         async function generateClientLink() {
             const { products, total } = getAllProducts();
@@ -2330,36 +2390,30 @@
                 return;
             }
             
-            // Verificar se todos os produtos têm descrição e preço
             const invalidProducts = products.filter(p => !p.name || p.price <= 0);
             if (invalidProducts.length > 0) {
                 showModalError('Por favor, preencha a descrição e preço de todos os produtos.');
                 return;
             }
             
-            // Codificar os produtos para URL
             const encodedProducts = encodeURIComponent(JSON.stringify(products));
             const timestamp = Date.now();
             
-            // Criar URL com parâmetros
             const baseUrl = window.location.origin + window.location.pathname;
             const fullLink = `${baseUrl}?products=${encodedProducts}&t=${timestamp}`;
             
             try {
-                // Tentar encurtar o link
                 const shortLink = await shortenLink(fullLink);
                 showGeneratedLink(shortLink, fullLink);
                 
             } catch (error) {
                 console.log('Usando link completo:', error);
-                // Se falhar, usar o link completo
                 showGeneratedLink(fullLink, fullLink);
             }
         }
         
         async function shortenLink(longUrl) {
             try {
-                // Usando TinyURL API (gratuita, não precisa de chave para uso básico)
                 const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
                 
                 if (response.ok) {
@@ -2378,14 +2432,11 @@
         }
         
         function showGeneratedLink(displayLink, fullLink) {
-            // Mostrar link
             document.getElementById('generatedLink').textContent = displayLink;
             document.getElementById('generatedLinkContainer').classList.remove('hidden');
             
-            // Copiar automaticamente para área de transferência
             copyToClipboard(displayLink, 'link');
             
-            // Mostrar mensagem de confirmação
             const copySuccess = document.getElementById('copySuccess');
             copySuccess.textContent = '✅ Link copiado automaticamente para a área de transferência!';
             copySuccess.classList.add('show');
@@ -2394,10 +2445,8 @@
                 copySuccess.classList.remove('show');
             }, 5000);
             
-            // Mostrar mensagem de sucesso
             showSuccessMessage('✅ Link gerado e copiado com sucesso! Válido por 24 horas ou até ser usado.');
             
-            // Salvar o link completo para cópia posterior
             document.getElementById('generatedLink').dataset.fullLink = fullLink;
         }
         
@@ -2417,60 +2466,25 @@
             }
         }
         
-        // Função para copiar para clipboard
-        function copyToClipboard(text, type) {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(() => {
-                    if (type === 'link') {
-                        const copySuccess = document.getElementById('copySuccess');
-                        if (copySuccess) {
-                            copySuccess.textContent = '✅ Copiado para a área de transferência!';
-                            copySuccess.classList.add('show');
-                            setTimeout(() => {
-                                copySuccess.classList.remove('show');
-                            }, 3000);
-                        }
-                    }
-                }).catch(err => {
-                    copyUsingExecCommand(text, type);
-                });
-            } else {
-                copyUsingExecCommand(text, type);
-            }
-        }
-        
-        function copyUsingExecCommand(text, type) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            textArea.style.top = '-999999px';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-                document.execCommand('copy');
-                if (type === 'link') {
-                    const copySuccess = document.getElementById('copySuccess');
-                    if (copySuccess) {
-                        copySuccess.textContent = '✅ Copiado para a área de transferência!';
-                        copySuccess.classList.add('show');
-                        setTimeout(() => {
-                            copySuccess.classList.remove('show');
-                        }, 3000);
-                    }
-                }
-            } catch (err) {
-                alert('⚠️ Não foi possível copiar. Por favor, anote: ' + text);
-            } finally {
-                document.body.removeChild(textArea);
-            }
-        }
-        
         // ============================================
         // MODAL DE ERRO
         // ============================================
+        function setupModalEvents() {
+            const modal = document.getElementById('errorModal');
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeErrorModal();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeErrorModal();
+                }
+            });
+        }
+        
         function showModalError(message, errors = []) {
             const modal = document.getElementById('errorModal');
             const errorList = document.getElementById('errorList');
@@ -2508,32 +2522,18 @@
             
             if (current === 1) {
                 validationResult = validatePage1();
-                if (!validationResult.valid) {
-                    errorMessages = validationResult.errors;
-                    showModalError('Preencha os seguintes campos antes de avançar:', errorMessages);
-                    return;
-                }
             } else if (current === 2) {
                 validationResult = validatePage2();
-                if (!validationResult.valid) {
-                    errorMessages = validationResult.errors;
-                    showModalError('Preencha os seguintes campos antes de avançar:', errorMessages);
-                    return;
-                }
             } else if (current === 3) {
                 validationResult = validatePage3();
-                if (!validationResult.valid) {
-                    errorMessages = validationResult.errors;
-                    showModalError('Preencha os seguintes campos antes de avançar:', errorMessages);
-                    return;
-                }
             } else if (current === 4) {
                 validationResult = validatePage4();
-                if (!validationResult.valid) {
-                    errorMessages = validationResult.errors;
-                    showModalError('Preencha os seguintes campos antes de avançar:', errorMessages);
-                    return;
-                }
+            }
+            
+            if (!validationResult.valid) {
+                errorMessages = validationResult.errors;
+                showModalError('Preencha os seguintes campos antes de avançar:', errorMessages);
+                return;
             }
             
             if (next === 4) {
@@ -2558,7 +2558,7 @@
         }
         
         // ============================================
-        // FUNÇÕES DE VALIDAÇÃO DETALHADA
+        // FUNÇÕES DE VALIDAÇÃO DETALHADA (CORRIGIDAS)
         // ============================================
         function validatePage1() {
             const errors = [];
@@ -2568,7 +2568,6 @@
                 errors.push('Adicione pelo menos um produto');
             }
             
-            // Verificar cada produto
             products.forEach((product, index) => {
                 if (!product.name || product.name.trim() === '') {
                     errors.push(`Descrição do produto ${index + 1}`);
@@ -2608,13 +2607,18 @@
             const errors = [];
             const deliveryType = document.querySelector('input[name="deliveryType"]:checked')?.value;
             
+            if (!deliveryType) {
+                errors.push('Tipo de entrega');
+                return { valid: false, errors };
+            }
+            
             if (deliveryType === 'delivery') {
                 const city = document.getElementById('deliveryCity').value;
                 if (!city) {
                     errors.push('Cidade de entrega');
                 }
                 
-                if (city !== 'other') {
+                if (city && city !== 'other') {
                     if (!document.getElementById('street').value.trim()) {
                         errors.push('Rua');
                     }
@@ -2628,7 +2632,7 @@
                     }
                 }
                 
-                if (!isOtherCity && deliveryType === 'delivery') {
+                if (city && city !== 'other' && deliveryType === 'delivery') {
                     if (!selectedDate) {
                         errors.push('Data de entrega');
                     }
@@ -2775,14 +2779,7 @@
                 }
             }
             
-            const nextButton = document.getElementById('nextPage2Button');
-            if (deliveryType === 'pickup') {
-                nextButton.disabled = !(selectedDate && document.querySelector('input[name="deliveryTime"]:checked'));
-            } else if (deliveryType === 'delivery' && isOtherCity) {
-                nextButton.disabled = false;
-            } else if (deliveryType === 'delivery') {
-                nextButton.disabled = true;
-            }
+            updateNextButtonState();
         }
         
         function updateCityDisplay() {
@@ -2790,7 +2787,9 @@
             const calendarContainer = document.getElementById('calendarContainer');
             const timeOptions = document.getElementById('timeOptions');
             const shippingInfo = document.getElementById('shippingInfo');
-            const nextButton = document.getElementById('nextPage2Button');
+            
+            selectedCity = document.getElementById('deliveryCity').value;
+            isOtherCity = selectedCity === 'other';
             
             if (isOtherCity) {
                 otherCityMessage.classList.remove('hidden');
@@ -2801,25 +2800,20 @@
                 selectedDate = null;
                 selectedTime = null;
                 selectedTimeLabel = null;
-                if (currentDeliveryType === 'delivery') {
-                    nextButton.disabled = false;
-                }
             } else {
                 otherCityMessage.classList.add('hidden');
                 calendarContainer.classList.remove('hidden');
                 if (selectedCity && currentDeliveryType === 'delivery') {
                     shippingInfo.classList.remove('hidden');
-                }
-                nextButton.disabled = true;
-                
-                if (selectedCity && currentDeliveryType === 'delivery') {
                     calculateShipping();
                 }
             }
+            
+            updateNextButtonState();
         }
         
         // ============================================
-        // FUNÇÕES DE CÁLCULO COM FRETE CORRIGIDO
+        // FUNÇÕES DE CÁLCULO
         // ============================================
         function calculateShipping() {
             const { total } = getAllProducts();
@@ -2829,12 +2823,13 @@
                 for (const rate of cityRates) {
                     if (total >= rate.min && total <= rate.max) {
                         calculatedShipping = rate.cost;
-                        document.getElementById('freteValue').textContent = `R$ ${rate.cost.toFixed(2)}`;
+                        document.getElementById('freteValue').textContent = `R$ ${rate.cost.toFixed(2).replace('.', ',')}`;
                         break;
                     }
                 }
             }
             
+            updateNextButtonState();
             saveData();
         }
         
@@ -2843,7 +2838,6 @@
             return total + calculatedShipping + (nightFeeAmount || 0);
         }
         
-        // Para planilha, taxas são somadas ao frete
         function getShippingForSpreadsheet() {
             return calculatedShipping + (nightFeeAmount || 0);
         }
@@ -2866,6 +2860,11 @@
             const nextButton = document.getElementById('nextPage2Button');
             const deliveryType = document.querySelector('input[name="deliveryType"]:checked')?.value;
             
+            if (!deliveryType) {
+                nextButton.disabled = true;
+                return;
+            }
+            
             if (deliveryType === 'pickup') {
                 nextButton.disabled = !(selectedDate && document.querySelector('input[name="deliveryTime"]:checked'));
             } else if (deliveryType === 'delivery' && isOtherCity) {
@@ -2874,14 +2873,27 @@
                 const street = document.getElementById('street').value.trim();
                 const number = document.getElementById('number').value.trim();
                 const neighborhood = document.getElementById('neighborhood').value.trim();
+                const city = document.getElementById('deliveryCity').value;
                 
-                nextButton.disabled = !(street && number && neighborhood && selectedDate && selectedTime);
+                nextButton.disabled = !(city && street && number && neighborhood && selectedDate && selectedTime);
             }
         }
         
         // ============================================
-        // CALENDÁRIO E HORÁRIOS
+        // CALENDÁRIO E HORÁRIOS (CORRIGIDO)
         // ============================================
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar(currentMonth, currentYear);
+        }
+        
         function renderCalendar(month, year) {
             const calendar = document.getElementById('calendar');
             const monthYearDisplay = document.getElementById('currentMonthYear');
@@ -2941,9 +2953,20 @@
                 }
                 
                 if (!dayElement.classList.contains('disabled')) {
-                    dayElement.addEventListener('click', function() {
+                    dayElement.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         selectDate(currentDate, isSpecialDate, isHoliday, isNoDeliveryDate, isAvulsoDate);
                     });
+                    
+                    // Prevenir arrastar e selecionar texto
+                    dayElement.addEventListener('mousedown', function(e) {
+                        e.preventDefault();
+                    });
+                    
+                    dayElement.addEventListener('touchstart', function(e) {
+                        e.preventDefault();
+                    }, { passive: false });
                 }
                 
                 if (selectedDate && 
@@ -2974,17 +2997,10 @@
             if (isNoDeliveryDate) {
                 document.getElementById('noDeliveryMessage').classList.remove('hidden');
                 document.getElementById('timeOptions').classList.add('hidden');
-                document.getElementById('nextPage2Button').disabled = true;
                 return;
             } else {
                 document.getElementById('noDeliveryMessage').classList.add('hidden');
                 document.getElementById('timeOptions').classList.remove('hidden');
-                
-                if (currentDeliveryType === 'pickup') {
-                    document.getElementById('nextPage2Button').disabled = false;
-                } else if (currentDeliveryType === 'delivery' && !isOtherCity) {
-                    document.getElementById('nextPage2Button').disabled = true;
-                }
             }
             
             const dayOfWeek = date.getDay();
@@ -3023,42 +3039,17 @@
             }
             
             routes = routes.filter(route => {
-                let isRouteAvailable = true;
-                
                 if (isToday) {
                     const [startHour, startMinute] = route.start.split(':').map(Number);
                     const startTimeInMinutes = startHour * 60 + startMinute;
                     const currentTimeInMinutes = currentHour * 60 + now.getMinutes();
                     const timeUntilStart = startTimeInMinutes - currentTimeInMinutes;
                     
-                    if (dayOfWeek >= 1 && dayOfWeek <= 5 && currentHour >= 17) {
-                        if (route.start === '07:30') {
-                            const tomorrow = new Date(today);
-                            tomorrow.setDate(tomorrow.getDate() + 1);
-                            if (date.getDate() === tomorrow.getDate()) {
-                                isRouteAvailable = false;
-                            }
-                        }
-                    }
-                    
-                    if (dayOfWeek === 6 && currentHour >= 12) {
-                        if (routeType === 'sunday' || (routeType === 'weekday' && route.start === '07:30')) {
-                            isRouteAvailable = false;
-                        }
-                    }
-                    
-                    if (dayOfWeek === 0) {
-                        if (routeType === 'weekday' && route.start === '07:30') {
-                            isRouteAvailable = false;
-                        }
-                    }
-                    
                     if (timeUntilStart < 30) {
-                        isRouteAvailable = false;
+                        return false;
                     }
                 }
-                
-                return isRouteAvailable;
+                return true;
             });
             
             routes.forEach((route, index) => {
@@ -3091,7 +3082,9 @@
                 container.appendChild(label);
                 routeElement.appendChild(container);
                 
-                input.addEventListener('change', function() {
+                input.addEventListener('change', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     selectedTime = this.value;
                     selectedTimeLabel = this.getAttribute('data-label');
                     
@@ -3110,9 +3103,20 @@
                     saveData();
                 });
                 
+                // Prevenir comportamento indesejado no mobile
+                input.addEventListener('touchstart', function(e) {
+                    e.stopPropagation();
+                }, { passive: true });
+                
+                label.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    input.click();
+                }, { passive: false });
+                
                 optionsContainer.appendChild(routeElement);
             });
             
+            updateNextButtonState();
             saveData();
         }
         
@@ -3128,7 +3132,7 @@
                 day.classList.remove('selected');
             });
             
-            document.getElementById('nextPage2Button').disabled = true;
+            updateNextButtonState();
             saveData();
         }
         
@@ -3159,7 +3163,6 @@
                 });
             };
             
-            // Produtos
             const { products, total } = getAllProducts();
             
             html += '<div class="review-item">';
@@ -3171,7 +3174,6 @@
             html += '</div>';
             html += '</div>';
             
-            // Valores
             const finalTotal = getTotalWithShipping();
             
             html += '<div class="review-item">';
@@ -3179,7 +3181,6 @@
             html += `<div class="review-value">${formatCurrency(total)}</div>`;
             html += '</div>';
             
-            // Frete
             const deliveryType = document.querySelector('input[name="deliveryType"]:checked')?.value;
             if (deliveryType === 'delivery' && !isOtherCity && calculatedShipping > 0) {
                 html += '<div class="review-item">';
@@ -3188,7 +3189,6 @@
                 html += '</div>';
             }
             
-            // Taxas adicionais
             if (nightFeeAdded) {
                 html += '<div class="review-item">';
                 html += '<div class="review-label taxa-label">Taxa Noturna/Domingo</div>';
@@ -3203,7 +3203,6 @@
                 }
             }
             
-            // Dados pessoais
             html += '<div class="review-item">';
             html += '<div class="review-label">Comprador</div>';
             html += `<div class="review-value">${document.getElementById('buyerName').value} - ${document.getElementById('buyerPhone').value}</div>`;
@@ -3218,7 +3217,6 @@
             html += '</div>';
             html += '</div>';
             
-            // Entrega
             html += '<div class="review-item">';
             html += '<div class="review-label">Entrega</div>';
             if (deliveryType === 'pickup') {
@@ -3240,7 +3238,6 @@
             }
             html += '</div>';
             
-            // Data e horário
             if (selectedDate) {
                 html += '<div class="review-item">';
                 html += '<div class="review-label">Data e Horário</div>';
@@ -3248,7 +3245,6 @@
                 html += '</div>';
             }
             
-            // Cartão
             const sendCard = document.querySelector('input[name="sendCard"]:checked')?.value;
             if (sendCard === 'yes') {
                 html += '<div class="review-item">';
@@ -3259,7 +3255,6 @@
             
             reviewDiv.innerHTML = html;
             
-            // Total
             totalHtml += '<div class="total-item">';
             totalHtml += '<span>Produtos:</span>';
             totalHtml += `<span>${formatCurrency(total)}</span>`;
@@ -3313,7 +3308,6 @@
             
             const formattedPrice = total.toFixed(2).replace('.', ',');
             
-            // IMPORTANTE: Formatando produtos para a planilha conforme solicitado
             let productsDescription = '';
             let kitsCount = 0;
             const productDetails = [];
@@ -3327,7 +3321,6 @@
             const productDetailsStr = productDetails.join(' / ');
             productsDescription = `${productSummary} - ${productDetailsStr}`;
             
-            // Frete + taxas juntos para a planilha
             const totalShipping = getShippingForSpreadsheet();
             const formattedShipping = totalShipping.toFixed(2).replace('.', ',');
             
@@ -3421,7 +3414,6 @@
                 const result = await enviarDadosParaPlanilha(excelData);
                 
                 if (result.success) {
-                    // MARCA LINK COMO USADO
                     if (isFromLink) {
                         markLinkAsUsed();
                     }
@@ -3516,10 +3508,9 @@
         }
         
         // ============================================
-        // PÁGINAS DE SUCESSO E PAGAMENTO
+        // FUNÇÕES AUXILIARES
         // ============================================
         function showPaymentConfirmation(type) {
-            const paymentMethod = type;
             const buyerName = document.getElementById('buyerName').value;
             const paymentDetailsDiv = type === 'pix' ? document.getElementById('paymentDetails') : document.getElementById('paymentDetailsCard');
             
@@ -3638,7 +3629,6 @@
                 message += `${product.quantity}x ${product.code ? product.code + ' - ' : ''}${product.name}%0A`;
             });
             
-            // Cidade
             if (deliveryType === 'delivery' && !isOtherCity && selectedCity) {
                 message += `*Cidade:* ${selectedCity}%0A`;
             } else if (deliveryType === 'delivery' && isOtherCity) {
@@ -3647,14 +3637,12 @@
                 message += `*Cidade:* Retirada BH%0A`;
             }
             
-            // Data e hora
             if (selectedDate && selectedTimeLabel) {
                 const formattedDate = selectedDate.toLocaleDateString('pt-BR');
                 message += `*Data:* ${formattedDate}%0A`;
                 message += `*Horário:* ${selectedTimeLabel}%0A`;
             }
             
-            // Forma de pagamento
             if (paymentType === 'pix') {
                 message += `*Pagamento:* PIX%0A`;
             } else if (paymentType === 'card') {
@@ -3663,8 +3651,57 @@
             
             message += `%0AFormulário enviado com sucesso!`;
             
-            const phone = WHATSAPP_NUMBER;
-            window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+        }
+        
+        function copyToClipboard(text, type) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    if (type === 'link') {
+                        const copySuccess = document.getElementById('copySuccess');
+                        if (copySuccess) {
+                            copySuccess.textContent = '✅ Copiado para a área de transferência!';
+                            copySuccess.classList.add('show');
+                            setTimeout(() => {
+                                copySuccess.classList.remove('show');
+                            }, 3000);
+                        }
+                    }
+                }).catch(err => {
+                    copyUsingExecCommand(text, type);
+                });
+            } else {
+                copyUsingExecCommand(text, type);
+            }
+        }
+        
+        function copyUsingExecCommand(text, type) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                if (type === 'link') {
+                    const copySuccess = document.getElementById('copySuccess');
+                    if (copySuccess) {
+                        copySuccess.textContent = '✅ Copiado para a área de transferência!';
+                        copySuccess.classList.add('show');
+                        setTimeout(() => {
+                            copySuccess.classList.remove('show');
+                        }, 3000);
+                    }
+                }
+            } catch (err) {
+                alert('⚠️ Não foi possível copiar. Por favor, anote: ' + text);
+            } finally {
+                document.body.removeChild(textArea);
+            }
         }
         
         // ============================================
@@ -3697,13 +3734,13 @@
                 sendCard: document.querySelector('input[name="sendCard"]:checked')?.value,
                 cardMessage: document.getElementById('cardMessage').value,
                 signedCard: document.querySelector('input[name="signedCard"]:checked')?.value,
+                acknowledgeTerms: document.querySelector('input[name="acknowledgeTerms"]:checked')?.value,
                 paymentMethod: document.querySelector('input[name="paymentMethod"]:checked')?.value,
                 foundUs: document.querySelector('input[name="foundUs"]:checked')?.value,
                 confirmData: document.getElementById('confirmData').checked,
                 productRows: productRows
             };
             
-            // Salvar também os valores individuais dos produtos
             for (let i = 1; i <= productRows; i++) {
                 formData[`productQuantity${i}`] = document.getElementById(`productQuantity${i}`)?.value || '';
                 formData[`productCode${i}`] = document.getElementById(`productCode${i}`)?.value || '';
@@ -3721,13 +3758,10 @@
             try {
                 const data = JSON.parse(savedData);
                 
-                // Restaurar produtos
-                if (data.products && Array.isArray(data.products)) {
-                    // Limpar container atual
+                if (data.products && Array.isArray(data.products) && !isFromLink) {
                     document.getElementById('productsContainer').innerHTML = '';
                     productRows = 0;
                     
-                    // Adicionar cada produto
                     data.products.forEach((product, index) => {
                         productRows++;
                         const container = document.getElementById('productsContainer');
@@ -3743,19 +3777,19 @@
                             <div class="form-row">
                                 <div class="form-group" style="flex: 0.5;">
                                     <label for="productQuantity${productRows}">Qtde</label>
-                                    <input type="number" id="productQuantity${productRows}" class="form-control product-quantity" min="1" value="${product.quantity}" onchange="updateProductsSummary()">
+                                    <input type="number" id="productQuantity${productRows}" class="form-control product-quantity" min="1" value="${product.quantity}" onchange="updateProductsSummary(); saveData()">
                                 </div>
                                 <div class="form-group" style="flex: 0.8;">
                                     <label for="productCode${productRows}">Código</label>
-                                    <input type="text" id="productCode${productRows}" class="form-control product-code" value="${product.code || ''}" oninput="updateProductsSummary()">
+                                    <input type="text" id="productCode${productRows}" class="form-control product-code" value="${product.code || ''}" oninput="updateProductsSummary(); saveData()">
                                 </div>
                                 <div class="form-group" style="flex: 2;">
                                     <label for="productName${productRows}">Descrição</label>
-                                    <input type="text" id="productName${productRows}" class="form-control product-name" value="${product.name}" required oninput="updateProductsSummary()">
+                                    <input type="text" id="productName${productRows}" class="form-control product-name" value="${product.name}" required oninput="updateProductsSummary(); saveData()">
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="productPrice${productRows}">Preço (R$)</label>
-                                    <input type="number" id="productPrice${productRows}" class="form-control product-price" value="${product.price}" required onchange="updateProductsSummary()">
+                                    <input type="number" id="productPrice${productRows}" class="form-control product-price" value="${product.price}" required onchange="updateProductsSummary(); saveData()">
                                 </div>
                             </div>
                         `;
@@ -3764,7 +3798,6 @@
                     });
                 }
                 
-                // Restaurar outros dados
                 document.getElementById('buyerName').value = data.buyerName || '';
                 document.getElementById('buyerPhone').value = data.buyerPhone || '';
                 document.getElementById('giftedName').value = data.giftedName || '';
@@ -3793,6 +3826,7 @@
                     { name: 'deliveryType', value: data.deliveryType },
                     { name: 'sendCard', value: data.sendCard },
                     { name: 'signedCard', value: data.signedCard },
+                    { name: 'acknowledgeTerms', value: data.acknowledgeTerms },
                     { name: 'paymentMethod', value: data.paymentMethod },
                     { name: 'foundUs', value: data.foundUs }
                 ];
@@ -3803,10 +3837,6 @@
                         if (element) element.checked = true;
                     }
                 });
-                
-                if (data.sendCard === 'yes') {
-                    document.getElementById('acknowledgeTermsYes').checked = true;
-                }
                 
                 if (data.selectedDate) {
                     selectedDate = new Date(data.selectedDate);
