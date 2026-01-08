@@ -468,6 +468,7 @@
             font-weight: 600;
         }
         
+        /* NOME DO PRODUTO COM LIMITE DE 2 LINHAS */
         .product-name {
             font-size: 16px;
             color: #2E7D32;
@@ -477,6 +478,13 @@
             word-wrap: break-word;
             overflow-wrap: break-word;
             word-break: break-word;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: 2.6em;
+            max-height: 3.2em;
         }
         
         .info-row {
@@ -823,17 +831,21 @@
             transform: scale(1.1);
         }
         
-        .anonimo-explanation {
-            font-size: 7px !important;
+        /* NOVO: JUSTIFICATIVA ANÔNIMO FORA DA FICHA */
+        .anonimo-justificativa-print {
+            font-size: 8px !important;
             color: #666 !important;
             text-align: center !important;
-            margin-top: 1px !important;
+            margin-top: 2px !important;
             font-style: italic !important;
-            padding: 0 !important;
+            padding: 2px 0 !important;
             border-top: 0.3px dashed #ccc !important;
             line-height: 1 !important;
-            max-height: 8px !important;
+            max-height: 12px !important;
             overflow: hidden !important;
+            background-color: transparent !important;
+            position: relative;
+            width: 100%;
         }
         
         /* CONTROLES DE IMPRESSÃO */
@@ -1348,13 +1360,13 @@
                 right: 15mm;
                 height: 80mm;
             }
-            .anonimo-explanation {
+            .anonimo-justificativa-print {
                 font-size: 6px !important;
-                margin-top: 0 !important;
-                padding: 0 !important;
+                margin-top: 1px !important;
+                padding: 1px 0 !important;
                 border-top: 0.2px dashed #ccc !important;
                 line-height: 1 !important;
-                max-height: 6px !important;
+                max-height: 8px !important;
             }
             .message-text {
                 line-height: 1.1 !important;
@@ -1861,7 +1873,10 @@ Exemplo:
         function getDiaSemana(dataStr) {
             if (!dataStr) return '';
             
-            const parts = dataStr.split('/');
+            // Limpar a string para pegar apenas a data
+            const dateStr = dataStr.split(' - ')[0] || dataStr;
+            
+            const parts = dateStr.split('/');
             if (parts.length !== 3) return '';
             
             const day = parseInt(parts[0], 10);
@@ -1883,7 +1898,11 @@ Exemplo:
         function parseDate(dateStr) {
             if (!dateStr) return null;
             dateStr = dateStr.trim();
-            const parts = dateStr.split('/');
+            
+            // Limpar dia da semana se existir
+            const cleanDateStr = dateStr.split(' - ')[0] || dateStr;
+            
+            const parts = cleanDateStr.split('/');
             if (parts.length === 3) {
                 const day = parseInt(parts[0], 10);
                 const month = parseInt(parts[1], 10) - 1;
@@ -1969,7 +1988,7 @@ Exemplo:
             document.getElementById('loadingOverlay').style.display = 'none';
         }
         
-        // FUNÇÃO PARA TOCAR SOM DE TELEFONE
+        // FUNÇÃO PARA TOCAR SOM DE TELEFONE - MAIS ALTO
         function playPhoneSound() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -1982,19 +2001,41 @@ Exemplo:
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 
-                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(1000, audioContext.currentTime); // Frequência mais alta
                 
                 gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
+                gainNode.gain.linearRampToValueAtTime(0.5, audioContext.currentTime + 0.1); // Volume mais alto
                 gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
                 
                 oscillator.start();
                 oscillator.stop(audioContext.currentTime + 0.5);
             }
             
+            // Primeiro toque
             playRing();
-            setTimeout(() => playRing(), 600);
-            setTimeout(() => playRing(), 1200);
+            // Segundo toque mais alto
+            setTimeout(() => {
+                if (audioContext.state !== 'running') audioContext.resume();
+                playRing();
+            }, 600);
+            // Terceiro toque ainda mais alto
+            setTimeout(() => {
+                if (audioContext.state !== 'running') audioContext.resume();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(1200, audioContext.currentTime); // Frequência mais alta ainda
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.7, audioContext.currentTime + 0.1); // Volume máximo
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.7); // Duração mais longa
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.7);
+            }, 1200);
         }
         
         // FUNÇÃO PARA TOCAR ALERTA SONORO POR 10 SEGUNDOS
@@ -2021,14 +2062,14 @@ Exemplo:
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 
-                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-                oscillator.frequency.exponentialRampToValueAtTime(500, audioContext.currentTime + 0.2);
+                oscillator.frequency.setValueAtTime(1000, audioContext.currentTime); // Frequência mais alta
+                oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.3); // Variação mais longa
                 
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.5, audioContext.currentTime); // Volume mais alto
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
                 
                 oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.2);
+                oscillator.stop(audioContext.currentTime + 0.3);
             }
             
             alertSoundInterval = setInterval(() => {
@@ -2038,11 +2079,12 @@ Exemplo:
                 }
                 
                 try {
+                    if (audioContext.state !== 'running') audioContext.resume();
                     createBeep();
                 } catch (error) {
                     console.log("Audio play failed:", error);
                 }
-            }, 500);
+            }, 600);
         }
         
         // FUNÇÃO PARA PARAR ALERTA SONORO
@@ -2364,6 +2406,15 @@ Exemplo:
                 const valorF = parseFloat(row[5]?.replace(',', '.') || 0);
                 const total = valorE + valorF;
                 
+                // Truncar nome do produto para máximo 2 linhas
+                const produtoCompleto = row[3] || '';
+                let produtoDisplay = produtoCompleto;
+                
+                // Se o produto tiver mais de 80 caracteres, truncar
+                if (produtoCompleto.length > 80) {
+                    produtoDisplay = produtoCompleto.substring(0, 77) + '...';
+                }
+                
                 const card = document.createElement('div');
                 card.className = 'event-card';
                 
@@ -2404,7 +2455,7 @@ Exemplo:
                         </div>
                     </div>
                     <div class="event-body">
-                        <div class="product-name">${row[3] || ''}</div>
+                        <div class="product-name" title="${produtoCompleto}">${produtoDisplay}</div>
                         <div class="info-row">
                             <div class="address-info">
                                 ${row[10] || ''}<br>
@@ -2875,7 +2926,7 @@ Exemplo:
             document.getElementById('printContent').innerHTML = generateFichaHTML(currentPrintEventData, codigo);
         }
         
-        // Gerar ficha HTML para impressão - CORRIGIDO PARA NÃO DUPLICAR DIA DA SEMANA
+        // Gerar ficha HTML para impressão - COM JUSTIFICATIVA ANÔNIMO FORA DA FICHA
         function generateFichaHTML(eventData, codigo) {
             const anonimoInfo = getAnonimoStatus(eventData);
             let formaPagamento = getFormaPagamento(eventData);
@@ -2913,12 +2964,11 @@ Exemplo:
             const bairro = eventData[12] || '';
             const cidade = eventData[13] || '';
             const referenciaEndereco = eventData[14] || '';
-            // Extrair apenas a data, removendo dia da semana se já existir
-const dataCompleta = eventData[15] || '';
-// Separar data e dia da semana se já vierem juntos
-const partes = dataCompleta.split(' - ');
-const data = partes[0] || dataCompleta; // Pega apenas a data (ex: "07/01/2026")
-const diaSemana = getDiaSemana(data); // Calcula o dia da semana corretamente
+            // Extrair apenas a data
+            const dataCompleta = eventData[15] || '';
+            const partes = dataCompleta.split(' - ');
+            const data = partes[0] || dataCompleta;
+            const diaSemana = getDiaSemana(data);
             const horario = extractCleanTime(eventData[16] || eventData[43] || '');
             const recebedor = eventData[8] || '';
             const produtoDescricao = eventData[3] || '';
@@ -2932,6 +2982,13 @@ const diaSemana = getDiaSemana(data); // Calcula o dia da semana corretamente
             const fichaInferiorTelefone = isAnonimo ? 'ANONIMO' : telefone;
             
             const mensagemPersonalizada = mensagemCentral || ``;
+            
+            // Justificativa anônimo (se existir)
+            const justificativaAnonimo = anonimoInfo.explicacao ? `
+                <div class="anonimo-justificativa-print">
+                    ${anonimoInfo.explicacao}
+                </div>
+            ` : '';
             
             return `
                 <div class="a4-page">
@@ -3014,11 +3071,7 @@ const diaSemana = getDiaSemana(data); // Calcula o dia da semana corretamente
                                 </td>
                             </tr>
                         </table>
-                        ${anonimoInfo.explicacao ? `
-                            <div class="anonimo-explanation">
-                                ${anonimoInfo.explicacao}
-                            </div>
-                        ` : ''}
+                        ${justificativaAnonimo}
                     </div>
 
                     <!-- ESPAÇO CENTRAL PARA O BILHETE -->
@@ -3123,11 +3176,7 @@ const diaSemana = getDiaSemana(data); // Calcula o dia da semana corretamente
                                 </td>
                             </tr>
                         </table>
-                        ${anonimoInfo.explicacao ? `
-                            <div class="anonimo-explanation">
-                                ${anonimoInfo.explicacao}
-                            </div>
-                        ` : ''}
+                        ${justificativaAnonimo}
                     </div>
                 </div>
             `;
@@ -3432,6 +3481,12 @@ const diaSemana = getDiaSemana(data); // Calcula o dia da semana corretamente
             const formContainer = document.getElementById('editFormFields');
             const orderNumber = getOrderNumber(eventData);
             
+            // Separar data e dia da semana
+            const dataCompleta = eventData[15] || '';
+            const partes = dataCompleta.split(' - ');
+            const data = partes[0] || dataCompleta;
+            const diaSemana = getDiaSemana(data);
+            
             const editableFields = [
                 { 
                     index: 0, 
@@ -3547,10 +3602,17 @@ const diaSemana = getDiaSemana(data); // Calcula o dia da semana corretamente
                 { 
                     index: 15, 
                     label: 'Data Entrega (DD/MM/YYYY)', 
-                    value: eventData[15] || '', 
+                    value: data, // Apenas a data, sem dia da semana
                     editable: true,
                     type: 'text',
                     required: true
+                },
+                { 
+                    index: 'dia_semana', // Campo especial para dia da semana
+                    label: 'Dia da Semana (Automático)', 
+                    value: diaSemana || '', 
+                    editable: false,
+                    type: 'text'
                 },
                 { 
                     index: 16, 
@@ -3653,15 +3715,13 @@ const diaSemana = getDiaSemana(data); // Calcula o dia da semana corretamente
                         </div>
                     `;
                 } else if (field.index === 15) {
-                    const diaSemana = getDiaSemana(field.value);
                     const requiredAttr = field.required ? 'required' : '';
                     
                     formHTML += `
                         <div class="form-group">
                             <label class="form-label">${field.label}:${field.required ? ' *' : ''}</label>
                             <input class="form-input" data-index="${field.index}" type="text" value="${field.value}" 
-                                   onchange="updateDiaSemana(this)" placeholder="DD/MM/YYYY" ${requiredAttr} />
-                            ${diaSemana ? `<div style="font-size: 11px; color: #666; margin-top: 3px;">Dia da semana: ${diaSemana}</div>` : ''}
+                                   onchange="updateDiaSemanaEdit(this)" placeholder="DD/MM/YYYY" ${requiredAttr} />
                         </div>
                     `;
                 } else {
@@ -3679,10 +3739,21 @@ const diaSemana = getDiaSemana(data); // Calcula o dia da semana corretamente
             
             formContainer.innerHTML = formHTML;
             
-            // Atualizar dia da semana para campo de data
-            const dataInput = document.querySelector('input[data-index="15"]');
-            if (dataInput && dataInput.value) {
-                updateDiaSemana(dataInput);
+            // Adicionar campo de dia da semana separado
+            const dataField = document.querySelector('input[data-index="15"]');
+            if (dataField && dataField.parentElement) {
+                const diaSemanaDiv = document.createElement('div');
+                diaSemanaDiv.className = 'form-group';
+                diaSemanaDiv.innerHTML = `
+                    <label class="form-label">Dia da Semana (Automático):</label>
+                    <input class="form-input" id="editDiaSemana" type="text" value="${diaSemana}" readonly style="background-color: #f5f5f5; color: #666;" />
+                `;
+                dataField.parentElement.parentElement.insertBefore(diaSemanaDiv, dataField.parentElement.nextSibling);
+            }
+            
+            // Atualizar dia da semana inicial
+            if (data) {
+                updateDiaSemanaEdit(dataField);
             }
             
             // Adicionar listener para motivo de cancelamento
@@ -3693,22 +3764,14 @@ const diaSemana = getDiaSemana(data); // Calcula o dia da semana corretamente
             });
         }
         
-        function updateDiaSemana(input) {
+        // FUNÇÃO PARA ATUALIZAR DIA DA SEMANA NO MODO EDIÇÃO
+        function updateDiaSemanaEdit(input) {
             const value = input.value;
             const diaSemana = getDiaSemana(value);
-            const container = input.parentElement;
+            const diaSemanaInput = document.getElementById('editDiaSemana');
             
-            const existingInfo = container.querySelector('.dia-semana-info');
-            if (existingInfo) {
-                existingInfo.remove();
-            }
-            
-            if (diaSemana) {
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'dia-semana-info';
-                infoDiv.style.cssText = 'font-size: 11px; color: #666; margin-top: 3px;';
-                infoDiv.textContent = `Dia da semana: ${diaSemana}`;
-                container.appendChild(infoDiv);
+            if (diaSemanaInput) {
+                diaSemanaInput.value = diaSemana || '';
             }
         }
         
@@ -3746,6 +3809,10 @@ const diaSemana = getDiaSemana(data); // Calcula o dia da semana corretamente
             const cancelReason = document.getElementById('cancelReasonSelect').value;
             const isCancelling = isCancelMode && cancelReason;
             
+            // Coletar valor do dia da semana
+            const diaSemanaInput = document.getElementById('editDiaSemana');
+            const diaSemana = diaSemanaInput ? diaSemanaInput.value : '';
+            
             inputs.forEach(input => {
                 const index = parseInt(input.getAttribute('data-index'));
                 const originalValue = currentEventDataForEdit[index] || '';
@@ -3761,6 +3828,11 @@ const diaSemana = getDiaSemana(data); // Calcula o dia da semana corretamente
                 
                 if (input.hasAttribute('readonly')) {
                     return;
+                }
+                
+                // Se for o campo de data (15), adicionar dia da semana
+                if (index === 15 && newValue && diaSemana) {
+                    newValue = `${newValue} - ${diaSemana}`;
                 }
                 
                 // Se estiver cancelando, garantir que valores sejam zerados
@@ -3951,7 +4023,7 @@ const diaSemana = getDiaSemana(data); // Calcula o dia da semana corretamente
         window.closeEditModal = closeEditModal;
         window.saveEdits = saveEdits;
         window.focusPasswordField = focusPasswordField;
-        window.updateDiaSemana = updateDiaSemana;
+        window.updateDiaSemanaEdit = updateDiaSemanaEdit;
         window.performSearch = performSearch;
         window.toggleCancelSection = toggleCancelSection;
     </script>
