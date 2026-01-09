@@ -330,6 +330,36 @@
             color: #616161 !important;
         }
         
+        /* ESTILO PARA PEDIDOS DE OUTRA CIDADE - LARANJA (antes da impressão) e AMARELO (após impressão) */
+        .event-card.outra-cidade {
+            background: #FFE0B2 !important; /* LARANJA (igual aos outros não impressos) */
+            border-color: #FF5722 !important;
+            border-width: 3px !important;
+            box-shadow: 0 2px 8px rgba(255, 87, 34, 0.3) !important;
+        }
+        
+        .event-card.outra-cidade.impresso {
+            background: #FFF9C4 !important; /* AMARELO (após impressão) */
+            border-color: #FFD600 !important;
+            box-shadow: 0 2px 8px rgba(255, 213, 0, 0.3) !important;
+        }
+        
+        .event-card.outra-cidade:hover {
+            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.4) !important;
+            border-color: #FF9800 !important;
+        }
+        
+        .event-card.outra-cidade.impresso:hover {
+            box-shadow: 0 4px 12px rgba(255, 213, 0, 0.4) !important;
+            border-color: #FFC107 !important;
+        }
+        
+        .event-card.outra-cidade.finalized {
+            background: #e0e0e0 !important;
+            border-color: #9e9e9e !important;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.08) !important;
+        }
+        
         .event-card.finalized .delivery-info,
         .event-card.finalized .client-name,
         .event-card.finalized .product-name,
@@ -833,7 +863,7 @@
         
         /* NOVO: JUSTIFICATIVA ANÔNIMO FORA DA FICHA */
         .anonimo-justificativa-print {
-            font-size: 8px !important;
+            font-size: 12px !important;
             color: #666 !important;
             text-align: center !important;
             margin-top: 2px !important;
@@ -910,11 +940,11 @@
             color: #f44336;
         }
         
-        /* PÁGINA DE IMPRESSÃO DOS ITENS (BOTÃO 2) - CORRIGIDO PARA CORTAR EXCESSO */
+        /* PÁGINA DE IMPRESSÃO DOS ITENS (BOTÃO 2) - CORRIGIDO: UMA FOLHA COM LISTA NO TOPO E NO RODAPÉ */
         .a4-items-page {
             width: 210mm !important;
             height: 297mm !important;
-            padding: 5mm 15mm 15mm 15mm !important;
+            padding: 5mm 15mm 0mm 15mm !important;
             margin: 0 auto;
             background: white;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -923,30 +953,19 @@
             font-family: 'Roboto', sans-serif;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
         }
         
         .items-top-section {
-            flex-shrink: 0;
-            height: 80mm;
+            height: 45%;
+            overflow: hidden;
             margin-bottom: 5mm;
         }
         
         .items-bottom-section {
-            position: absolute;
-            bottom: -15mm;
-            left: 15mm;
-            right: 15mm;
-            height: 80mm;
-        }
-        
-        .items-middle-section {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 5mm 0;
-            min-height: 120mm;
+            height: 45%;
+            overflow: hidden;
+            margin-top: 150mm;
         }
         
         .items-multicolumn-container {
@@ -964,6 +983,8 @@
             flex-direction: column;
             width: 33.33%;
             overflow: hidden;
+            border: 1px solid #ccc;
+            border-radius: 2mm;
         }
         
         .items-column-content-print {
@@ -1307,44 +1328,46 @@
         }
         
         @media print {
-            body * { visibility: hidden; }
-            .a4-page, .a4-page *, .a4-items-page, .a4-items-page * { 
-                visibility: visible; 
+            /* CORREÇÃO CRÍTICA: NÃO USAR display: none */
+            body * { 
+                visibility: hidden !important; 
             }
-            .a4-page {
-                box-shadow: none;
+            
+            /* MOSTRAR APENAS AS PÁGINAS A4 */
+            .a4-page, .a4-page *, 
+            .a4-items-page, .a4-items-page * { 
+                visibility: visible !important; 
+            }
+            
+            /* POSICIONAMENTO ABSOLUTO PARA EVITAR QUEBRAS */
+            .a4-page, .a4-items-page {
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
                 margin: 0 !important;
-                padding: 15mm 15mm 15mm 15mm !important;
-                position: absolute;
-                top: 0;
-                left: 0;
                 width: 210mm !important;
                 height: 297mm !important;
+                page-break-before: avoid !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
             }
-            .a4-items-page {
-                box-shadow: none;
-                margin: 0 !important;
-                padding: 5mm 15mm 15mm 15mm !important;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 210mm !important;
-                height: 297mm !important;
-            }
+            
+            /* REMOVER MARGENS DO @page */
             @page {
+                margin: 0 !important;
                 size: A4;
-                margin: 15mm 15mm 15mm 15mm !important;
             }
+            
+            /* REMANEJAR O RESTO DO CSS EXISTENTE (mantenha tudo que já tinha) */
             .text-size-controls, .copy-btn {
                 display: none !important;
             }
-            .items-top-section, .items-bottom-section {
-                border: none !important;
-            }
+            
             .items-column-print {
                 border: none !important;
                 width: 33.33% !important;
             }
+            
             .items-list-print li {
                 border-bottom: 0.2mm dashed #ccc !important;
                 font-size: 9.5px !important;
@@ -1353,13 +1376,7 @@
                 text-overflow: ellipsis !important;
                 max-width: 100% !important;
             }
-            .items-bottom-section {
-                position: absolute;
-                bottom: -15mm !important;
-                left: 15mm;
-                right: 15mm;
-                height: 80mm;
-            }
+            
             .anonimo-justificativa-print {
                 font-size: 6px !important;
                 margin-top: 1px !important;
@@ -1368,17 +1385,21 @@
                 line-height: 1 !important;
                 max-height: 8px !important;
             }
+            
             .message-text {
                 line-height: 1.1 !important;
             }
+            
             .recipient-highlight {
                 font-size: 20px !important;
                 margin-bottom: 2px !important;
             }
+            
             .a4-page .delivery-day,
             .a4-page .delivery-time {
                 font-size: 15px !important;
             }
+            
             .a4-page .product-description-large {
                 font-size: 15px !important;
             }
@@ -1401,6 +1422,25 @@
             margin-top: 3px !important;
             display: block;
             text-align: right;
+        }
+        
+        /* ESTILO PARA ENDEREÇO EM BRANCO */
+        .address-retirada {
+            font-weight: bold !important;
+            color: #D32F2F !important;
+            font-size: 20px !important;
+            text-transform: uppercase;
+        }
+        
+        /* ESTILO PARA PEDIDOS DE OUTRA CIDADE */
+        .outra-cidade-badge {
+            background-color: #FFD600;
+            color: #000;
+            font-size: 9px;
+            padding: 1px 5px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-left: 5px;
         }
     </style>
 </head>
@@ -1477,7 +1517,7 @@
         </div>
     </div>
 
-    <!-- Modal para itens (Botão 2) -->
+    <!-- Modal para itens (Botão 2) - CORRIGIDO: AGORA IMPRIME APENAS UMA FOLHA -->
     <div class="modal-overlay" id="itemsModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1691,6 +1731,7 @@ Exemplo:
         let lastAlertTime = 0;
         let lastEventCount = 0;
         let isCancelMode = false; // Novo: controla se está no modo cancelamento
+        let currentRowIdCache = {}; // Cache para mapear ID do pedido para linha atual
         
         // CONFIGURAÇÃO DE FONTES
         const fontSettings = {
@@ -1720,6 +1761,123 @@ Exemplo:
         let currentFontSize = 20;
         let currentRecipientFontSize = 22;
         const MAX_FONT_SIZE = 80;
+        
+        // ============= FUNÇÃO CORRIGIDA PARA IMPRESSÃO ISOLADA =============
+function printIsolatedContent(htmlContent) {
+    return new Promise((resolve) => {
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'absolute';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = 'none';
+        iframe.style.visibility = 'hidden';
+        document.body.appendChild(iframe);
+        
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        
+        // Coletar todos os estilos da página principal
+        const styles = Array.from(document.querySelectorAll('style'))
+            .map(style => style.innerHTML)
+            .join('\n');
+        
+        // Coletar estilos de links
+        const styleLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
+            .map(link => `<link rel="stylesheet" href="${link.href}">`)
+            .join('\n');
+        
+        iframeDoc.open();
+        iframeDoc.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Impressão</title>
+                ${styleLinks}
+                <style>
+                    ${styles}
+                    
+                    /* Estilos específicos para impressão no iframe */
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        background: white;
+                    }
+                    
+                    @media print {
+                        body * {
+                            visibility: visible !important;
+                        }
+                        
+                        .a4-page, .a4-items-page {
+                            position: relative !important;
+                            top: 0 !important;
+                            left: 0 !important;
+                            margin: 0 auto !important;
+                            width: 210mm !important;
+                            height: 297mm !important;
+                            page-break-before: avoid !important;
+                            page-break-after: avoid !important;
+                            page-break-inside: avoid !important;
+                        }
+                        
+                        @page {
+                            margin: 0 !important;
+                            size: A4;
+                        }
+                        
+                        .text-size-controls, .copy-btn {
+                            display: none !important;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                ${htmlContent}
+            </body>
+            </html>
+        `);
+        iframeDoc.close();
+        
+        // VARIÁVEL PARA CONTROLAR SE JÁ IMPRIMIU
+        let hasPrinted = false;
+        
+        function executePrint() {
+            // SE JÁ IMPRIMIU, NÃO IMPRIME DE NOVO
+            if (hasPrinted) return;
+            hasPrinted = true;
+            
+            try {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+            } catch (error) {
+                console.log("Erro na impressão:", error);
+            }
+            
+            // Remover iframe após impressão (apenas uma vez)
+            setTimeout(() => {
+                if (document.body.contains(iframe)) {
+                    document.body.removeChild(iframe);
+                }
+                resolve();
+            }, 1500);
+        }
+        
+        // USAR APENAS UM MÉTODO - ESCOLHEMOS onload
+        iframe.onload = function() {
+            // Aguardar 500ms para garantir que tudo carregou
+            setTimeout(executePrint, 500);
+        };
+        
+        // FALLBACK SEGURO - SE O onload NÃO DISPARAR EM 3 SEGUNDOS
+        setTimeout(() => {
+            if (!hasPrinted) {
+                executePrint();
+            }
+        }, 3000);
+    });
+}
+// ============= FIM DA FUNÇÃO CORRIGIDA =============
         
         // Funções de utilidade
         function extractCodeFromColunaA(colunaA) {
@@ -1850,6 +2008,53 @@ Exemplo:
                 fullHistory: colunaBD,
                 lastEdit: colunaBE
             };
+        }
+        
+        // NOVA FUNÇÃO: Verificar se é pedido de outra cidade (coluna BD)
+        function isOutraCidade(eventData) {
+            const colunaBD = eventData[55] || ''; // Coluna BD
+            if (!colunaBD || colunaBD.trim() === '') return false;
+            
+            // Verificar se contém informações de outra cidade
+            return colunaBD.includes('OUTRA CIDADE:') || 
+                   colunaBD.includes('CEP:') || 
+                   colunaBD.includes('Frete:') ||
+                   colunaBD.includes('Prazo:');
+        }
+        
+        // NOVA FUNÇÃO: Extrair informações da coluna BD
+        function extractInfoFromBD(colunaBD) {
+            if (!colunaBD) return {};
+            
+            const info = {
+                outraCidade: '',
+                cep: '',
+                frete: '',
+                prazo: '',
+                valor: ''
+            };
+            
+            // Extrair cidade
+            const cidadeMatch = colunaBD.match(/OUTRA CIDADE:\s*(.+?)(?=\s*-|$)/i);
+            if (cidadeMatch) info.outraCidade = cidadeMatch[1].trim();
+            
+            // Extrair CEP
+            const cepMatch = colunaBD.match(/CEP:\s*(\d{5}-?\d{3})/i);
+            if (cepMatch) info.cep = cepMatch[1].trim();
+            
+            // Extrair frete
+            const freteMatch = colunaBD.match(/Frete:\s*(.+?)(?=\s*-|$)/i);
+            if (freteMatch) info.frete = freteMatch[1].trim();
+            
+            // Extrair prazo
+            const prazoMatch = colunaBD.match(/Prazo:\s*(.+?)(?=\s*-|$)/i);
+            if (prazoMatch) info.prazo = prazoMatch[1].trim();
+            
+            // Extrair valor
+            const valorMatch = colunaBD.match(/Valor:\s*(R\$\s*\d+[.,]\d+)/i);
+            if (valorMatch) info.valor = valorMatch[1].trim();
+            
+            return info;
         }
         
         // FUNÇÃO: Atualizar histórico de edições
@@ -2198,10 +2403,36 @@ Exemplo:
             showNotification(`🔍 ${filtered.length} pedidos encontrados para "${searchTerm}"`, 'info');
         }
         
-        // FUNÇÃO DE SALVAMENTO
+        // FUNÇÃO DE SALVAMENTO COM VERIFICAÇÃO DE LINHA ATUAL
         async function saveToSpreadsheet(payload) {
             try {
                 console.log('📤 Enviando dados para salvar:', payload);
+                
+                // Verificar se a linha ainda existe e se é a mesma
+                if (payload.linha && !isNaN(payload.linha)) {
+                    const linhaAtual = parseInt(payload.linha);
+                    const event = allEvents.find(e => e.rowNumber === linhaAtual);
+                    
+                    if (!event) {
+                        console.log('⚠️ Linha não encontrada, buscando por ID...');
+                        // Tentar encontrar o evento por ID (pedido + dados)
+                        const orderNumber = payload.numero_pedido || getOrderNumberFromUpdates(payload);
+                        if (orderNumber) {
+                            // Buscar pelo número do pedido
+                            const newEvent = allEvents.find(e => getOrderNumber(e.data) === orderNumber);
+                            if (newEvent) {
+                                console.log(`✅ Encontrado pedido ${orderNumber} na linha ${newEvent.rowNumber}`);
+                                payload.linha = newEvent.rowNumber;
+                            } else {
+                                console.log('❌ Pedido não encontrado em nenhuma linha');
+                                return {
+                                    success: false,
+                                    message: 'Pedido não encontrado. Atualize a página e tente novamente.'
+                                };
+                            }
+                        }
+                    }
+                }
                 
                 const formData = new FormData();
                 
@@ -2239,9 +2470,33 @@ Exemplo:
             }
         }
         
-        // Função para ordenar eventos
+        // Função auxiliar para extrair número do pedido das atualizações
+        function getOrderNumberFromUpdates(payload) {
+            if (payload.numero_pedido) return payload.numero_pedido;
+            
+            if (payload.atualizacoes && typeof payload.atualizacoes === 'string') {
+                try {
+                    const updates = JSON.parse(payload.atualizacoes);
+                    if (updates[52]) return updates[52]; // Coluna BA
+                } catch (e) {
+                    console.log('Erro ao parsear atualizações:', e);
+                }
+            }
+            
+            return null;
+        }
+        
+        // Função para ordenar eventos (pedidos de outra cidade primeiro)
         function sortEventsByDeliveryTime(events) {
             return events.sort((a, b) => {
+                // Primeiro: Pedidos de outra cidade SEM entregador vão primeiro
+                const outraCidadeA = isOutraCidade(a.data) && !getEntregadorStatus(a.data).hasEntregador;
+                const outraCidadeB = isOutraCidade(b.data) && !getEntregadorStatus(b.data).hasEntregador;
+                
+                if (outraCidadeA && !outraCidadeB) return -1;
+                if (!outraCidadeA && outraCidadeB) return 1;
+                
+                // Se ambos são ou não são de outra cidade, ordenar por status
                 const statusA = getEventStatus(a.data);
                 const statusB = getEventStatus(b.data);
                 
@@ -2320,10 +2575,21 @@ Exemplo:
                     deliveryTime: extractStartTime(row[16] || row[43] || ''),
                     status: getEventStatus(row),
                     deliveryDate: row[15] || '',
-                    startTime: extractStartTime(row[16] || row[43] || '')
+                    startTime: extractStartTime(row[16] || row[43] || ''),
+                    isOutraCidade: isOutraCidade(row),
+                    isPrinted: getPrintStatus(row) // Adicionado para controle de cor
                 }));
                 
                 console.log(`✅ ${allEvents.length} eventos carregados`);
+                
+                // Atualizar cache de IDs
+                currentRowIdCache = {};
+                allEvents.forEach(event => {
+                    const orderNumber = getOrderNumber(event.data);
+                    if (orderNumber) {
+                        currentRowIdCache[orderNumber] = event.rowNumber;
+                    }
+                });
                 
                 allEvents = sortEventsByDeliveryTime(allEvents);
                 
@@ -2381,6 +2647,13 @@ Exemplo:
             }
             
             const sortedEvents = [...events].sort((a, b) => {
+                // Pedidos de outra cidade SEM entregador sempre primeiro
+                const outraCidadeA = isOutraCidade(a.data) && !getEntregadorStatus(a.data).hasEntregador;
+                const outraCidadeB = isOutraCidade(b.data) && !getEntregadorStatus(b.data).hasEntregador;
+                
+                if (outraCidadeA && !outraCidadeB) return -1;
+                if (!outraCidadeA && outraCidadeB) return 1;
+                
                 const statusA = getEventStatus(a.data);
                 const statusB = getEventStatus(b.data);
                 
@@ -2401,6 +2674,8 @@ Exemplo:
                 const formaPagamento = getFormaPagamento(row);
                 const orderNumber = getOrderNumber(row);
                 const cupomInfo = getCupomInfo(row);
+                const isOutraCidadeEvent = isOutraCidade(row);
+                const isImpresso = getPrintStatus(row); // Novo: verificar se já foi impresso
                 
                 const valorE = parseFloat(row[4]?.replace(',', '.') || 0);
                 const valorF = parseFloat(row[5]?.replace(',', '.') || 0);
@@ -2415,12 +2690,31 @@ Exemplo:
                     produtoDisplay = produtoCompleto.substring(0, 77) + '...';
                 }
                 
+                // Verificar se endereço está em branco
+                const endereco = row[10] || '';
+                const bairro = row[12] || '';
+                const cidade = row[13] || '';
+                
+                let enderecoDisplay = '';
+                if (!endereco.trim() && !bairro.trim() && !cidade.trim()) {
+                    enderecoDisplay = '<span class="address-retirada">(RETIRADA LOJA)</span>';
+                } else {
+                    enderecoDisplay = `${endereco}<br>${bairro} - ${cidade}`;
+                }
+                
                 const card = document.createElement('div');
                 card.className = 'event-card';
                 
                 if (!isPrinted) card.classList.add('unprinted');
                 if (montador.hasMontador) card.classList.add('completed');
                 if (entregador.hasEntregador) card.classList.add('finalized');
+                if (isOutraCidadeEvent) {
+                    card.classList.add('outra-cidade');
+                    // Novo: se já foi impresso, adiciona classe 'impresso' para ficar amarelo
+                    if (isImpresso) {
+                        card.classList.add('impresso');
+                    }
+                }
                 
                 const printBtnClass = isPrinted ? 'btn-completed' : 'btn-default';
                 const itemsBtnClass = hasItems ? 'btn-completed' : 'btn-default';
@@ -2441,6 +2735,7 @@ Exemplo:
                             <div class="delivery-info">
                                 <span>${row[15] || ''}</span>
                                 <span>${extractCleanTime(row[16] || row[43] || '')}</span>
+                                ${isOutraCidadeEvent ? '<span class="outra-cidade-badge">OUTRA CIDADE</span>' : ''}
                             </div>
                             <div class="client-info">
                                 <div class="client-info-left">
@@ -2458,8 +2753,7 @@ Exemplo:
                         <div class="product-name" title="${produtoCompleto}">${produtoDisplay}</div>
                         <div class="info-row">
                             <div class="address-info">
-                                ${row[10] || ''}<br>
-                                ${row[12] || ''} - ${row[13] || ''}
+                                ${enderecoDisplay}
                             </div>
                             <div class="seller-info">
                                 <div>${row[6] || ''}</div>
@@ -2526,7 +2820,8 @@ Exemplo:
             currentFilter = 'today';
             const today = new Date().toLocaleDateString('pt-BR');
             const filtered = allEvents.filter(event => 
-                event.data[15] && event.data[15].includes(today)
+                (event.data[15] && event.data[15].includes(today)) || 
+                (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador)
             );
             displayEvents(filtered);
         }
@@ -2537,7 +2832,8 @@ Exemplo:
             tomorrow.setDate(tomorrow.getDate() + 1);
             const dateStr = tomorrow.toLocaleDateString('pt-BR');
             const filtered = allEvents.filter(event => 
-                event.data[15] && event.data[15].includes(dateStr)
+                (event.data[15] && event.data[15].includes(dateStr)) || 
+                (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador)
             );
             displayEvents(filtered);
         }
@@ -2550,7 +2846,8 @@ Exemplo:
             sunday.setDate(today.getDate() + daysUntilSunday);
             const dateStr = sunday.toLocaleDateString('pt-BR');
             const filtered = allEvents.filter(event => 
-                event.data[15] && event.data[15].includes(dateStr)
+                (event.data[15] && event.data[15].includes(dateStr)) || 
+                (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador)
             );
             displayEvents(filtered);
         }
@@ -2561,7 +2858,8 @@ Exemplo:
             const date = new Date(parts[0], parts[1] - 1, parts[2]);
             const formattedDate = date.toLocaleDateString('pt-BR');
             const filtered = allEvents.filter(event => 
-                event.data[15] && event.data[15].includes(formattedDate)
+                (event.data[15] && event.data[15].includes(formattedDate)) || 
+                (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador)
             );
             displayEvents(filtered);
         }
@@ -2578,10 +2876,21 @@ Exemplo:
                 const eventDateStr = event.deliveryDate;
                 if (!eventDateStr) return false;
                 
-                return isTodayOrFuture(eventDateStr);
+                return isTodayOrFuture(eventDateStr) || 
+                       (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador);
             });
             
-            filtered.sort(compareDatesForSorting);
+            filtered.sort((a, b) => {
+                // Pedidos de outra cidade primeiro
+                const outraCidadeA = isOutraCidade(a.data) && !getEntregadorStatus(a.data).hasEntregador;
+                const outraCidadeB = isOutraCidade(b.data) && !getEntregadorStatus(b.data).hasEntregador;
+                
+                if (outraCidadeA && !outraCidadeB) return -1;
+                if (!outraCidadeA && outraCidadeB) return 1;
+                
+                return compareDatesForSorting(a, b);
+            });
+            
             console.log(`🖨️ Filtro "Sem Imprimir" encontrou ${filtered.length} eventos`);
             displayEvents(filtered);
         }
@@ -2602,7 +2911,7 @@ Exemplo:
             showNotification('🔄 Atualizando...', 'info');
         }
         
-        // FUNÇÕES PARA O BOTÃO 2
+        // FUNÇÕES PARA O BOTÃO 2 - CORRIGIDO: AGORA IMPRIME APENAS UMA FOLHA
         function openItemsModal(rowNumber) {
             const event = allEvents.find(e => e.rowNumber === rowNumber);
             if (!event) {
@@ -2673,6 +2982,7 @@ Exemplo:
             };
         }
         
+        // CORREÇÃO: AGORA GERA APENAS UMA FOLHA A4 COM LISTA NO TOPO E NO RODAPÉ
         function generateItemsPrintHTML(eventData, itemsText) {
             const itemsArray = itemsText.split('\n').filter(item => item.trim() !== '');
             const { columns, fits, totalLines } = distributeItemsToColumns(itemsArray);
@@ -2682,7 +2992,9 @@ Exemplo:
                 return '';
             }
             
-            let columnsHTML = '';
+            let columnsHTMLTop = '';
+            let columnsHTMLBottom = '';
+            
             for (let i = 0; i < 3; i++) {
                 let columnContent = '';
                 if (columns[i] && columns[i].length > 0) {
@@ -2705,44 +3017,39 @@ Exemplo:
                     columnContent += '</ul>';
                 }
                 
-                columnsHTML += `
+                const columnHTML = `
                     <div class="items-column-print">
                         <div class="items-column-content-print">
                             ${columnContent}
                         </div>
                     </div>
                 `;
+                
+                columnsHTMLTop += columnHTML;
+                columnsHTMLBottom += columnHTML;
             }
             
+            // UMA FOLHA A4 COM LISTA NO TOPO E OUTRA NO RODAPÉ
             return `
                 <div class="a4-items-page">
+                    <!-- LISTA NO TOPO DA PÁGINA -->
                     <div class="items-top-section">
-                        <table class="items-borderless-table">
-                            <tr>
-                                <td>
-                                    <div class="items-multicolumn-container">
-                                        ${columnsHTML}
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
+                        <div class="items-multicolumn-container">
+                            ${columnsHTMLTop}
+                        </div>
                     </div>
-                    <div class="items-middle-section"></div>
+                    
+                    <!-- LISTA NO RODAPÉ DA PÁGINA -->
                     <div class="items-bottom-section">
-                        <table class="items-borderless-table">
-                            <tr>
-                                <td>
-                                    <div class="items-multicolumn-container">
-                                        ${columnsHTML}
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
+                        <div class="items-multicolumn-container">
+                            ${columnsHTMLBottom}
+                        </div>
                     </div>
                 </div>
             `;
         }
         
+        // ============= FUNÇÃO CORRIGIDA: saveAndPrintItems =============
         async function saveAndPrintItems() {
             const textarea = document.getElementById('itemsTextarea');
             const saveBtn = document.getElementById('saveItemsBtn');
@@ -2762,9 +3069,20 @@ Exemplo:
             
             showLoading('Salvando itens...');
             
+            // Verificar linha atual
+            const event = allEvents.find(e => e.rowNumber === currentRowNumber);
+            if (!event) {
+                showNotification('❌ Pedido não encontrado. Atualize a página.', 'error');
+                hideLoading();
+                return;
+            }
+            
+            const orderNumber = getOrderNumber(event.data);
+            
             const payload = {
                 senha: '562938',
                 linha: currentRowNumber,
+                numero_pedido: orderNumber,
                 tipo: 'itens',
                 itens: itemsText
             };
@@ -2784,17 +3102,12 @@ Exemplo:
                     return;
                 }
                 
-                document.getElementById('printItemsContent').innerHTML = itemsPrintHTML;
-                document.getElementById('printItemsContent').style.display = 'block';
-                
-                setTimeout(() => {
-                    window.print();
-                    setTimeout(() => {
-                        document.getElementById('printItemsContent').style.display = 'none';
-                        closeItemsModal();
-                        applyCurrentFilter();
-                    }, 100);
-                }, 1000);
+                // ============= CORREÇÃO PRINCIPAL =============
+                // Usar a nova função de impressão isolada em iframe
+                printIsolatedContent(itemsPrintHTML).then(() => {
+                    closeItemsModal();
+                    applyCurrentFilter();
+                });
                 
             } else {
                 showNotification('❌ ' + result.message, 'error');
@@ -2926,7 +3239,7 @@ Exemplo:
             document.getElementById('printContent').innerHTML = generateFichaHTML(currentPrintEventData, codigo);
         }
         
-        // Gerar ficha HTML para impressão - COM JUSTIFICATIVA ANÔNIMO FORA DA FICHA
+        // Gerar ficha HTML para impressão - COM CORREÇÃO DO CAMPO BAIRRO
         function generateFichaHTML(eventData, codigo) {
             const anonimoInfo = getAnonimoStatus(eventData);
             let formaPagamento = getFormaPagamento(eventData);
@@ -2964,17 +3277,59 @@ Exemplo:
             const bairro = eventData[12] || '';
             const cidade = eventData[13] || '';
             const referenciaEndereco = eventData[14] || '';
-            // Extrair apenas a data
-            const dataCompleta = eventData[15] || '';
-            const partes = dataCompleta.split(' - ');
-            const data = partes[0] || dataCompleta;
-            const diaSemana = getDiaSemana(data);
-            const horario = extractCleanTime(eventData[16] || eventData[43] || '');
+            
+            // Verificar se é pedido de outra cidade
+            const isOutraCidadeEvent = isOutraCidade(eventData);
+            const colunaBD = eventData[55] || '';
+            const infoBD = extractInfoFromBD(colunaBD);
+            
+            // Determinar data e horário com base no tipo de pedido
+            let dataDisplay = '';
+            let horarioDisplay = '';
+            let diaSemanaDisplay = '';
+            let cidadeComCEP = cidade;
+            
+            if (isOutraCidadeEvent && infoBD.prazo) {
+                // Para pedidos de outra cidade, usar informações da coluna BD
+                dataDisplay = infoBD.prazo;
+                horarioDisplay = infoBD.frete || 'A COMBINAR';
+                diaSemanaDisplay = '';
+                
+                // Adicionar CEP à cidade se disponível
+                if (infoBD.cep) {
+                    cidadeComCEP = `${cidade} - ${infoBD.cep}`;
+                }
+            } else {
+                // Para pedidos normais, usar informações padrão
+                const dataCompleta = eventData[15] || '';
+                const partes = dataCompleta.split(' - ');
+                const data = partes[0] || dataCompleta;
+                const diaSemana = getDiaSemana(data);
+                const horario = extractCleanTime(eventData[16] || eventData[43] || '');
+                
+                dataDisplay = data;
+                horarioDisplay = horario;
+                diaSemanaDisplay = diaSemana ? ' - ' + diaSemana : '';
+            }
+            
             const recebedor = eventData[8] || '';
             const produtoDescricao = eventData[3] || '';
             const mensagemCentral = eventData[18] || '';
             const colunaAW = eventData[48] || '';
             const colunaA = eventData[0] || '';
+            
+            // Verificar se endereço está em branco
+            let fichaEndereco = '';
+            let fichaBairroCidade = '';
+            
+            if (!endereco.trim() && !bairro.trim() && !cidade.trim()) {
+                fichaEndereco = '<span style="font-weight: bold; color: #D32F2F;">(RETIRADA LOJA)</span>';
+                fichaBairroCidade = '<span style="font-weight: bold; color: #D32F2F;">(RETIRADA LOJA)</span>';
+            } else {
+                fichaEndereco = endereco;
+                // CORREÇÃO: Apenas o bairro no campo "Bairro" (sem a cidade)
+                fichaBairroCidade = bairro;
+            }
             
             const fichaSuperiorCliente = cliente;
             const fichaSuperiorTelefone = telefone;
@@ -3018,10 +3373,10 @@ Exemplo:
                             <tr>
                                 <td class="bg-gray">Endereço entrega</td>
                                 <td colspan="2" style="font-size: ${fontSettings.endereco}px !important;">
-                                    ${endereco}
+                                    ${fichaEndereco}
                                 </td>
                                 <td colspan="2" style="font-size: ${fontSettings.bairro}px !important; font-weight: bold;">
-                                    ${bairro}
+                                    ${fichaBairroCidade}
                                 </td>
                             </tr>
                             <tr>
@@ -3030,7 +3385,7 @@ Exemplo:
                                     ${colunaLContent}
                                 </td>
                                 <td colspan="2" style="font-size: ${fontSettings.cidade}px !important;">
-                                    ${cidade}
+                                    ${cidadeComCEP}
                                 </td>
                             </tr>
                             <tr>
@@ -3040,12 +3395,12 @@ Exemplo:
                                 </td>
                             </tr>
                             <tr>
-                                <td class="bg-gray">Dia da Entrega</td>
+                                <td class="bg-gray">${isOutraCidadeEvent ? 'Prazo Entrega' : 'Dia da Entrega'}</td>
                                 <td colspan="2" class="delivery-day" style="font-size: ${fontSettings.dia_entrega}px !important;">
-                                    <b>${data}${diaSemana ? ' - ' + diaSemana : ''}</b>
+                                    <b>${dataDisplay}${diaSemanaDisplay}</b>
                                 </td>
                                 <td colspan="2" class="delivery-time" style="font-size: ${fontSettings.horario_entrega}px !important;">
-                                    <b>${horario}</b>
+                                    <b>${horarioDisplay}</b>
                                 </td>
                             </tr>
                             <tr>
@@ -3119,10 +3474,10 @@ Exemplo:
                             <tr>
                                 <td class="bg-gray">Endereço entrega</td>
                                 <td colspan="2" style="font-size: ${fontSettings.endereco}px !important;">
-                                    ${endereco}
+                                    ${fichaEndereco}
                                 </td>
                                 <td colspan="2" style="font-size: ${fontSettings.bairro}px !important; font-weight: bold;">
-                                    ${bairro}
+                                    ${fichaBairroCidade}
                                 </td>
                             </tr>
                             <tr>
@@ -3131,7 +3486,7 @@ Exemplo:
                                     ${colunaLContent}
                                 </td>
                                 <td colspan="2" style="font-size: ${fontSettings.cidade}px !important;">
-                                    ${cidade}
+                                    ${cidadeComCEP}
                                 </td>
                             </tr>
                             <tr>
@@ -3141,12 +3496,12 @@ Exemplo:
                                 </td>
                             </tr>
                             <tr>
-                                <td class="bg-gray">Dia da Entrega</td>
+                                <td class="bg-gray">${isOutraCidadeEvent ? 'Prazo Entrega' : 'Dia da Entrega'}</td>
                                 <td colspan="2" class="delivery-day" style="font-size: ${fontSettings.dia_entrega}px !important;">
-                                    <b>${data}${diaSemana ? ' - ' + diaSemana : ''}</b>
+                                    <b>${dataDisplay}${diaSemanaDisplay}</b>
                                 </td>
                                 <td colspan="2" class="delivery-time" style="font-size: ${fontSettings.horario_entrega}px !important;">
-                                    <b>${horario}</b>
+                                    <b>${horarioDisplay}</b>
                                 </td>
                             </tr>
                             <tr>
@@ -3226,9 +3581,20 @@ Exemplo:
             
             const codigoComNome = `${generatedPrintCode} - ${conferenteName}`;
             
+            // Verificar linha atual antes de salvar
+            const event = allEvents.find(e => e.rowNumber === currentRowNumber);
+            if (!event) {
+                showNotification('❌ Pedido não encontrado. Atualize a página.', 'error');
+                hideLoading();
+                return;
+            }
+            
+            const orderNumber = getOrderNumber(event.data);
+            
             const payload = {
                 senha: '562938',
                 linha: currentRowNumber,
+                numero_pedido: orderNumber,
                 tipo: 'imprimir',
                 codigo: codigoComNome
             };
@@ -3238,14 +3604,19 @@ Exemplo:
             
             if (result.success) {
                 showNotification('✅ Impressão confirmada!', 'success');
-                setTimeout(() => {
-                    printA4Page();
+                
+                // ============= CORREÇÃO: Usar impressão isolada =============
+                const codigo = extractCodeFromColunaA(currentPrintEventData[0] || '');
+                const printHTML = generateFichaHTML(currentPrintEventData, codigo);
+                
+                printIsolatedContent(printHTML).then(() => {
                     closePrintModal();
                     closeCodeModal();
                     setTimeout(() => {
                         fetchData();
                     }, 500);
-                }, 500);
+                });
+                
             } else {
                 showNotification('❌ ' + result.message, 'error');
             }
@@ -3256,13 +3627,16 @@ Exemplo:
         async function verifyExistingPrintCode() {
             showLoading('Imprimindo ficha...');
             
-            setTimeout(() => {
-                printA4Page();
+            const codigo = extractCodeFromColunaA(currentPrintEventData[0] || '');
+            const printHTML = generateFichaHTML(currentPrintEventData, codigo);
+            
+            // ============= CORREÇÃO: Usar impressão isolada =============
+            printIsolatedContent(printHTML).then(() => {
                 closeCodeModal();
                 closePrintModal();
                 showNotification('✅ Ficha reimpressa!', 'success');
                 hideLoading();
-            }, 1000);
+            });
         }
         
         function closeCodeModal() {
@@ -3273,8 +3647,13 @@ Exemplo:
             document.getElementById('printModal').style.display = 'none';
         }
         
+        // ============= FUNÇÃO printA4Page ATUALIZADA =============
         function printA4Page() {
-            window.print();
+            // Esta função agora é mantida para compatibilidade
+            // A impressão real é feita pela função printIsolatedContent
+            const codigo = extractCodeFromColunaA(currentPrintEventData[0] || '');
+            const printHTML = generateFichaHTML(currentPrintEventData, codigo);
+            printIsolatedContent(printHTML);
         }
         
         // Funções de ação (montador/entregador)
@@ -3351,9 +3730,20 @@ Exemplo:
             
             showLoading('Salvando...');
             
+            // Verificar linha atual
+            const event = allEvents.find(e => e.rowNumber === currentRowNumber);
+            if (!event) {
+                showNotification('❌ Pedido não encontrado. Atualize a página.', 'error');
+                hideLoading();
+                return;
+            }
+            
+            const orderNumber = getOrderNumber(event.data);
+            
             const payload = {
                 senha: '562938',
-                linha: currentRowNumber
+                linha: currentRowNumber,
+                numero_pedido: orderNumber
             };
             
             switch(currentActionType) {
@@ -3674,6 +4064,14 @@ Exemplo:
                     value: eventData[50] || '', 
                     editable: true,
                     type: 'text'
+                },
+                { 
+                    index: 55, 
+                    label: 'Informações Outra Cidade (BD)', 
+                    value: eventData[55] || '', 
+                    editable: true,
+                    type: 'textarea',
+                    rows: 3
                 }
             ];
             
@@ -3709,7 +4107,7 @@ Exemplo:
                     const requiredAttr = field.required ? 'required' : '';
                     
                     formHTML += `
-                        <div class="form-group${field.index === 18 ? ' form-group-full-width' : ''}">
+                        <div class="form-group${field.index === 18 || field.index === 55 ? ' form-group-full-width' : ''}">
                             <label class="form-label">${field.label}:${field.required ? ' *' : ''}</label>
                             <textarea class="form-textarea" data-index="${field.index}" rows="${rows}" ${requiredAttr}>${field.value}</textarea>
                         </div>
