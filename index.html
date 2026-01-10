@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Controle - Versão Final Ajustada</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    
+    <!-- ===================================================== -->
+    <!-- (001) CSS PRINCIPAL - SEPARADO POR SEÇÕES NUMERADAS -->
+    <!-- ===================================================== -->
     <style type="text/css">
+        /* ===================================================== */
+        /* (001-001) RESET E CONFIGURAÇÕES GERAIS */
+        /* ===================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
@@ -15,10 +22,12 @@
             color: #333;
         }
         
-        /* ALERTA DE PEDIDOS ATRASADOS - AMARELO MAIS FORTE */
+        /* ===================================================== */
+        /* (001-002) ALERTA DE PEDIDOS ATRASADOS - AMARELO FORTE */
+        /* ===================================================== */
         .late-alert {
             display: none;
-            background-color: #FFEB3B; /* AMARELO BEM FORTE */
+            background-color: #FFEB3B;
             border: 3px solid #FF9800;
             border-radius: 6px;
             padding: 12px 15px;
@@ -29,7 +38,7 @@
         }
         
         .late-alert h3 {
-            color: #D84315; /* LARANJA ESCURO PARA CONTRASTE */
+            color: #D84315;
             font-size: 18px;
             font-weight: bold;
             margin: 0;
@@ -51,7 +60,9 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
         }
         
-        /* HEADER COMPACTO */
+        /* ===================================================== */
+        /* (001-003) HEADER COMPACTO COM NAVEGAÇÃO POR SETAS */
+        /* ===================================================== */
         .header-container {
             background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
             color: white;
@@ -73,13 +84,46 @@
             flex-wrap: wrap;
         }
         
-        .header-title {
-            font-size: 20px;
-            font-weight: 700;
+        .header-title-container {
             display: flex;
             align-items: center;
             gap: 8px;
             white-space: nowrap;
+            min-width: 280px;
+            justify-content: center;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            min-width: 200px;
+        }
+        
+        .nav-arrows {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
         }
         
         .header-controls {
@@ -95,7 +139,9 @@
             gap: 10px;
         }
         
-        /* BARRA DE BUSCA */
+        /* ===================================================== */
+        /* (001-004) BARRA DE BUSCA E CONTROLES DE DATA */
+        /* ===================================================== */
         .search-container {
             display: flex;
             align-items: center;
@@ -134,6 +180,18 @@
             background-color: #1976D2;
         }
         
+        input[type="date"] {
+            padding: 6px 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            font-size: 12px;
+            width: 120px;
+            background: rgba(255,255,255,0.9);
+        }
+        
+        /* ===================================================== */
+        /* (001-005) BOTÕES - ESTILOS GERAIS */
+        /* ===================================================== */
         .btn {
             padding: 6px 12px;
             border: none;
@@ -211,8 +269,10 @@
         .btn-orange:hover { background-color: #E64A19; }
         .btn-formulario { background-color: #673AB7; color: white; }
         .btn-formulario:hover { background-color: #512DA8; }
+        .btn-envios { background-color: #FF9800; color: white; }
+        .btn-envios:hover { background-color: #F57C00; }
         
-        /* BADGE PARA CONTADOR DE SEM IMPRIMIR - CORRIGIDO PARA FICAR AO LADO */
+        /* BADGE PARA CONTADOR DE SEM IMPRIMIR */
         .unprinted-badge {
             background: #000000;
             color: white;
@@ -245,16 +305,9 @@
             gap: 5px;
         }
         
-        input[type="date"] {
-            padding: 6px 8px;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 4px;
-            font-size: 12px;
-            width: 120px;
-            background: rgba(255,255,255,0.9);
-        }
-        
-        /* CARDS DE EVENTOS - 5 POR LINHA */
+        /* ===================================================== */
+        /* (001-006) CARDS DE EVENTOS - LAYOUT RESPONSIVO */
+        /* ===================================================== */
         .event-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -325,21 +378,21 @@
         }
         
         .event-card.finalized {
-            background: #e0e0e0 !important; /* CINZA MAIS ESCURO */
+            background: #e0e0e0 !important;
             border-color: #9e9e9e;
             color: #616161 !important;
         }
         
-        /* ESTILO PARA PEDIDOS DE OUTRA CIDADE - LARANJA (antes da impressão) e AMARELO (após impressão) */
+        /* ESTILO PARA PEDIDOS DE OUTRA CIDADE */
         .event-card.outra-cidade {
-            background: #FFE0B2 !important; /* LARANJA (igual aos outros não impressos) */
+            background: #FFE0B2 !important;
             border-color: #FF5722 !important;
             border-width: 3px !important;
             box-shadow: 0 2px 8px rgba(255, 87, 34, 0.3) !important;
         }
         
         .event-card.outra-cidade.impresso {
-            background: #FFF9C4 !important; /* AMARELO (após impressão) */
+            background: #FFF9C4 !important;
             border-color: #FFD600 !important;
             box-shadow: 0 2px 8px rgba(255, 213, 0, 0.3) !important;
         }
@@ -381,6 +434,9 @@
             background-color: #9e9e9e !important;
         }
         
+        /* ===================================================== */
+        /* (001-007) DETALHES DO CARD DE EVENTO */
+        /* ===================================================== */
         .order-number {
             background: #F44336;
             color: white;
@@ -467,7 +523,6 @@
             font-weight: 500;
         }
         
-        /* NÚMERO DO PEDIDO E CUPOM - LADO A LADO */
         .order-details {
             display: flex;
             justify-content: flex-end;
@@ -498,7 +553,6 @@
             font-weight: 600;
         }
         
-        /* NOME DO PRODUTO COM LIMITE DE 2 LINHAS */
         .product-name {
             font-size: 16px;
             color: #2E7D32;
@@ -606,7 +660,9 @@
             cursor: not-allowed !important;
         }
         
-        /* MODAIS */
+        /* ===================================================== */
+        /* (001-008) MODAIS - ESTILOS GERAIS */
+        /* ===================================================== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -671,7 +727,9 @@
             overflow-y: auto;
         }
         
-        /* IMPRESSÃO A4 - COM MARGENS MAIORES */
+        /* ===================================================== */
+        /* (001-009) IMPRESSÃO A4 - FICHA DE ENTREGA */
+        /* ===================================================== */
         .a4-page {
             width: 210mm !important;
             height: 297mm !important;
@@ -736,7 +794,6 @@
             width: 25%;
         }
         
-        /* ESTILOS ESPECÍFICOS COM TAMANHOS MAIORES */
         .a4-page .delivery-day {
             font-weight: bold;
             font-size: 16px !important;
@@ -802,7 +859,9 @@
             padding-right: 120px;
         }
         
-        /* CONTROLES DE TAMANHO DO TEXTO */
+        /* ===================================================== */
+        /* (001-010) CONTROLES DE TEXTO PARA IMPRESSÃO */
+        /* ===================================================== */
         .text-size-controls {
             position: absolute;
             right: -5px;
@@ -861,7 +920,6 @@
             transform: scale(1.1);
         }
         
-        /* NOVO: JUSTIFICATIVA ANÔNIMO FORA DA FICHA */
         .anonimo-justificativa-print {
             font-size: 12px !important;
             color: #666 !important;
@@ -878,7 +936,6 @@
             width: 100%;
         }
         
-        /* CONTROLES DE IMPRESSÃO */
         .print-controls {
             background: #f8f9fa;
             padding: 10px 12px;
@@ -891,7 +948,9 @@
             gap: 10px;
         }
         
-        /* ESTILOS PARA LISTA DE ITENS (BOTÃO 2) - MODAL MAIS ALTO */
+        /* ===================================================== */
+        /* (001-011) MODAL DE ITENS (BOTÃO 2) */
+        /* ===================================================== */
         .items-container {
             width: 100%;
             max-width: 800px;
@@ -940,7 +999,7 @@
             color: #f44336;
         }
         
-        /* PÁGINA DE IMPRESSÃO DOS ITENS (BOTÃO 2) - CORRIGIDO: UMA FOLHA COM LISTA NO TOPO E NO RODAPÉ */
+        /* PÁGINA DE IMPRESSÃO DOS ITENS */
         .a4-items-page {
             width: 210mm !important;
             height: 297mm !important;
@@ -1035,7 +1094,9 @@
             vertical-align: top;
         }
         
-        /* MODAL DE CÓDIGO COM NOME DO CONFERENTE */
+        /* ===================================================== */
+        /* (001-012) MODAIS DE CONFIRMAÇÃO */
+        /* ===================================================== */
         .code-with-name-modal {
             background: white !important;
             border-radius: 8px;
@@ -1073,7 +1134,6 @@
             border-color: #ff9800;
         }
         
-        /* MODAL DE CONFIRMAÇÃO PARA MONTADOR/ENTREGADOR */
         .confirmation-modal {
             background: white !important;
             border-radius: 8px;
@@ -1084,7 +1144,9 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         
-        /* MODAL DE EDIÇÃO - COM AJUSTES SOLICITADOS */
+        /* ===================================================== */
+        /* (001-013) MODAL DE EDIÇÃO */
+        /* ===================================================== */
         .edit-modal-content {
             background: white;
             border-radius: 8px;
@@ -1198,7 +1260,9 @@
             margin-bottom: 15px;
         }
         
-        /* BOTÃO DE CANCELAR PEDIDO DENTRO DO MODAL DE EDIÇÃO */
+        /* ===================================================== */
+        /* (001-014) SEÇÃO DE CANCELAMENTO */
+        /* ===================================================== */
         .cancel-section {
             background: #fff8f8;
             border: 2px solid #ffcdd2;
@@ -1240,7 +1304,9 @@
             border-left: 3px solid #f44336;
         }
         
-        /* OUTROS COMPONENTES */
+        /* ===================================================== */
+        /* (001-015) OUTROS COMPONENTES */
+        /* ===================================================== */
         .status-notification {
             position: fixed;
             top: 15px;
@@ -1327,19 +1393,19 @@
             color: #2E7D32;
         }
         
+        /* ===================================================== */
+        /* (001-016) ESTILOS DE IMPRESSÃO */
+        /* ===================================================== */
         @media print {
-            /* CORREÇÃO CRÍTICA: NÃO USAR display: none */
             body * { 
                 visibility: hidden !important; 
             }
             
-            /* MOSTRAR APENAS AS PÁGINAS A4 */
             .a4-page, .a4-page *, 
             .a4-items-page, .a4-items-page * { 
                 visibility: visible !important; 
             }
             
-            /* POSICIONAMENTO ABSOLUTO PARA EVITAR QUEBRAS */
             .a4-page, .a4-items-page {
                 position: absolute !important;
                 top: 0 !important;
@@ -1352,13 +1418,11 @@
                 page-break-inside: avoid !important;
             }
             
-            /* REMOVER MARGENS DO @page */
             @page {
                 margin: 0 !important;
                 size: A4;
             }
             
-            /* REMANEJAR O RESTO DO CSS EXISTENTE (mantenha tudo que já tinha) */
             .text-size-controls, .copy-btn {
                 display: none !important;
             }
@@ -1405,7 +1469,9 @@
             }
         }
         
-        /* NOVO: ESTILO PARA NÚMERO DO PEDIDO NA IMPRESSÃO */
+        /* ===================================================== */
+        /* (001-017) ESTILOS ADICIONAIS */
+        /* ===================================================== */
         .order-number-print {
             font-size: 12px !important;
             font-weight: bold;
@@ -1414,7 +1480,6 @@
             margin-left: 5px;
         }
         
-        /* NÚMERO DO PEDIDO NO PAINEL - ABAIXO DO TOTAL */
         .order-number-panel {
             font-size: 10px !important;
             color: #9C27B0 !important;
@@ -1424,7 +1489,6 @@
             text-align: right;
         }
         
-        /* ESTILO PARA ENDEREÇO EM BRANCO */
         .address-retirada {
             font-weight: bold !important;
             color: #D32F2F !important;
@@ -1432,7 +1496,6 @@
             text-transform: uppercase;
         }
         
-        /* ESTILO PARA PEDIDOS DE OUTRA CIDADE */
         .outra-cidade-badge {
             background-color: #FFD600;
             color: #000;
@@ -1442,10 +1505,46 @@
             font-weight: bold;
             margin-left: 5px;
         }
+        
+        /* NOVO: ESTILOS PARA CONTROLES DE DATA NO MODAL DE ENTREGADOR (OUTRA CIDADE) */
+        .date-input-container {
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .date-input-container.active {
+            display: block;
+        }
+        
+        .date-input-label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .date-input {
+            width: 120px;
+            padding: 8px;
+            font-size: 14px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            background-color: #fff8e1;
+        }
+        
+        .date-input:focus {
+            background-color: #fff3cd;
+            border-color: #ff9800;
+        }
     </style>
 </head>
 <body>
-    <!-- NOTIFICAÇÕES -->
+    <!-- ===================================================== -->
+    <!-- (002) COMPONENTES DE INTERFACE - NOTIFICAÇÕES E LOADING -->
+    <!-- ===================================================== -->
     <div class="status-notification" id="statusNotification"></div>
 
     <div class="loading-overlay" id="loadingOverlay">
@@ -1453,23 +1552,33 @@
         <div class="loading-text" id="loadingText">Processando...</div>
     </div>
 
-    <!-- ALERTA DE PEDIDOS ATRASADOS - AMARELO FORTE -->
+    <!-- ===================================================== -->
+    <!-- (003) ALERTA DE PEDIDOS ATRASADOS -->
+    <!-- ===================================================== -->
     <div class="late-alert" id="lateAlert">
         <h3>⚠️ ATENÇÃO - PEDIDOS ATRASADOS <span class="late-count" id="lateCount">0</span></h3>
     </div>
 
-    <!-- HEADER COMPACTO COM BOTÃO FORMULÁRIO -->
+    <!-- ===================================================== -->
+    <!-- (004) HEADER COM NAVEGAÇÃO POR SETAS E BOTÃO ENVIOS -->
+    <!-- ===================================================== -->
     <div class="header-container">
         <div class="header-left">
-            <h1 class="header-title">📊 Painel Controle</h1>
+            <div class="header-title-container">
+                <button class="nav-btn" onclick="navigateDate(-1)" title="Dia anterior">◀</button>
+                <h1 class="header-title" id="currentDateTitle">📊 Painel Controle</h1>
+                <button class="nav-btn" onclick="navigateDate(1)" title="Próximo dia">▶</button>
+            </div>
             <div class="header-controls">
                 <button class="btn btn-primary" onclick="filterToday()">Hoje</button>
-                <button class="btn btn-primary" onclick="filterTomorrow()">Amanhã</button>
                 <button class="btn btn-primary" onclick="filterNextSunday()">Domingo</button>
+                <input id="datePicker" onchange="filterByDate(this.value)" type="date" />
                 <button class="btn btn-orange" onclick="filterUnprinted()">
                     🖨️ Sem Imprimir <span class="unprinted-badge" id="unprintedCountBadge">0</span>
                 </button>
-                <input id="datePicker" onchange="filterByDate(this.value)" type="date" />
+                <button class="btn btn-envios" onclick="filterEnvios()">
+                    📦 Envios
+                </button>
                 <div class="search-container">
                     <input type="text" class="search-input" id="searchInput" placeholder="Buscar pedido..." onkeyup="if(event.keyCode===13) performSearch()">
                     <button class="btn-search" onclick="performSearch()">🔍 Buscar</button>
@@ -1489,10 +1598,14 @@
         </div>
     </div>
 
-    <!-- LISTA DE EVENTOS -->
+    <!-- ===================================================== -->
+    <!-- (005) LISTA DE EVENTOS -->
+    <!-- ===================================================== -->
     <div class="event-container" id="eventList"></div>
 
-    <!-- Modal de impressão (Página 1) -->
+    <!-- ===================================================== -->
+    <!-- (006) MODAL DE IMPRESSÃO (PÁGINA 1) -->
+    <!-- ===================================================== -->
     <div class="modal-overlay" id="printModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1517,7 +1630,9 @@
         </div>
     </div>
 
-    <!-- Modal para itens (Botão 2) - CORRIGIDO: AGORA IMPRIME APENAS UMA FOLHA -->
+    <!-- ===================================================== -->
+    <!-- (007) MODAL PARA ITENS (BOTÃO 2) -->
+    <!-- ===================================================== -->
     <div class="modal-overlay" id="itemsModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1561,7 +1676,9 @@ Exemplo:
         </div>
     </div>
 
-    <!-- Modal de código de impressão COM NOME DO CONFERENTE -->
+    <!-- ===================================================== -->
+    <!-- (008) MODAL DE CÓDIGO DE IMPRESSÃO COM NOME DO CONFERENTE -->
+    <!-- ===================================================== -->
     <div class="modal-overlay" id="codeModal">
         <div class="code-with-name-modal">
             <h2 style="margin-bottom: 10px; color: #333;">🔒 Confirmação de Impressão</h2>
@@ -1600,11 +1717,32 @@ Exemplo:
         </div>
     </div>
 
-    <!-- Modal de confirmação para montador/entregador -->
+    <!-- ===================================================== -->
+    <!-- (009) MODAL DE CONFIRMAÇÃO PARA MONTADOR/ENTREGADOR -->
+    <!-- ===================================================== -->
     <div class="modal-overlay" id="confirmationModal">
         <div class="confirmation-modal">
             <h2 id="confirmationTitle" style="margin-bottom: 10px;">Confirmar Ação</h2>
             <p id="confirmationMessage" style="color: #666; margin-bottom: 12px;">Digite seu nome para confirmar:</p>
+            
+            <!-- CONTROLE DE DATA PARA ENTREGADOR DE OUTRA CIDADE -->
+            <div class="date-input-container" id="dateInputContainer">
+                <label class="date-input-label">
+                    Data do Envio (DD/MM/YYYY) <span style="color: #ff5722;">*OBRIGATÓRIO*</span>:
+                </label>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                    <input class="date-input" id="dayInput" maxlength="2" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="DD" style="width: 40px;" type="text" />
+                    /
+                    <input class="date-input" id="monthInput" maxlength="2" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="MM" style="width: 40px;" type="text" />
+                    /
+                    <input class="date-input" id="yearInput" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="YYYY" style="width: 60px;" type="text" />
+                </div>
+                <div style="font-size: 11px; color: #666; margin-top: 3px; text-align: center;">
+                    Exemplo: 27/01/2026
+                </div>
+            </div>
+            
+            <!-- CONTROLE DE HORÁRIO PARA MONTADOR -->
             <div id="timeInputContainer" style="display: none; margin: 10px 0;">
                 <label style="display: block; text-align: left; margin-bottom: 5px; font-size: 14px; color: #333;">
                     Horário (HH:MM) <span style="color: #ff5722;">*OBRIGATÓRIO*</span>:
@@ -1618,6 +1756,7 @@ Exemplo:
                     Exemplo: 09:30 para 9h30
                 </div>
             </div>
+            
             <input class="code-name-input" id="completerName" placeholder="Seu nome completo" style="width: 100%; padding: 8px; font-size: 14px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px;" type="text" />
             <div style="margin-top: 15px; display: flex; gap: 8px; justify-content: center;">
                 <button class="btn btn-secondary" onclick="cancelCompletion()">Cancelar</button>
@@ -1626,7 +1765,9 @@ Exemplo:
         </div>
     </div>
 
-    <!-- Modal de edição -->
+    <!-- ===================================================== -->
+    <!-- (010) MODAL DE EDIÇÃO -->
+    <!-- ===================================================== -->
     <div class="edit-modal-overlay" id="editModal">
         <div class="edit-modal-content">
             <div class="modal-header">
@@ -1693,11 +1834,16 @@ Exemplo:
         </div>
     </div>
 
+    <!-- ===================================================== -->
+    <!-- (011) JAVASCRIPT PRINCIPAL - SEPARADO POR SEÇÕES NUMERADAS -->
+    <!-- ===================================================== -->
     <script>
-        // CONFIGURAÇÕES
+        // =====================================================
+        // (012) CONFIGURAÇÕES GERAIS E VARIÁVEIS GLOBAIS
+        // =====================================================
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby4KR-tUMGiO8r6W5g2YTuqsOAAhP7SFqv4UznPAC8JJx9dQlQ9gzpB0pq3hpnxE-Qt/exec';
         const SHEET_ID = '1zsIUvR7eHuk3A0rgjnKBv1niPPKTrdF9FW31onlevgA';
-        const RANGE = 'Respostas ao formulário 2!A:BE'; // Expandido para incluir colunas BD e BE (edições)
+        const RANGE = 'Respostas ao formulário 2!A:BE';
         const API_KEY = 'AIzaSyAtHI0KGE9dWSQIQQtQLS95i3kuLTD0bSM';
 
         // Configuração de usuários autorizados
@@ -1730,8 +1876,10 @@ Exemplo:
         const ALERT_DURATION = 10000; // 10 segundos
         let lastAlertTime = 0;
         let lastEventCount = 0;
-        let isCancelMode = false; // Novo: controla se está no modo cancelamento
-        let currentRowIdCache = {}; // Cache para mapear ID do pedido para linha atual
+        let isCancelMode = false;
+        let currentRowIdCache = {};
+        let currentDisplayDate = new Date(); // Data atualmente sendo exibida
+        let currentIsOutraCidadeAction = false; // Controla se é ação para outra cidade
         
         // CONFIGURAÇÃO DE FONTES
         const fontSettings = {
@@ -1762,124 +1910,10 @@ Exemplo:
         let currentRecipientFontSize = 22;
         const MAX_FONT_SIZE = 80;
         
-        // ============= FUNÇÃO CORRIGIDA PARA IMPRESSÃO ISOLADA =============
-function printIsolatedContent(htmlContent) {
-    return new Promise((resolve) => {
-        const iframe = document.createElement('iframe');
-        iframe.style.position = 'absolute';
-        iframe.style.width = '0';
-        iframe.style.height = '0';
-        iframe.style.border = 'none';
-        iframe.style.visibility = 'hidden';
-        document.body.appendChild(iframe);
-        
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        
-        // Coletar todos os estilos da página principal
-        const styles = Array.from(document.querySelectorAll('style'))
-            .map(style => style.innerHTML)
-            .join('\n');
-        
-        // Coletar estilos de links
-        const styleLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
-            .map(link => `<link rel="stylesheet" href="${link.href}">`)
-            .join('\n');
-        
-        iframeDoc.open();
-        iframeDoc.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Impressão</title>
-                ${styleLinks}
-                <style>
-                    ${styles}
-                    
-                    /* Estilos específicos para impressão no iframe */
-                    body {
-                        margin: 0;
-                        padding: 0;
-                        background: white;
-                    }
-                    
-                    @media print {
-                        body * {
-                            visibility: visible !important;
-                        }
-                        
-                        .a4-page, .a4-items-page {
-                            position: relative !important;
-                            top: 0 !important;
-                            left: 0 !important;
-                            margin: 0 auto !important;
-                            width: 210mm !important;
-                            height: 297mm !important;
-                            page-break-before: avoid !important;
-                            page-break-after: avoid !important;
-                            page-break-inside: avoid !important;
-                        }
-                        
-                        @page {
-                            margin: 0 !important;
-                            size: A4;
-                        }
-                        
-                        .text-size-controls, .copy-btn {
-                            display: none !important;
-                        }
-                    }
-                </style>
-            </head>
-            <body>
-                ${htmlContent}
-            </body>
-            </html>
-        `);
-        iframeDoc.close();
-        
-        // VARIÁVEL PARA CONTROLAR SE JÁ IMPRIMIU
-        let hasPrinted = false;
-        
-        function executePrint() {
-            // SE JÁ IMPRIMIU, NÃO IMPRIME DE NOVO
-            if (hasPrinted) return;
-            hasPrinted = true;
-            
-            try {
-                iframe.contentWindow.focus();
-                iframe.contentWindow.print();
-            } catch (error) {
-                console.log("Erro na impressão:", error);
-            }
-            
-            // Remover iframe após impressão (apenas uma vez)
-            setTimeout(() => {
-                if (document.body.contains(iframe)) {
-                    document.body.removeChild(iframe);
-                }
-                resolve();
-            }, 1500);
-        }
-        
-        // USAR APENAS UM MÉTODO - ESCOLHEMOS onload
-        iframe.onload = function() {
-            // Aguardar 500ms para garantir que tudo carregou
-            setTimeout(executePrint, 500);
-        };
-        
-        // FALLBACK SEGURO - SE O onload NÃO DISPARAR EM 3 SEGUNDOS
-        setTimeout(() => {
-            if (!hasPrinted) {
-                executePrint();
-            }
-        }, 3000);
-    });
-}
-// ============= FIM DA FUNÇÃO CORRIGIDA =============
-        
-        // Funções de utilidade
+        // =====================================================
+        // (013) FUNÇÕES DE UTILIDADE - DATA E FORMATAÇÃO
+        // =====================================================
+        // (013-001) Função para extrair código da coluna A
         function extractCodeFromColunaA(colunaA) {
             if (!colunaA) return '0000';
             const timeMatch = colunaA.match(/(\d{1,2}):(\d{2})/);
@@ -1891,6 +1925,7 @@ function printIsolatedContent(htmlContent) {
             return '0000';
         }
         
+        // (013-002) Função para extrair horário limpo
         function extractCleanTime(timeStr) {
             if (!timeStr) return 'Sem horário';
             const timeMatch = timeStr.match(/(\d{1,2}:\d{2})\s*às\s*(\d{1,2}:\d{2})/);
@@ -1900,6 +1935,7 @@ function printIsolatedContent(htmlContent) {
             return timeStr;
         }
         
+        // (013-003) Função para obter forma de pagamento
         function getFormaPagamento(eventData) {
             const colunaAG = eventData[32] || '';
             const pagamentoUpper = colunaAG.toString().trim().toUpperCase();
@@ -1913,14 +1949,17 @@ function printIsolatedContent(htmlContent) {
             return 'NÃO INFORMADO';
         }
         
+        // (013-004) Função para obter status de impressão
         function getPrintStatus(eventData) {
             return eventData[19] ? eventData[19].trim() !== '' : false;
         }
         
+        // (013-005) Função para obter código de impressão
         function getPrintCode(eventData) {
             return eventData[19] ? eventData[19].trim() : '';
         }
         
+        // (013-006) Função para obter nome do conferente do código
         function getConferenteNameFromCode(codigo) {
             if (!codigo || !codigo.includes(' - ')) return '';
             const partes = codigo.split(' - ');
@@ -1930,6 +1969,7 @@ function printIsolatedContent(htmlContent) {
             return '';
         }
         
+        // (013-007) Função para obter status do montador
         function getMontadorStatus(eventData) {
             const colunaU = eventData[20] || '';
             const horaMontador = eventData[44] || '';
@@ -1940,6 +1980,7 @@ function printIsolatedContent(htmlContent) {
             };
         }
         
+        // (013-008) Função para obter status do entregador
         function getEntregadorStatus(eventData) {
             const colunaH = eventData[7] || '';
             return {
@@ -1948,6 +1989,7 @@ function printIsolatedContent(htmlContent) {
             };
         }
         
+        // (013-009) Função para obter status anônimo
         function getAnonimoStatus(eventData) {
             const colunaAW = eventData[48] || '';
             const colunaAX = eventData[49] || '';
@@ -1959,30 +2001,34 @@ function printIsolatedContent(htmlContent) {
             };
         }
         
+        // (013-010) Função para obter itens da coluna V
         function getItemsFromColunaV(eventData) {
             return eventData[21] || '';
         }
         
+        // (013-011) Função para obter conteúdo da coluna J
         function getColunaJContent(eventData) {
             return eventData[9] || '';
         }
         
+        // (013-012) Função para obter conteúdo da coluna L
         function getColunaLContent(eventData) {
             return eventData[11] || '';
         }
         
+        // (013-013) Função para obter conteúdo da coluna R
         function getColunaRContent(eventData) {
             return eventData[17] || '';
         }
         
-        // FUNÇÃO: Extrair número do pedido da coluna BA (52)
+        // (013-014) Função para extrair número do pedido da coluna BA (52)
         function getOrderNumber(eventData) {
             const colunaBA = eventData[52] || '';
             if (colunaBA && colunaBA.trim() !== '') return colunaBA.toString().trim();
             return '';
         }
         
-        // FUNÇÃO: Extrair cupom da coluna AY (50)
+        // (013-015) Função para extrair cupom da coluna AY (50)
         function getCupomInfo(eventData) {
             const cupomText = eventData[50] || '';
             if (!cupomText) return '';
@@ -2000,29 +2046,28 @@ function printIsolatedContent(htmlContent) {
             return '';
         }
         
-        // FUNÇÃO: Obter histórico de edições das colunas BD e BE
+        // (013-016) Função para obter histórico de edições
         function getEditHistory(eventData) {
-            const colunaBD = eventData[55] || ''; // BD - Histórico de edições
-            const colunaBE = eventData[56] || ''; // BE - Última edição
+            const colunaBD = eventData[55] || '';
+            const colunaBE = eventData[56] || '';
             return {
                 fullHistory: colunaBD,
                 lastEdit: colunaBE
             };
         }
         
-        // NOVA FUNÇÃO: Verificar se é pedido de outra cidade (coluna BD)
+        // (013-017) Função para verificar se é pedido de outra cidade
         function isOutraCidade(eventData) {
-            const colunaBD = eventData[55] || ''; // Coluna BD
+            const colunaBD = eventData[55] || '';
             if (!colunaBD || colunaBD.trim() === '') return false;
             
-            // Verificar se contém informações de outra cidade
             return colunaBD.includes('OUTRA CIDADE:') || 
                    colunaBD.includes('CEP:') || 
                    colunaBD.includes('Frete:') ||
                    colunaBD.includes('Prazo:');
         }
         
-        // NOVA FUNÇÃO: Extrair informações da coluna BD
+        // (013-018) Função para extrair informações da coluna BD
         function extractInfoFromBD(colunaBD) {
             if (!colunaBD) return {};
             
@@ -2034,30 +2079,25 @@ function printIsolatedContent(htmlContent) {
                 valor: ''
             };
             
-            // Extrair cidade
             const cidadeMatch = colunaBD.match(/OUTRA CIDADE:\s*(.+?)(?=\s*-|$)/i);
             if (cidadeMatch) info.outraCidade = cidadeMatch[1].trim();
             
-            // Extrair CEP
             const cepMatch = colunaBD.match(/CEP:\s*(\d{5}-?\d{3})/i);
             if (cepMatch) info.cep = cepMatch[1].trim();
             
-            // Extrair frete
             const freteMatch = colunaBD.match(/Frete:\s*(.+?)(?=\s*-|$)/i);
             if (freteMatch) info.frete = freteMatch[1].trim();
             
-            // Extrair prazo
             const prazoMatch = colunaBD.match(/Prazo:\s*(.+?)(?=\s*-|$)/i);
             if (prazoMatch) info.prazo = prazoMatch[1].trim();
             
-            // Extrair valor
             const valorMatch = colunaBD.match(/Valor:\s*(R\$\s*\d+[.,]\d+)/i);
             if (valorMatch) info.valor = valorMatch[1].trim();
             
             return info;
         }
         
-        // FUNÇÃO: Atualizar histórico de edições
+        // (013-019) Função para atualizar histórico de edições
         function updateEditHistory(updates, editorName) {
             const now = new Date();
             const dateStr = now.toLocaleDateString('pt-BR');
@@ -2074,13 +2114,11 @@ function printIsolatedContent(htmlContent) {
             return editRecord;
         }
         
-        // FUNÇÃO CORRIGIDA: Obter dia da semana sem duplicação
+        // (013-020) Função para obter dia da semana
         function getDiaSemana(dataStr) {
             if (!dataStr) return '';
             
-            // Limpar a string para pegar apenas a data
             const dateStr = dataStr.split(' - ')[0] || dataStr;
-            
             const parts = dateStr.split('/');
             if (parts.length !== 3) return '';
             
@@ -2095,19 +2133,19 @@ function printIsolatedContent(htmlContent) {
             return dias[date.getDay()];
         }
         
+        // (013-021) Função para formatar moeda
         function formatCurrency(value) {
             return 'R$ ' + parseFloat(value || 0).toFixed(2).replace('.', ',');
         }
         
-        // Funções para converter datas
+        // (013-022) Função para converter datas
         function parseDate(dateStr) {
             if (!dateStr) return null;
             dateStr = dateStr.trim();
             
-            // Limpar dia da semana se existir
             const cleanDateStr = dateStr.split(' - ')[0] || dateStr;
-            
             const parts = cleanDateStr.split('/');
+            
             if (parts.length === 3) {
                 const day = parseInt(parts[0], 10);
                 const month = parseInt(parts[1], 10) - 1;
@@ -2123,6 +2161,7 @@ function printIsolatedContent(htmlContent) {
             return null;
         }
         
+        // (013-023) Função para verificar se data é hoje ou futuro
         function isTodayOrFuture(dateStr) {
             if (!dateStr) return false;
             const eventDate = parseDate(dateStr);
@@ -2135,6 +2174,7 @@ function printIsolatedContent(htmlContent) {
             return eventDate.getTime() >= today.getTime();
         }
         
+        // (013-024) Função para verificar se data é hoje
         function isToday(dateStr) {
             if (!dateStr) return false;
             const eventDate = parseDate(dateStr);
@@ -2147,6 +2187,7 @@ function printIsolatedContent(htmlContent) {
             return eventDate.getTime() === today.getTime();
         }
         
+        // (013-025) Função para comparar datas para ordenação
         function compareDatesForSorting(a, b) {
             const dateA = parseDate(a.deliveryDate);
             const dateB = parseDate(b.deliveryDate);
@@ -2171,7 +2212,31 @@ function printIsolatedContent(htmlContent) {
             return a.rowNumber - b.rowNumber;
         }
         
-        // Funções de UI
+        // (013-026) Função para extrair hora inicial
+        function extractStartTime(timeStr) {
+            if (!timeStr) return '99:99';
+            
+            const intervalMatch = timeStr.match(/(\d{1,2}):(\d{2})\s*às\s*\d{1,2}:\d{2}/);
+            if (intervalMatch) {
+                const hours = intervalMatch[1].padStart(2, '0');
+                const minutes = intervalMatch[2].padStart(2, '0');
+                return hours + ':' + minutes;
+            }
+            
+            const singleTimeMatch = timeStr.match(/(\d{1,2}):(\d{2})/);
+            if (singleTimeMatch) {
+                const hours = singleTimeMatch[1].padStart(2, '0');
+                const minutes = singleTimeMatch[2].padStart(2, '0');
+                return hours + ':' + minutes;
+            }
+            
+            return '99:99';
+        }
+        
+        // =====================================================
+        // (014) FUNÇÕES DE INTERFACE DO USUÁRIO
+        // =====================================================
+        // (014-001) Função para mostrar notificação
         function showNotification(message, type = 'info') {
             const notification = document.getElementById('statusNotification');
             notification.className = 'status-notification';
@@ -2184,16 +2249,40 @@ function printIsolatedContent(htmlContent) {
             }, 3000);
         }
         
+        // (014-002) Função para mostrar loading
         function showLoading(text = 'Processando...') {
             document.getElementById('loadingText').textContent = text;
             document.getElementById('loadingOverlay').style.display = 'flex';
         }
         
+        // (014-003) Função para esconder loading
         function hideLoading() {
             document.getElementById('loadingOverlay').style.display = 'none';
         }
         
-        // FUNÇÃO PARA TOCAR SOM DE TELEFONE - MAIS ALTO
+        // (014-004) Função para atualizar título da data
+        function updateDateTitle(date) {
+            const dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+            const diaSemana = dias[date.getDay()];
+            const dataFormatada = date.toLocaleDateString('pt-BR');
+            
+            document.getElementById('currentDateTitle').textContent = `${dataFormatada} - ${diaSemana}`;
+        }
+        
+        // (014-005) Função para navegar entre datas
+        function navigateDate(direction) {
+            currentDisplayDate.setDate(currentDisplayDate.getDate() + direction);
+            updateDateTitle(currentDisplayDate);
+            
+            // Aplicar filtro para a nova data
+            const dateStr = currentDisplayDate.toISOString().split('T')[0];
+            filterByDate(dateStr);
+        }
+        
+        // =====================================================
+        // (015) FUNÇÕES DE ÁUDIO E ALERTAS
+        // =====================================================
+        // (015-001) Função para tocar som de telefone
         function playPhoneSound() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -2206,24 +2295,21 @@ function printIsolatedContent(htmlContent) {
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 
-                oscillator.frequency.setValueAtTime(1000, audioContext.currentTime); // Frequência mais alta
+                oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
                 
                 gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.5, audioContext.currentTime + 0.1); // Volume mais alto
+                gainNode.gain.linearRampToValueAtTime(0.5, audioContext.currentTime + 0.1);
                 gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
                 
                 oscillator.start();
                 oscillator.stop(audioContext.currentTime + 0.5);
             }
             
-            // Primeiro toque
             playRing();
-            // Segundo toque mais alto
             setTimeout(() => {
                 if (audioContext.state !== 'running') audioContext.resume();
                 playRing();
             }, 600);
-            // Terceiro toque ainda mais alto
             setTimeout(() => {
                 if (audioContext.state !== 'running') audioContext.resume();
                 const oscillator = audioContext.createOscillator();
@@ -2232,23 +2318,23 @@ function printIsolatedContent(htmlContent) {
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 
-                oscillator.frequency.setValueAtTime(1200, audioContext.currentTime); // Frequência mais alta ainda
+                oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
                 
                 gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.7, audioContext.currentTime + 0.1); // Volume máximo
-                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.7); // Duração mais longa
+                gainNode.gain.linearRampToValueAtTime(0.7, audioContext.currentTime + 0.1);
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.7);
                 
                 oscillator.start();
                 oscillator.stop(audioContext.currentTime + 0.7);
             }, 1200);
         }
         
-        // FUNÇÃO PARA TOCAR ALERTA SONORO POR 10 SEGUNDOS
+        // (015-002) Função para tocar alerta sonoro
         function playAlertSound() {
             if (isAlertPlaying) return;
             
             const now = Date.now();
-            if (now - lastAlertTime < 300000) { // 5 minutos
+            if (now - lastAlertTime < 300000) {
                 return;
             }
             
@@ -2267,10 +2353,10 @@ function printIsolatedContent(htmlContent) {
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 
-                oscillator.frequency.setValueAtTime(1000, audioContext.currentTime); // Frequência mais alta
-                oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.3); // Variação mais longa
+                oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.3);
                 
-                gainNode.gain.setValueAtTime(0.5, audioContext.currentTime); // Volume mais alto
+                gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
                 
                 oscillator.start();
@@ -2292,7 +2378,7 @@ function printIsolatedContent(htmlContent) {
             }, 600);
         }
         
-        // FUNÇÃO PARA PARAR ALERTA SONORO
+        // (015-003) Função para parar alerta sonoro
         function stopAlertSound() {
             isAlertPlaying = false;
             if (alertSoundInterval) {
@@ -2301,7 +2387,10 @@ function printIsolatedContent(htmlContent) {
             }
         }
         
-        // FUNÇÃO PARA VERIFICAR PEDIDOS ATRASADOS
+        // =====================================================
+        // (016) FUNÇÕES DE VERIFICAÇÃO DE PEDIDOS
+        // =====================================================
+        // (016-001) Função para verificar pedidos atrasados
         function checkForLateOrders() {
             const now = new Date();
             const currentHour = now.getHours();
@@ -2354,7 +2443,7 @@ function printIsolatedContent(htmlContent) {
             return lateCount;
         }
         
-        // FUNÇÃO PARA VERIFICAR NOVOS PEDIDOS
+        // (016-002) Função para verificar novos pedidos
         function checkForNewOrders() {
             const currentCount = allEvents.length;
             
@@ -2367,7 +2456,10 @@ function printIsolatedContent(htmlContent) {
             lastEventCount = currentCount;
         }
         
-        // FUNÇÃO DE BUSCA
+        // =====================================================
+        // (017) FUNÇÕES DE BUSCA E FILTRO
+        // =====================================================
+        // (017-001) Função para executar busca
         function performSearch() {
             const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
             if (!searchTerm) {
@@ -2380,18 +2472,18 @@ function printIsolatedContent(htmlContent) {
                 const row = event.data;
                 
                 const searchFields = [
-                    row[1] || '', // Nome do cliente
-                    row[2] || '', // Telefone
-                    row[3] || '', // Produto
-                    row[6] || '', // Vendedor
-                    row[8] || '', // Recebedor
-                    row[10] || '', // Endereço
-                    row[12] || '', // Bairro
-                    row[13] || '', // Cidade
-                    getOrderNumber(row), // Número do pedido
-                    getCupomInfo(row), // Cupom
-                    row[15] || '', // Data entrega
-                    row[16] || row[43] || '' // Horário
+                    row[1] || '',
+                    row[2] || '',
+                    row[3] || '',
+                    row[6] || '',
+                    row[8] || '',
+                    row[10] || '',
+                    row[12] || '',
+                    row[13] || '',
+                    getOrderNumber(row),
+                    getCupomInfo(row),
+                    row[15] || '',
+                    row[16] || row[43] || ''
                 ];
                 
                 return searchFields.some(field => 
@@ -2403,22 +2495,138 @@ function printIsolatedContent(htmlContent) {
             showNotification(`🔍 ${filtered.length} pedidos encontrados para "${searchTerm}"`, 'info');
         }
         
-        // FUNÇÃO DE SALVAMENTO COM VERIFICAÇÃO DE LINHA ATUAL
+        // (017-002) Função para filtrar hoje
+        function filterToday() {
+            currentFilter = 'today';
+            currentDisplayDate = new Date();
+            updateDateTitle(currentDisplayDate);
+            
+            const today = new Date().toLocaleDateString('pt-BR');
+            const filtered = allEvents.filter(event => 
+                (event.data[15] && event.data[15].includes(today)) || 
+                (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador)
+            );
+            displayEvents(filtered);
+        }
+        
+        // (017-003) Função para filtrar domingo
+        function filterNextSunday() {
+            currentFilter = 'sunday';
+            const today = new Date();
+            const daysUntilSunday = 7 - today.getDay();
+            const sunday = new Date(today);
+            sunday.setDate(today.getDate() + daysUntilSunday);
+            currentDisplayDate = sunday;
+            updateDateTitle(currentDisplayDate);
+            
+            const dateStr = sunday.toLocaleDateString('pt-BR');
+            const filtered = allEvents.filter(event => 
+                (event.data[15] && event.data[15].includes(dateStr)) || 
+                (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador)
+            );
+            displayEvents(filtered);
+        }
+        
+        // (017-004) Função para filtrar por data específica
+        function filterByDate(dateStr) {
+            currentFilter = 'custom';
+            
+            const parts = dateStr.split('-');
+            const date = new Date(parts[0], parts[1] - 1, parts[2]);
+            currentDisplayDate = date;
+            updateDateTitle(currentDisplayDate);
+            
+            const formattedDate = date.toLocaleDateString('pt-BR');
+            const filtered = allEvents.filter(event => 
+                (event.data[15] && event.data[15].includes(formattedDate)) || 
+                (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador)
+            );
+            displayEvents(filtered);
+        }
+        
+        // (017-005) Função para filtrar não impressos
+        function filterUnprinted() {
+            currentFilter = 'unprinted';
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const filtered = allEvents.filter(event => {
+                const isPrinted = getPrintStatus(event.data);
+                if (isPrinted) return false;
+                
+                const eventDateStr = event.deliveryDate;
+                if (!eventDateStr) return false;
+                
+                return isTodayOrFuture(eventDateStr) || 
+                       (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador);
+            });
+            
+            filtered.sort((a, b) => {
+                const outraCidadeA = isOutraCidade(a.data) && !getEntregadorStatus(a.data).hasEntregador;
+                const outraCidadeB = isOutraCidade(b.data) && !getEntregadorStatus(b.data).hasEntregador;
+                
+                if (outraCidadeA && !outraCidadeB) return -1;
+                if (!outraCidadeA && outraCidadeB) return 1;
+                
+                return compareDatesForSorting(a, b);
+            });
+            
+            console.log(`🖨️ Filtro "Sem Imprimir" encontrou ${filtered.length} eventos`);
+            displayEvents(filtered);
+        }
+        
+        // (017-006) Função para filtrar envios (outra cidade)
+        function filterEnvios() {
+            currentFilter = 'envios';
+            
+            const filtered = allEvents.filter(event => 
+                isOutraCidade(event.data)
+            );
+            
+            filtered.sort((a, b) => {
+                const entregadorA = getEntregadorStatus(a.data).hasEntregador;
+                const entregadorB = getEntregadorStatus(b.data).hasEntregador;
+                
+                // Pedidos sem entregador primeiro
+                if (!entregadorA && entregadorB) return -1;
+                if (entregadorA && !entregadorB) return 1;
+                
+                return compareDatesForSorting(a, b);
+            });
+            
+            console.log(`📦 Filtro "Envios" encontrou ${filtered.length} eventos`);
+            displayEvents(filtered);
+            showNotification(`📦 ${filtered.length} pedidos de outra cidade`, 'info');
+        }
+        
+        // (017-007) Função para aplicar filtro atual
+        function applyCurrentFilter() {
+            switch(currentFilter) {
+                case 'today': filterToday(); break;
+                case 'sunday': filterNextSunday(); break;
+                case 'unprinted': filterUnprinted(); break;
+                case 'envios': filterEnvios(); break;
+                case 'search': break;
+                default: filterToday();
+            }
+        }
+        
+        // =====================================================
+        // (018) FUNÇÕES DE ENVIO PARA PLANILHA - CORRIGIDO
+        // =====================================================
+        // (018-001) Função principal de salvamento
         async function saveToSpreadsheet(payload) {
             try {
                 console.log('📤 Enviando dados para salvar:', payload);
                 
-                // Verificar se a linha ainda existe e se é a mesma
                 if (payload.linha && !isNaN(payload.linha)) {
                     const linhaAtual = parseInt(payload.linha);
                     const event = allEvents.find(e => e.rowNumber === linhaAtual);
                     
                     if (!event) {
                         console.log('⚠️ Linha não encontrada, buscando por ID...');
-                        // Tentar encontrar o evento por ID (pedido + dados)
                         const orderNumber = payload.numero_pedido || getOrderNumberFromUpdates(payload);
                         if (orderNumber) {
-                            // Buscar pelo número do pedido
                             const newEvent = allEvents.find(e => getOrderNumber(e.data) === orderNumber);
                             if (newEvent) {
                                 console.log(`✅ Encontrado pedido ${orderNumber} na linha ${newEvent.rowNumber}`);
@@ -2470,14 +2678,14 @@ function printIsolatedContent(htmlContent) {
             }
         }
         
-        // Função auxiliar para extrair número do pedido das atualizações
+        // (018-002) Função para extrair número do pedido das atualizações
         function getOrderNumberFromUpdates(payload) {
             if (payload.numero_pedido) return payload.numero_pedido;
             
             if (payload.atualizacoes && typeof payload.atualizacoes === 'string') {
                 try {
                     const updates = JSON.parse(payload.atualizacoes);
-                    if (updates[52]) return updates[52]; // Coluna BA
+                    if (updates[52]) return updates[52];
                 } catch (e) {
                     console.log('Erro ao parsear atualizações:', e);
                 }
@@ -2486,17 +2694,18 @@ function printIsolatedContent(htmlContent) {
             return null;
         }
         
-        // Função para ordenar eventos (pedidos de outra cidade primeiro)
+        // =====================================================
+        // (019) FUNÇÕES DE ORDENAÇÃO E STATUS
+        // =====================================================
+        // (019-001) Função para ordenar eventos
         function sortEventsByDeliveryTime(events) {
             return events.sort((a, b) => {
-                // Primeiro: Pedidos de outra cidade SEM entregador vão primeiro
                 const outraCidadeA = isOutraCidade(a.data) && !getEntregadorStatus(a.data).hasEntregador;
                 const outraCidadeB = isOutraCidade(b.data) && !getEntregadorStatus(b.data).hasEntregador;
                 
                 if (outraCidadeA && !outraCidadeB) return -1;
                 if (!outraCidadeA && outraCidadeB) return 1;
                 
-                // Se ambos são ou não são de outra cidade, ordenar por status
                 const statusA = getEventStatus(a.data);
                 const statusB = getEventStatus(b.data);
                 
@@ -2517,6 +2726,7 @@ function printIsolatedContent(htmlContent) {
             });
         }
         
+        // (019-002) Função para obter status do evento
         function getEventStatus(eventData) {
             const entregador = getEntregadorStatus(eventData);
             const montador = getMontadorStatus(eventData);
@@ -2526,38 +2736,10 @@ function printIsolatedContent(htmlContent) {
             return 0;
         }
         
-        function extractStartTime(timeStr) {
-            if (!timeStr) return '99:99';
-            
-            const intervalMatch = timeStr.match(/(\d{1,2}):(\d{2})\s*às\s*\d{1,2}:\d{2}/);
-            if (intervalMatch) {
-                const hours = intervalMatch[1].padStart(2, '0');
-                const minutes = intervalMatch[2].padStart(2, '0');
-                return hours + ':' + minutes;
-            }
-            
-            const singleTimeMatch = timeStr.match(/(\d{1,2}):(\d{2})/);
-            if (singleTimeMatch) {
-                const hours = singleTimeMatch[1].padStart(2, '0');
-                const minutes = singleTimeMatch[2].padStart(2, '0');
-                return hours + ':' + minutes;
-            }
-            
-            return '99:99';
-        }
-        
-        // Função para atualizar o progresso do botão de refresh
-        function updateRefreshProgress() {
-            refreshProgress += 100 / (autoRefreshTime / 1000);
-            if (refreshProgress >= 100) {
-                refreshProgress = 0;
-                refreshData();
-            }
-            
-            document.getElementById('refreshProgress').style.width = refreshProgress + '%';
-        }
-        
-        // Funções principais
+        // =====================================================
+        // (020) FUNÇÕES PRINCIPAIS DE CARREGAMENTO DE DADOS
+        // =====================================================
+        // (020-001) Função para carregar dados
         async function fetchData() {
             try {
                 showNotification('📥 Carregando dados...', 'info');
@@ -2577,12 +2759,11 @@ function printIsolatedContent(htmlContent) {
                     deliveryDate: row[15] || '',
                     startTime: extractStartTime(row[16] || row[43] || ''),
                     isOutraCidade: isOutraCidade(row),
-                    isPrinted: getPrintStatus(row) // Adicionado para controle de cor
+                    isPrinted: getPrintStatus(row)
                 }));
                 
                 console.log(`✅ ${allEvents.length} eventos carregados`);
                 
-                // Atualizar cache de IDs
                 currentRowIdCache = {};
                 allEvents.forEach(event => {
                     const orderNumber = getOrderNumber(event.data);
@@ -2614,7 +2795,7 @@ function printIsolatedContent(htmlContent) {
             }
         }
         
-        // FUNÇÃO PARA ATUALIZAR CONTADOR DE FICHAS SEM IMPRIMIR
+        // (020-002) Função para atualizar contador de não impressos
         function updateUnprintedCount() {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -2632,6 +2813,10 @@ function printIsolatedContent(htmlContent) {
             document.getElementById('unprintedCountBadge').textContent = unprintedCount;
         }
         
+        // =====================================================
+        // (021) FUNÇÕES DE EXIBIÇÃO DE EVENTOS
+        // =====================================================
+        // (021-001) Função para exibir eventos
         function displayEvents(events) {
             const eventList = document.getElementById('eventList');
             eventList.innerHTML = '';
@@ -2647,7 +2832,6 @@ function printIsolatedContent(htmlContent) {
             }
             
             const sortedEvents = [...events].sort((a, b) => {
-                // Pedidos de outra cidade SEM entregador sempre primeiro
                 const outraCidadeA = isOutraCidade(a.data) && !getEntregadorStatus(a.data).hasEntregador;
                 const outraCidadeB = isOutraCidade(b.data) && !getEntregadorStatus(b.data).hasEntregador;
                 
@@ -2675,22 +2859,19 @@ function printIsolatedContent(htmlContent) {
                 const orderNumber = getOrderNumber(row);
                 const cupomInfo = getCupomInfo(row);
                 const isOutraCidadeEvent = isOutraCidade(row);
-                const isImpresso = getPrintStatus(row); // Novo: verificar se já foi impresso
+                const isImpresso = getPrintStatus(row);
                 
                 const valorE = parseFloat(row[4]?.replace(',', '.') || 0);
                 const valorF = parseFloat(row[5]?.replace(',', '.') || 0);
                 const total = valorE + valorF;
                 
-                // Truncar nome do produto para máximo 2 linhas
                 const produtoCompleto = row[3] || '';
                 let produtoDisplay = produtoCompleto;
                 
-                // Se o produto tiver mais de 80 caracteres, truncar
                 if (produtoCompleto.length > 80) {
                     produtoDisplay = produtoCompleto.substring(0, 77) + '...';
                 }
                 
-                // Verificar se endereço está em branco
                 const endereco = row[10] || '';
                 const bairro = row[12] || '';
                 const cidade = row[13] || '';
@@ -2710,7 +2891,6 @@ function printIsolatedContent(htmlContent) {
                 if (entregador.hasEntregador) card.classList.add('finalized');
                 if (isOutraCidadeEvent) {
                     card.classList.add('outra-cidade');
-                    // Novo: se já foi impresso, adiciona classe 'impresso' para ficar amarelo
                     if (isImpresso) {
                         card.classList.add('impresso');
                     }
@@ -2815,103 +2995,30 @@ function printIsolatedContent(htmlContent) {
             setTimeout(() => checkForLateOrders(), 100);
         }
         
-        // Funções de filtro
-        function filterToday() {
-            currentFilter = 'today';
-            const today = new Date().toLocaleDateString('pt-BR');
-            const filtered = allEvents.filter(event => 
-                (event.data[15] && event.data[15].includes(today)) || 
-                (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador)
-            );
-            displayEvents(filtered);
-        }
-        
-        function filterTomorrow() {
-            currentFilter = 'tomorrow';
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const dateStr = tomorrow.toLocaleDateString('pt-BR');
-            const filtered = allEvents.filter(event => 
-                (event.data[15] && event.data[15].includes(dateStr)) || 
-                (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador)
-            );
-            displayEvents(filtered);
-        }
-        
-        function filterNextSunday() {
-            currentFilter = 'sunday';
-            const today = new Date();
-            const daysUntilSunday = 7 - today.getDay();
-            const sunday = new Date(today);
-            sunday.setDate(today.getDate() + daysUntilSunday);
-            const dateStr = sunday.toLocaleDateString('pt-BR');
-            const filtered = allEvents.filter(event => 
-                (event.data[15] && event.data[15].includes(dateStr)) || 
-                (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador)
-            );
-            displayEvents(filtered);
-        }
-        
-        function filterByDate(dateStr) {
-            currentFilter = 'custom';
-            const parts = dateStr.split('-');
-            const date = new Date(parts[0], parts[1] - 1, parts[2]);
-            const formattedDate = date.toLocaleDateString('pt-BR');
-            const filtered = allEvents.filter(event => 
-                (event.data[15] && event.data[15].includes(formattedDate)) || 
-                (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador)
-            );
-            displayEvents(filtered);
-        }
-        
-        function filterUnprinted() {
-            currentFilter = 'unprinted';
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            const filtered = allEvents.filter(event => {
-                const isPrinted = getPrintStatus(event.data);
-                if (isPrinted) return false;
-                
-                const eventDateStr = event.deliveryDate;
-                if (!eventDateStr) return false;
-                
-                return isTodayOrFuture(eventDateStr) || 
-                       (isOutraCidade(event.data) && !getEntregadorStatus(event.data).hasEntregador);
-            });
-            
-            filtered.sort((a, b) => {
-                // Pedidos de outra cidade primeiro
-                const outraCidadeA = isOutraCidade(a.data) && !getEntregadorStatus(a.data).hasEntregador;
-                const outraCidadeB = isOutraCidade(b.data) && !getEntregadorStatus(b.data).hasEntregador;
-                
-                if (outraCidadeA && !outraCidadeB) return -1;
-                if (!outraCidadeA && outraCidadeB) return 1;
-                
-                return compareDatesForSorting(a, b);
-            });
-            
-            console.log(`🖨️ Filtro "Sem Imprimir" encontrou ${filtered.length} eventos`);
-            displayEvents(filtered);
-        }
-        
-        function applyCurrentFilter() {
-            switch(currentFilter) {
-                case 'today': filterToday(); break;
-                case 'tomorrow': filterTomorrow(); break;
-                case 'sunday': filterNextSunday(); break;
-                case 'unprinted': filterUnprinted(); break;
-                case 'search': break;
-                default: filterToday();
-            }
-        }
-        
+        // =====================================================
+        // (022) FUNÇÕES DE ATUALIZAÇÃO E REFRESH
+        // =====================================================
+        // (022-001) Função para atualizar dados
         function refreshData() {
             fetchData();
             showNotification('🔄 Atualizando...', 'info');
         }
         
-        // FUNÇÕES PARA O BOTÃO 2 - CORRIGIDO: AGORA IMPRIME APENAS UMA FOLHA
+        // (022-002) Função para atualizar progresso do refresh
+        function updateRefreshProgress() {
+            refreshProgress += 100 / (autoRefreshTime / 1000);
+            if (refreshProgress >= 100) {
+                refreshProgress = 0;
+                refreshData();
+            }
+            
+            document.getElementById('refreshProgress').style.width = refreshProgress + '%';
+        }
+        
+        // =====================================================
+        // (023) FUNÇÕES DO MODAL DE ITENS (BOTÃO 2)
+        // =====================================================
+        // (023-001) Função para abrir modal de itens
         function openItemsModal(rowNumber) {
             const event = allEvents.find(e => e.rowNumber === rowNumber);
             if (!event) {
@@ -2936,6 +3043,7 @@ function printIsolatedContent(htmlContent) {
             }, 100);
         }
         
+        // (023-002) Função para validar contagem de itens
         function validateItemsCount() {
             const textarea = document.getElementById('itemsTextarea');
             const itemsCount = document.getElementById('itemsCount');
@@ -2965,6 +3073,7 @@ function printIsolatedContent(htmlContent) {
             }
         }
         
+        // (023-003) Função para distribuir itens em colunas
         function distributeItemsToColumns(itemsArray) {
             const columns = [[], [], []];
             
@@ -2982,7 +3091,7 @@ function printIsolatedContent(htmlContent) {
             };
         }
         
-        // CORREÇÃO: AGORA GERA APENAS UMA FOLHA A4 COM LISTA NO TOPO E NO RODAPÉ
+        // (023-004) Função para gerar HTML de impressão de itens
         function generateItemsPrintHTML(eventData, itemsText) {
             const itemsArray = itemsText.split('\n').filter(item => item.trim() !== '');
             const { columns, fits, totalLines } = distributeItemsToColumns(itemsArray);
@@ -3029,7 +3138,6 @@ function printIsolatedContent(htmlContent) {
                 columnsHTMLBottom += columnHTML;
             }
             
-            // UMA FOLHA A4 COM LISTA NO TOPO E OUTRA NO RODAPÉ
             return `
                 <div class="a4-items-page">
                     <!-- LISTA NO TOPO DA PÁGINA -->
@@ -3049,7 +3157,7 @@ function printIsolatedContent(htmlContent) {
             `;
         }
         
-        // ============= FUNÇÃO CORRIGIDA: saveAndPrintItems =============
+        // (023-005) Função para salvar e imprimir itens
         async function saveAndPrintItems() {
             const textarea = document.getElementById('itemsTextarea');
             const saveBtn = document.getElementById('saveItemsBtn');
@@ -3069,7 +3177,6 @@ function printIsolatedContent(htmlContent) {
             
             showLoading('Salvando itens...');
             
-            // Verificar linha atual
             const event = allEvents.find(e => e.rowNumber === currentRowNumber);
             if (!event) {
                 showNotification('❌ Pedido não encontrado. Atualize a página.', 'error');
@@ -3102,8 +3209,6 @@ function printIsolatedContent(htmlContent) {
                     return;
                 }
                 
-                // ============= CORREÇÃO PRINCIPAL =============
-                // Usar a nova função de impressão isolada em iframe
                 printIsolatedContent(itemsPrintHTML).then(() => {
                     closeItemsModal();
                     applyCurrentFilter();
@@ -3116,6 +3221,7 @@ function printIsolatedContent(htmlContent) {
             hideLoading();
         }
         
+        // (023-006) Função para atualizar status do botão de itens
         function updateButtonStatus(rowNumber, hasItems) {
             const button = document.querySelector(`button[data-row="${rowNumber}"][onclick*="openItemsModal"]`);
             if (button) {
@@ -3131,12 +3237,126 @@ function printIsolatedContent(htmlContent) {
             }
         }
         
+        // (023-007) Função para fechar modal de itens
         function closeItemsModal() {
             document.getElementById('itemsModal').style.display = 'none';
             document.getElementById('printItemsContent').style.display = 'none';
         }
         
-        // Funções para o botão 1 (Impressão normal)
+        // =====================================================
+        // (024) FUNÇÕES DE IMPRESSÃO ISOLADA
+        // =====================================================
+        // (024-001) Função principal de impressão isolada
+        function printIsolatedContent(htmlContent) {
+            return new Promise((resolve) => {
+                const iframe = document.createElement('iframe');
+                iframe.style.position = 'absolute';
+                iframe.style.width = '0';
+                iframe.style.height = '0';
+                iframe.style.border = 'none';
+                iframe.style.visibility = 'hidden';
+                document.body.appendChild(iframe);
+                
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                
+                const styles = Array.from(document.querySelectorAll('style'))
+                    .map(style => style.innerHTML)
+                    .join('\n');
+                
+                const styleLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
+                    .map(link => `<link rel="stylesheet" href="${link.href}">`)
+                    .join('\n');
+                
+                iframeDoc.open();
+                iframeDoc.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Impressão</title>
+                        ${styleLinks}
+                        <style>
+                            ${styles}
+                            
+                            body {
+                                margin: 0;
+                                padding: 0;
+                                background: white;
+                            }
+                            
+                            @media print {
+                                body * {
+                                    visibility: visible !important;
+                                }
+                                
+                                .a4-page, .a4-items-page {
+                                    position: relative !important;
+                                    top: 0 !important;
+                                    left: 0 !important;
+                                    margin: 0 auto !important;
+                                    width: 210mm !important;
+                                    height: 297mm !important;
+                                    page-break-before: avoid !important;
+                                    page-break-after: avoid !important;
+                                    page-break-inside: avoid !important;
+                                }
+                                
+                                @page {
+                                    margin: 0 !important;
+                                    size: A4;
+                                }
+                                
+                                .text-size-controls, .copy-btn {
+                                    display: none !important;
+                                }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${htmlContent}
+                    </body>
+                    </html>
+                `);
+                iframeDoc.close();
+                
+                let hasPrinted = false;
+                
+                function executePrint() {
+                    if (hasPrinted) return;
+                    hasPrinted = true;
+                    
+                    try {
+                        iframe.contentWindow.focus();
+                        iframe.contentWindow.print();
+                    } catch (error) {
+                        console.log("Erro na impressão:", error);
+                    }
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(iframe)) {
+                            document.body.removeChild(iframe);
+                        }
+                        resolve();
+                    }, 1500);
+                }
+                
+                iframe.onload = function() {
+                    setTimeout(executePrint, 500);
+                };
+                
+                setTimeout(() => {
+                    if (!hasPrinted) {
+                        executePrint();
+                    }
+                }, 3000);
+            });
+        }
+        
+        // =====================================================
+        // (025) FUNÇÕES DO MODAL DE IMPRESSÃO (BOTÃO 1)
+        // =====================================================
+        // (025-001) Função para abrir modal de impressão
         async function openPrintModal(rowNumber) {
             const event = allEvents.find(e => e.rowNumber === rowNumber);
             if (!event) return;
@@ -3185,7 +3405,7 @@ function printIsolatedContent(htmlContent) {
             document.getElementById('printModal').style.display = 'flex';
         }
         
-        // Funções para ajustar tamanho do texto do cartão
+        // (025-002) Funções para ajustar tamanho do texto
         function increaseFontSize() {
             if (currentFontSize < MAX_FONT_SIZE) {
                 currentFontSize += 2;
@@ -3214,6 +3434,7 @@ function printIsolatedContent(htmlContent) {
             }
         }
         
+        // (025-003) Função para copiar texto do cartão
         function copyCartText() {
             const mensagemCentral = currentPrintEventData[18] || '';
             const mensagemPersonalizada = mensagemCentral || ``;
@@ -3234,12 +3455,13 @@ function printIsolatedContent(htmlContent) {
                 });
         }
         
+        // (025-004) Função para atualizar preview de impressão
         function updatePrintPreview() {
             const codigo = extractCodeFromColunaA(currentPrintEventData[0] || '');
             document.getElementById('printContent').innerHTML = generateFichaHTML(currentPrintEventData, codigo);
         }
         
-        // Gerar ficha HTML para impressão - COM CORREÇÃO DO CAMPO BAIRRO
+        // (025-005) Função para gerar HTML da ficha
         function generateFichaHTML(eventData, codigo) {
             const anonimoInfo = getAnonimoStatus(eventData);
             let formaPagamento = getFormaPagamento(eventData);
@@ -3278,29 +3500,24 @@ function printIsolatedContent(htmlContent) {
             const cidade = eventData[13] || '';
             const referenciaEndereco = eventData[14] || '';
             
-            // Verificar se é pedido de outra cidade
             const isOutraCidadeEvent = isOutraCidade(eventData);
             const colunaBD = eventData[55] || '';
             const infoBD = extractInfoFromBD(colunaBD);
             
-            // Determinar data e horário com base no tipo de pedido
             let dataDisplay = '';
             let horarioDisplay = '';
             let diaSemanaDisplay = '';
             let cidadeComCEP = cidade;
             
             if (isOutraCidadeEvent && infoBD.prazo) {
-                // Para pedidos de outra cidade, usar informações da coluna BD
                 dataDisplay = infoBD.prazo;
                 horarioDisplay = infoBD.frete || 'A COMBINAR';
                 diaSemanaDisplay = '';
                 
-                // Adicionar CEP à cidade se disponível
                 if (infoBD.cep) {
                     cidadeComCEP = `${cidade} - ${infoBD.cep}`;
                 }
             } else {
-                // Para pedidos normais, usar informações padrão
                 const dataCompleta = eventData[15] || '';
                 const partes = dataCompleta.split(' - ');
                 const data = partes[0] || dataCompleta;
@@ -3318,7 +3535,6 @@ function printIsolatedContent(htmlContent) {
             const colunaAW = eventData[48] || '';
             const colunaA = eventData[0] || '';
             
-            // Verificar se endereço está em branco
             let fichaEndereco = '';
             let fichaBairroCidade = '';
             
@@ -3327,7 +3543,6 @@ function printIsolatedContent(htmlContent) {
                 fichaBairroCidade = '<span style="font-weight: bold; color: #D32F2F;">(RETIRADA LOJA)</span>';
             } else {
                 fichaEndereco = endereco;
-                // CORREÇÃO: Apenas o bairro no campo "Bairro" (sem a cidade)
                 fichaBairroCidade = bairro;
             }
             
@@ -3338,7 +3553,6 @@ function printIsolatedContent(htmlContent) {
             
             const mensagemPersonalizada = mensagemCentral || ``;
             
-            // Justificativa anônimo (se existir)
             const justificativaAnonimo = anonimoInfo.explicacao ? `
                 <div class="anonimo-justificativa-print">
                     ${anonimoInfo.explicacao}
@@ -3537,7 +3751,10 @@ function printIsolatedContent(htmlContent) {
             `;
         }
         
-        // Funções de código de impressão
+        // =====================================================
+        // (026) FUNÇÕES DO MODAL DE CÓDIGO DE IMPRESSÃO
+        // =====================================================
+        // (026-001) Função para solicitar código de impressão
         function requestPrintCode() {
             const codigo = extractCodeFromColunaA(currentPrintEventData[0] || '');
             generatedPrintCode = codigo;
@@ -3563,6 +3780,7 @@ function printIsolatedContent(htmlContent) {
             }
         }
         
+        // (026-002) Função para verificar código de impressão
         async function verifyPrintCode() {
             const inputCode = document.getElementById('codeInput').value.trim();
             const conferenteName = document.getElementById('conferenteName').value.trim();
@@ -3581,7 +3799,6 @@ function printIsolatedContent(htmlContent) {
             
             const codigoComNome = `${generatedPrintCode} - ${conferenteName}`;
             
-            // Verificar linha atual antes de salvar
             const event = allEvents.find(e => e.rowNumber === currentRowNumber);
             if (!event) {
                 showNotification('❌ Pedido não encontrado. Atualize a página.', 'error');
@@ -3605,7 +3822,6 @@ function printIsolatedContent(htmlContent) {
             if (result.success) {
                 showNotification('✅ Impressão confirmada!', 'success');
                 
-                // ============= CORREÇÃO: Usar impressão isolada =============
                 const codigo = extractCodeFromColunaA(currentPrintEventData[0] || '');
                 const printHTML = generateFichaHTML(currentPrintEventData, codigo);
                 
@@ -3624,13 +3840,13 @@ function printIsolatedContent(htmlContent) {
             hideLoading();
         }
         
+        // (026-003) Função para verificar impressão existente
         async function verifyExistingPrintCode() {
             showLoading('Imprimindo ficha...');
             
             const codigo = extractCodeFromColunaA(currentPrintEventData[0] || '');
             const printHTML = generateFichaHTML(currentPrintEventData, codigo);
             
-            // ============= CORREÇÃO: Usar impressão isolada =============
             printIsolatedContent(printHTML).then(() => {
                 closeCodeModal();
                 closePrintModal();
@@ -3639,31 +3855,38 @@ function printIsolatedContent(htmlContent) {
             });
         }
         
+        // (026-004) Função para fechar modal de código
         function closeCodeModal() {
             document.getElementById('codeModal').style.display = 'none';
         }
         
+        // (026-005) Função para fechar modal de impressão
         function closePrintModal() {
             document.getElementById('printModal').style.display = 'none';
         }
         
-        // ============= FUNÇÃO printA4Page ATUALIZADA =============
-        function printA4Page() {
-            // Esta função agora é mantida para compatibilidade
-            // A impressão real é feita pela função printIsolatedContent
-            const codigo = extractCodeFromColunaA(currentPrintEventData[0] || '');
-            const printHTML = generateFichaHTML(currentPrintEventData, codigo);
-            printIsolatedContent(printHTML);
-        }
-        
-        // Funções de ação (montador/entregador)
+        // =====================================================
+        // (027) FUNÇÕES DE AÇÃO (MONTADOR/ENTREGADOR) - ATUALIZADA
+        // =====================================================
+        // (027-001) Função para iniciar ação
         function startAction(rowNumber, actionType) {
             currentRowNumber = rowNumber;
             currentActionType = actionType;
             
+            const event = allEvents.find(e => e.rowNumber === rowNumber);
+            const isOutraCidadeEvent = event ? isOutraCidade(event.data) : false;
+            
+            currentIsOutraCidadeAction = (actionType === 'entregador' || actionType === 'desfazer_entregador') && isOutraCidadeEvent;
+            
             const title = document.getElementById('confirmationTitle');
             const message = document.getElementById('confirmationMessage');
             const timeContainer = document.getElementById('timeInputContainer');
+            const dateContainer = document.getElementById('dateInputContainer');
+            
+            // Resetar controles
+            timeContainer.style.display = 'none';
+            dateContainer.style.display = 'none';
+            dateContainer.classList.remove('active');
             
             switch(actionType) {
                 case 'montador':
@@ -3676,17 +3899,34 @@ function printIsolatedContent(htmlContent) {
                 case 'entregador':
                     title.textContent = '🚚 Confirmar Entrega';
                     message.textContent = 'Digite seu nome para confirmar a entrega:';
-                    timeContainer.style.display = 'none';
+                    
+                    // Se for outra cidade, mostrar campo de data
+                    if (currentIsOutraCidadeAction) {
+                        dateContainer.style.display = 'block';
+                        dateContainer.classList.add('active');
+                        const today = new Date();
+                        document.getElementById('dayInput').value = today.getDate().toString().padStart(2, '0');
+                        document.getElementById('monthInput').value = (today.getMonth() + 1).toString().padStart(2, '0');
+                        document.getElementById('yearInput').value = today.getFullYear();
+                    }
                     break;
                 case 'desfazer_montador':
                     title.textContent = '↩️ Desfazer Montagem';
                     message.textContent = 'Digite seu nome para confirmar que deseja desfazer a montagem:';
-                    timeContainer.style.display = 'none';
                     break;
                 case 'desfazer_entregador':
                     title.textContent = '↩️ Desfazer Entrega';
                     message.textContent = 'Digite seu nome para confirmar que deseja desfazer a entrega:';
-                    timeContainer.style.display = 'none';
+                    
+                    // Se for outra cidade, mostrar campo de data
+                    if (currentIsOutraCidadeAction) {
+                        dateContainer.style.display = 'block';
+                        dateContainer.classList.add('active');
+                        const today = new Date();
+                        document.getElementById('dayInput').value = today.getDate().toString().padStart(2, '0');
+                        document.getElementById('monthInput').value = (today.getMonth() + 1).toString().padStart(2, '0');
+                        document.getElementById('yearInput').value = today.getFullYear();
+                    }
                     break;
             }
             
@@ -3695,6 +3935,7 @@ function printIsolatedContent(htmlContent) {
             setTimeout(() => document.getElementById('completerName').focus(), 100);
         }
         
+        // (027-002) Função para confirmar ação
         async function confirmCompletion() {
             const name = document.getElementById('completerName').value.trim();
             if (!name) {
@@ -3728,9 +3969,42 @@ function printIsolatedContent(htmlContent) {
                 horaMontador = `${hora.padStart(2, '0')}:${minuto.padStart(2, '0')}`;
             }
             
+            // Verificar data para pedidos de outra cidade
+            let dataEnvio = '';
+            if (currentIsOutraCidadeAction) {
+                const day = document.getElementById('dayInput').value.trim();
+                const month = document.getElementById('monthInput').value.trim();
+                const year = document.getElementById('yearInput').value.trim();
+                
+                if (!day || !month || !year) {
+                    showNotification('❌ Data é OBRIGATÓRIA para envios de outra cidade', 'error');
+                    return;
+                }
+                
+                const dayNum = parseInt(day, 10);
+                const monthNum = parseInt(month, 10);
+                const yearNum = parseInt(year, 10);
+                
+                if (isNaN(dayNum) || dayNum < 1 || dayNum > 31) {
+                    showNotification('❌ Dia inválido. Use valores entre 01 e 31', 'error');
+                    return;
+                }
+                
+                if (isNaN(monthNum) || monthNum < 1 || monthNum > 12) {
+                    showNotification('❌ Mês inválido. Use valores entre 01 e 12', 'error');
+                    return;
+                }
+                
+                if (isNaN(yearNum) || yearNum < 2020 || yearNum > 2100) {
+                    showNotification('❌ Ano inválido. Use valores entre 2020 e 2100', 'error');
+                    return;
+                }
+                
+                dataEnvio = `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
+            }
+            
             showLoading('Salvando...');
             
-            // Verificar linha atual
             const event = allEvents.find(e => e.rowNumber === currentRowNumber);
             if (!event) {
                 showNotification('❌ Pedido não encontrado. Atualize a página.', 'error');
@@ -3754,6 +4028,13 @@ function printIsolatedContent(htmlContent) {
                 case 'entregador':
                     payload.tipo = 'entregador';
                     payload.entregador = name;
+                    
+                    // Se for outra cidade, atualizar data de entrega também
+                    if (currentIsOutraCidadeAction && dataEnvio) {
+                        payload.atualizacoes = JSON.stringify({
+                            15: dataEnvio + ' - ' + getDiaSemana(dataEnvio) // Coluna 15: Data de entrega
+                        });
+                    }
                     break;
                 case 'desfazer_montador':
                     payload.tipo = 'montador';
@@ -3770,6 +4051,13 @@ function printIsolatedContent(htmlContent) {
             
             if (result.success) {
                 showNotification('✅ Ação salva com sucesso!', 'success');
+                
+                // Se for outra cidade e tiver data, atualizar localmente também
+                if (currentIsOutraCidadeAction && dataEnvio && event) {
+                    const diaSemana = getDiaSemana(dataEnvio);
+                    event.data[15] = dataEnvio + (diaSemana ? ' - ' + diaSemana : '');
+                }
+                
                 setTimeout(() => {
                     fetchData();
                 }, 1000);
@@ -3781,11 +4069,15 @@ function printIsolatedContent(htmlContent) {
             document.getElementById('confirmationModal').style.display = 'none';
         }
         
+        // (027-003) Função para cancelar ação
         function cancelCompletion() {
             document.getElementById('confirmationModal').style.display = 'none';
         }
         
-        // =================== FUNÇÕES DO MODAL DE EDIÇÃO ===================
+        // =====================================================
+        // (028) FUNÇÕES DO MODAL DE EDIÇÃO
+        // =====================================================
+        // (028-001) Função para abrir modal de edição
         function openEditModal(rowNumber) {
             const event = allEvents.find(e => e.rowNumber === rowNumber);
             if (!event) {
@@ -3795,7 +4087,7 @@ function printIsolatedContent(htmlContent) {
             
             currentRowNumber = rowNumber;
             currentEventDataForEdit = event.data;
-            isCancelMode = false; // Resetar modo cancelamento
+            isCancelMode = false;
             
             const orderNumber = getOrderNumber(event.data);
             document.getElementById('editOrderNumber').textContent = orderNumber || rowNumber;
@@ -3804,7 +4096,6 @@ function printIsolatedContent(htmlContent) {
             document.getElementById('editUserPassword').value = '';
             document.getElementById('cancelReasonSelect').value = '';
             
-            // Esconder seção de cancelamento
             document.getElementById('cancelSection').classList.remove('active');
             document.getElementById('cancelPedidoBtn').innerHTML = '❌ Cancelar Pedido';
             
@@ -3814,52 +4105,46 @@ function printIsolatedContent(htmlContent) {
             setTimeout(() => document.getElementById('editUserName').focus(), 100);
         }
         
-        // NOVA FUNÇÃO: Alternar seção de cancelamento
+        // (028-002) Função para alternar seção de cancelamento
         function toggleCancelSection() {
             const cancelSection = document.getElementById('cancelSection');
             const cancelBtn = document.getElementById('cancelPedidoBtn');
             
             if (isCancelMode) {
-                // Sair do modo cancelamento
                 cancelSection.classList.remove('active');
                 cancelBtn.innerHTML = '❌ Cancelar Pedido';
                 isCancelMode = false;
                 
-                // Restaurar valores originais
                 populateEditForm(currentEventDataForEdit);
             } else {
-                // Entrar no modo cancelamento
                 cancelSection.classList.add('active');
                 cancelBtn.innerHTML = '↩️ Voltar à Edição';
                 isCancelMode = true;
                 
-                // Aplicar valores de cancelamento
                 applyCancelValues();
             }
         }
         
-        // NOVA FUNÇÃO: Aplicar valores de cancelamento nos campos
+        // (028-003) Função para aplicar valores de cancelamento
         function applyCancelValues() {
             const cancelReason = document.getElementById('cancelReasonSelect').value;
             
             if (cancelReason) {
-                // Zerar valores de produto e frete
                 const valorProdutoInput = document.querySelector('input[data-index="4"]');
                 const valorFreteInput = document.querySelector('input[data-index="5"]');
                 
                 if (valorProdutoInput) valorProdutoInput.value = '0,00';
                 if (valorFreteInput) valorFreteInput.value = '0,00';
                 
-                // Atualizar vendedor com motivo do cancelamento
                 const vendedorInput = document.querySelector('input[data-index="6"]');
                 if (vendedorInput) vendedorInput.value = cancelReason;
                 
-                // Atualizar entregador com motivo do cancelamento
-                const entregadorInput = document.querySelector('select[data-index="43"]'); // Agora é entregador
+                const entregadorInput = document.querySelector('select[data-index="43"]');
                 if (entregadorInput) entregadorInput.value = cancelReason;
             }
         }
         
+        // (028-004) Função para focar campo de senha
         function focusPasswordField() {
             const userName = document.getElementById('editUserName').value;
             if (userName) {
@@ -3867,11 +4152,11 @@ function printIsolatedContent(htmlContent) {
             }
         }
         
+        // (028-005) Função para preencher formulário de edição
         function populateEditForm(eventData) {
             const formContainer = document.getElementById('editFormFields');
             const orderNumber = getOrderNumber(eventData);
             
-            // Separar data e dia da semana
             const dataCompleta = eventData[15] || '';
             const partes = dataCompleta.split(' - ');
             const data = partes[0] || dataCompleta;
@@ -3992,13 +4277,13 @@ function printIsolatedContent(htmlContent) {
                 { 
                     index: 15, 
                     label: 'Data Entrega (DD/MM/YYYY)', 
-                    value: data, // Apenas a data, sem dia da semana
+                    value: data,
                     editable: true,
                     type: 'text',
                     required: true
                 },
                 { 
-                    index: 'dia_semana', // Campo especial para dia da semana
+                    index: 'dia_semana',
                     label: 'Dia da Semana (Automático)', 
                     value: diaSemana || '', 
                     editable: false,
@@ -4137,7 +4422,6 @@ function printIsolatedContent(htmlContent) {
             
             formContainer.innerHTML = formHTML;
             
-            // Adicionar campo de dia da semana separado
             const dataField = document.querySelector('input[data-index="15"]');
             if (dataField && dataField.parentElement) {
                 const diaSemanaDiv = document.createElement('div');
@@ -4149,12 +4433,10 @@ function printIsolatedContent(htmlContent) {
                 dataField.parentElement.parentElement.insertBefore(diaSemanaDiv, dataField.parentElement.nextSibling);
             }
             
-            // Atualizar dia da semana inicial
             if (data) {
                 updateDiaSemanaEdit(dataField);
             }
             
-            // Adicionar listener para motivo de cancelamento
             document.getElementById('cancelReasonSelect').addEventListener('change', function() {
                 if (isCancelMode) {
                     applyCancelValues();
@@ -4162,7 +4444,7 @@ function printIsolatedContent(htmlContent) {
             });
         }
         
-        // FUNÇÃO PARA ATUALIZAR DIA DA SEMANA NO MODO EDIÇÃO
+        // (028-006) Função para atualizar dia da semana na edição
         function updateDiaSemanaEdit(input) {
             const value = input.value;
             const diaSemana = getDiaSemana(value);
@@ -4173,12 +4455,13 @@ function printIsolatedContent(htmlContent) {
             }
         }
         
+        // (028-007) Função para fechar modal de edição
         function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
             isCancelMode = false;
         }
         
-        // FUNÇÃO PRINCIPAL DE SALVAR EDIÇÕES (COM SUPORTE PARA CANCELAMENTO)
+        // (028-008) Função para salvar edições
         async function saveEdits() {
             const userName = document.getElementById('editUserName').value;
             const userPassword = document.getElementById('editUserPassword').value.trim();
@@ -4203,11 +4486,9 @@ function printIsolatedContent(htmlContent) {
             const inputs = document.querySelectorAll('#editFormFields .form-input, #editFormFields .form-textarea, #editFormFields .form-select');
             const updates = {};
             
-            // Verificar se está no modo cancelamento
             const cancelReason = document.getElementById('cancelReasonSelect').value;
             const isCancelling = isCancelMode && cancelReason;
             
-            // Coletar valor do dia da semana
             const diaSemanaInput = document.getElementById('editDiaSemana');
             const diaSemana = diaSemanaInput ? diaSemanaInput.value : '';
             
@@ -4228,17 +4509,15 @@ function printIsolatedContent(htmlContent) {
                     return;
                 }
                 
-                // Se for o campo de data (15), adicionar dia da semana
                 if (index === 15 && newValue && diaSemana) {
                     newValue = `${newValue} - ${diaSemana}`;
                 }
                 
-                // Se estiver cancelando, garantir que valores sejam zerados
                 if (isCancelling) {
-                    if (index === 4 || index === 5) { // Valor produto e frete
+                    if (index === 4 || index === 5) {
                         newValue = '0,00';
                     }
-                    if (index === 6 || index === 43) { // Vendedor e entregador
+                    if (index === 6 || index === 43) {
                         newValue = cancelReason;
                     }
                 }
@@ -4256,7 +4535,6 @@ function printIsolatedContent(htmlContent) {
                 return;
             }
             
-            // Criar registro de histórico de edições
             const editRecord = updateEditHistory(updates, userName);
             const now = new Date();
             const lastEdit = `${now.toLocaleDateString('pt-BR')} ${now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})} - ${userName}`;
@@ -4273,7 +4551,6 @@ function printIsolatedContent(htmlContent) {
                 last_edit: lastEdit
             };
             
-            // Adicionar motivo do cancelamento se aplicável
             if (isCancelling) {
                 payload.motivo_cancelamento = cancelReason;
             }
@@ -4307,7 +4584,6 @@ function printIsolatedContent(htmlContent) {
                     showNotification('✅ Alterações salvas com sucesso!', 'success');
                 }
                 
-                // Atualizar dados locais
                 Object.keys(updates).forEach(index => {
                     if (currentEventDataForEdit) {
                         currentEventDataForEdit[index] = updates[index];
@@ -4320,7 +4596,6 @@ function printIsolatedContent(htmlContent) {
                         allEvents[eventIndex].data[index] = updates[index];
                     });
                     
-                    // Atualizar histórico
                     allEvents[eventIndex].data[55] = editRecord;
                     allEvents[eventIndex].data[56] = lastEdit;
                 }
@@ -4339,10 +4614,15 @@ function printIsolatedContent(htmlContent) {
             hideLoading();
         }
         
-        // Inicialização
+        // =====================================================
+        // (029) INICIALIZAÇÃO DO SISTEMA
+        // =====================================================
         document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar dados
             fetchData();
+            
+            // Inicializar data atual
+            currentDisplayDate = new Date();
+            updateDateTitle(currentDisplayDate);
             
             // Configurar atualização automática
             refreshInterval = setInterval(fetchData, autoRefreshTime);
@@ -4350,7 +4630,7 @@ function printIsolatedContent(htmlContent) {
             // Configurar progresso do botão de refresh
             setInterval(updateRefreshProgress, 1000);
             
-            // Configurar verificação de pedidos atrasados a cada 30 segundos
+            // Configurar verificação de pedidos atrasados
             alertCheckInterval = setInterval(checkForLateOrders, 30000);
             
             // Configurar modais
@@ -4386,11 +4666,12 @@ function printIsolatedContent(htmlContent) {
                 }
             });
             
-            // Inicializar último contador de eventos
             lastEventCount = 0;
         });
         
-        // Tornar funções globais
+        // =====================================================
+        // (030) EXPOSIÇÃO DAS FUNÇÕES PARA O ESCOPO GLOBAL
+        // =====================================================
         window.openPrintModal = openPrintModal;
         window.openItemsModal = openItemsModal;
         window.saveAndPrintItems = saveAndPrintItems;
@@ -4403,12 +4684,12 @@ function printIsolatedContent(htmlContent) {
         window.verifyExistingPrintCode = verifyExistingPrintCode;
         window.closeCodeModal = closeCodeModal;
         window.closePrintModal = closePrintModal;
-        window.printA4Page = printA4Page;
+        window.printA4Page = printIsolatedContent;
         window.filterToday = filterToday;
-        window.filterTomorrow = filterTomorrow;
         window.filterNextSunday = filterNextSunday;
         window.filterByDate = filterByDate;
         window.filterUnprinted = filterUnprinted;
+        window.filterEnvios = filterEnvios;
         window.refreshData = refreshData;
         window.increaseFontSize = increaseFontSize;
         window.decreaseFontSize = decreaseFontSize;
@@ -4424,6 +4705,7 @@ function printIsolatedContent(htmlContent) {
         window.updateDiaSemanaEdit = updateDiaSemanaEdit;
         window.performSearch = performSearch;
         window.toggleCancelSection = toggleCancelSection;
+        window.navigateDate = navigateDate;
     </script>
 </body>
 </html>
