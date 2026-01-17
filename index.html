@@ -2269,15 +2269,29 @@ Exemplo:
             document.getElementById('currentDateTitle').textContent = `${dataFormatada} - ${diaSemana}`;
         }
         
-        // (014-005) Função para navegar entre datas
-        function navigateDate(direction) {
-            currentDisplayDate.setDate(currentDisplayDate.getDate() + direction);
-            updateDateTitle(currentDisplayDate);
-            
-            // Aplicar filtro para a nova data
-            const dateStr = currentDisplayDate.toISOString().split('T')[0];
-            filterByDate(dateStr);
-        }
+        // (014-005) Função para navegar entre datas - VERSÃO DEFINITIVA CORRIGIDA
+function navigateDate(direction) {
+    console.log('Navegar:', direction, 'Data atual:', currentDisplayDate.toISOString());
+    
+    // Criar uma NOVA data sem referência ao objeto anterior
+    const year = currentDisplayDate.getFullYear();
+    const month = currentDisplayDate.getMonth();
+    const day = currentDisplayDate.getDate();
+    
+    const newDate = new Date(year, month, day + direction);
+    
+    console.log('Nova data:', newDate.toISOString());
+    
+    // Atualizar a variável global
+    currentDisplayDate = newDate;
+    
+    updateDateTitle(currentDisplayDate);
+    
+    // Aplicar filtro para a nova data
+    const dateStr = currentDisplayDate.toISOString().split('T')[0];
+    console.log('Filtrando por:', dateStr);
+    filterByDate(dateStr);
+}
         
         // =====================================================
         // (015) FUNÇÕES DE ÁUDIO E ALERTAS
@@ -4709,3 +4723,4 @@ Exemplo:
     </script>
 </body>
 </html>
+
