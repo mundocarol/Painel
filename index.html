@@ -310,7 +310,7 @@ body{font-family:'Roboto',Arial,sans-serif;padding:10px;background-color:#f8f9fa
 <div class="filter-section">
 <h4>👷 Filtro por Status de Montagem</h4>
 <div class="status-btns" id="montagemFilterList">
-<button class="status-btn" data-status="none" onclick="toggleMontagemFilter('none')">📋 Não Montado</button>
+<button class="status-btn" data-status="nenhum" onclick="toggleMontagemFilter('nenhum')">📋 Não Montado</button>
 <button class="status-btn" data-status="parcial" onclick="toggleMontagemFilter('parcial')">⚡ Quase Pronto</button>
 <button class="status-btn" data-status="completa" onclick="toggleMontagemFilter('completa')">✅ Montado</button>
 </div>
@@ -548,14 +548,21 @@ function getPrintCode(eventData){return eventData[19]?eventData[19].trim():''}
 function getConferenteNameFromCode(codigo){if(!codigo||!codigo.includes(' - '))return'';const partes=codigo.split(' - ');if(partes.length>=2){return partes.slice(1).join(' - ')}return''}
 function getMontadorStatus(eventData){
     const colunaU = eventData[20] || '';
+    
+    // Verifica se é "Quase Pronta"
     const isQuasePronta = colunaU === '⚡ QUASE PRONTA' || colunaU === 'Quase Pronta';
+    
+    // Verifica se é montagem completa (tem formato "Nome - HH:MM")
     const isCompleta = colunaU.includes(' - ') && colunaU.match(/\d{2}:\d{2}/);
+    
     if(isCompleta){
         return { hasMontador: true, montador: colunaU, status: 'completa' };
     }
     else if(isQuasePronta){
         return { hasMontador: true, montador: colunaU, status: 'parcial' };
     }
+    
+    // Se colunaU estiver vazia ou não se encaixar nos casos acima, é "nenhum" (não montado)
     return { hasMontador: false, montador: '', status: 'nenhum' };
 }
 function getEntregadorStatus(eventData){const colunaH=eventData[7]||'';return{hasEntregador:colunaH.trim()!=='',entregador:colunaH.trim()}}
@@ -702,27 +709,39 @@ function toggleTimeFilter(timeRange) {
 }
 
 function toggleMontagemFilter(status) {
+    console.log('toggleMontagemFilter chamado com status:', status);
+    
     const index = activeMontagemStatus.indexOf(status);
     if(index === -1) {
         activeMontagemStatus.push(status);
+        console.log('Status adicionado:', activeMontagemStatus);
     } else {
         activeMontagemStatus.splice(index, 1);
+        console.log('Status removido:', activeMontagemStatus);
     }
     
     // Atualizar estilo dos botões
     const btns = document.querySelectorAll('#montagemFilterList .status-btn');
     btns.forEach(btn => {
-        if(activeMontagemStatus.includes(btn.dataset.status)) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
+        if(btn.getAttribute('data-status') === status) {
+            if(activeMontagemStatus.includes(status)) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
         }
     });
     
     // Recalcular e atualizar as listas de códigos e horários (filtros interativos)
     updateProductFilterList();
     renderTimeFilterList();
+    updateMontagemButtonsState();
+    
+    // Aplicar filtros imediatamente
+    applyCurrentFilterWithAllFilters();
 }
+
+
 function updateProductFilterList() {
     const searchTerm = document.getElementById('productCodeFilter').value.trim().toLowerCase();
     const container = document.getElementById('productFilterList');
@@ -865,12 +884,15 @@ function updateMontagemButtonsState() {
         
         if(passesCodeFilter && passesTimeFilter) {
             const montadorStatus = getMontadorStatus(event.data);
-            statusCounts[montadorStatus.status]++;
+            // Conta o status corretamente
+            if(montadorStatus.status === 'nenhum') statusCounts['nenhum']++;
+            else if(montadorStatus.status === 'parcial') statusCounts['parcial']++;
+            else if(montadorStatus.status === 'completa') statusCounts['completa']++;
         }
     });
     
-    // Atualizar os botões com contagens e desabilitar se não houver pedidos
-    const btnNone = document.querySelector('#montagemFilterList .status-btn[data-status="none"]');
+    // Atualizar os botões com contagens
+    const btnNone = document.querySelector('#montagemFilterList .status-btn[data-status="nenhum"]');
     const btnParcial = document.querySelector('#montagemFilterList .status-btn[data-status="parcial"]');
     const btnCompleta = document.querySelector('#montagemFilterList .status-btn[data-status="completa"]');
     
@@ -879,7 +901,6 @@ function updateMontagemButtonsState() {
         btnNone.style.opacity = statusCounts['nenhum'] === 0 ? '0.4' : '1';
         btnNone.style.cursor = statusCounts['nenhum'] === 0 ? 'not-allowed' : 'pointer';
         if(statusCounts['nenhum'] === 0 && activeMontagemStatus.includes('nenhum')) {
-            // Remove automaticamente se não tem pedidos
             activeMontagemStatus = activeMontagemStatus.filter(s => s !== 'nenhum');
             btnNone.classList.remove('active');
         }
@@ -986,10 +1007,12 @@ function applyCurrentFilterWithAllFilters() {
         });
     }
     
-    // Filtro por status de montagem
+    // Filtro por status de montagem - CORRIGIDO para incluir "nenhum"
     if(activeMontagemStatus.length > 0) {
         filteredEvents = filteredEvents.filter(event => {
             const montadorStatus = getMontadorStatus(event.data);
+            // Verifica se o status do evento está na lista de status ativos
+            // "nenhum" = coluna 20 está vazia ou não tem montagem
             return activeMontagemStatus.includes(montadorStatus.status);
         });
     }
@@ -1008,9 +1031,20 @@ function applyCurrentFilterWithAllFilters() {
     let filterMsg = '';
     if(activeProductCodes.length > 0) filterMsg += `📦 ${activeProductCodes.length} códigos | `;
     if(activeTimeSlots.length > 0) filterMsg += `⏰ ${activeTimeSlots.length} horários | `;
-    if(activeMontagemStatus.length > 0) filterMsg += `👷 ${activeMontagemStatus.length} status | `;
+    if(activeMontagemStatus.length > 0) {
+        const statusNames = activeMontagemStatus.map(s => {
+            if(s === 'nenhum') return 'Não Montado';
+            if(s === 'parcial') return 'Quase Pronto';
+            if(s === 'completa') return 'Montado';
+            return s;
+        });
+        filterMsg += `👷 ${statusNames.join(', ')} | `;
+    }
     if(filterMsg) showNotification(`🔍 Filtros aplicados: ${filterMsg.slice(0,-3)}`,'info');
-}function getProductCodeCountInEvent(event){const codes=extractProductCodesFromEvent(event);let count=0;codes.forEach(code=>{if(activeProductCodes.includes(code))count++});return count}
+}
+
+
+function getProductCodeCountInEvent(event){const codes=extractProductCodesFromEvent(event);let count=0;codes.forEach(code=>{if(activeProductCodes.includes(code))count++});return count}
 function filterToday() {
     currentFilter = 'today';
     currentDisplayDate = new Date();
@@ -1071,8 +1105,15 @@ async function saveToSpreadsheet(payload){
 }
 function getOrderNumberFromUpdates(payload){if(payload.numero_pedido)return payload.numero_pedido;if(payload.atualizacoes&&typeof payload.atualizacoes==='string'){try{const updates=JSON.parse(payload.atualizacoes);if(updates[52])return updates[52]}catch(e){console.log('Erro ao parsear atualizações:',e)}}return null}
 function sortEventsByDeliveryTime(events){return events.sort((a,b)=>{const outraCidadeA=isOutraCidade(a.data)&&!getEntregadorStatus(a.data).hasEntregador;const outraCidadeB=isOutraCidade(b.data)&&!getEntregadorStatus(b.data).hasEntregador;if(outraCidadeA&&!outraCidadeB)return -1;if(!outraCidadeA&&outraCidadeB)return 1;const statusA=getEventStatus(a.data);const statusB=getEventStatus(b.data);if(statusA!==statusB){return statusA-statusB}const startTimeA=extractStartTime(a.data[16]||a.data[43]||'');const startTimeB=extractStartTime(b.data[16]||b.data[43]||'');if(startTimeA!==startTimeB){if(startTimeA==='99:99')return 1;if(startTimeB==='99:99')return -1;return startTimeA.localeCompare(startTimeB)}return a.rowNumber-b.rowNumber})}
-function getEventStatus(eventData){const entregador=getEntregadorStatus(eventData);const montador=getMontadorStatus(eventData);if(entregador.hasEntregador)return 2;if(montador.hasMontador)return 1;return 0}
-async function fetchData(){try{if(!autoRefreshEnabled){console.log('Auto refresh travado, não atualizando...');return}showNotification('📥 Carregando dados...','info');const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?majorDimension=ROWS&key=${API_KEY}`;const response=await fetch(url);if(!response.ok)throw new Error(`HTTP ${response.status}`);const data=await response.json();allEvents=data.values.slice(1).map((row,index)=>({data:row,rowNumber:index+2,id:row[15]+row[16]+row[3],deliveryTime:extractStartTime(row[16]||row[43]||''),status:getEventStatus(row),deliveryDate:row[15]||'',startTime:extractStartTime(row[16]||row[43]||''),isOutraCidade:isOutraCidade(row),isPrinted:getPrintStatus(row)}));console.log(`✅ ${allEvents.length} eventos carregados`);allEvents=sortEventsByDeliveryTime(allEvents);itemsCache={};allEvents.forEach(event=>{const items=getItemsFromColunaV(event.data);if(items.trim()!==''){itemsCache[event.rowNumber]=items}});checkForNewOrders();applyCurrentFilterWithAllFilters();showNotification('✅ Dados carregados!','success');updateUnprintedCount();checkForDuplicates()}catch(error){console.error('Erro:',error);showNotification('❌ Erro ao carregar dados','error')}}
+function getEventStatus(eventData){
+    const entregador = getEntregadorStatus(eventData);
+    const montador = getMontadorStatus(eventData);
+    
+    if(entregador.hasEntregador) return 2; // Finalizado
+    if(montador.hasMontador && montador.status === 'completa') return 1; // Montado completo
+    if(montador.hasMontador && montador.status === 'parcial') return 0.5; // Quase pronto
+    return 0; // Não montado
+}async function fetchData(){try{if(!autoRefreshEnabled){console.log('Auto refresh travado, não atualizando...');return}showNotification('📥 Carregando dados...','info');const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?majorDimension=ROWS&key=${API_KEY}`;const response=await fetch(url);if(!response.ok)throw new Error(`HTTP ${response.status}`);const data=await response.json();allEvents=data.values.slice(1).map((row,index)=>({data:row,rowNumber:index+2,id:row[15]+row[16]+row[3],deliveryTime:extractStartTime(row[16]||row[43]||''),status:getEventStatus(row),deliveryDate:row[15]||'',startTime:extractStartTime(row[16]||row[43]||''),isOutraCidade:isOutraCidade(row),isPrinted:getPrintStatus(row)}));console.log(`✅ ${allEvents.length} eventos carregados`);allEvents=sortEventsByDeliveryTime(allEvents);itemsCache={};allEvents.forEach(event=>{const items=getItemsFromColunaV(event.data);if(items.trim()!==''){itemsCache[event.rowNumber]=items}});checkForNewOrders();applyCurrentFilterWithAllFilters();showNotification('✅ Dados carregados!','success');updateUnprintedCount();checkForDuplicates()}catch(error){console.error('Erro:',error);showNotification('❌ Erro ao carregar dados','error')}}
 function updateUnprintedCount(){const today=new Date();today.setHours(0,0,0,0);const unprintedCount=allEvents.filter(event=>{const isPrinted=getPrintStatus(event.data);if(isPrinted)return false;const eventDateStr=event.deliveryDate;if(!eventDateStr)return false;return isTodayOrFuture(eventDateStr)}).length;document.getElementById('unprintedCountBadge').textContent=unprintedCount}
 function checkForDuplicates(){const duplicatesMap=new Map();duplicateCount=0;allEvents.forEach((event,index)=>{const key=`${event.data[1]||''}|${event.data[2]||''}|${event.data[10]||''}|${event.data[12]||''}|${event.data[13]||''}|${event.data[15]||''}|${event.data[16]||''}|${event.data[3]||''}`;if(!duplicatesMap.has(key)){duplicatesMap.set(key,[])}duplicatesMap.get(key).push(event)});duplicatesMap.forEach((events,key)=>{if(events.length>1){duplicateCount+=events.length;events.forEach(event=>{event.isDuplicate=true})}});const duplicateAlert=document.getElementById('duplicateAlert');if(duplicateAlert){duplicateAlert.style.display='none'}}
 
