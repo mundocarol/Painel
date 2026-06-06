@@ -586,6 +586,10 @@ let produtosVenda = [];
 let currentBalcaoVendaData = null;
 let ultimasVendasCache = [];
 
+// ============================================
+// FUNÇÕES ORIGINAIS (TOTALMENTE PRESERVADAS)
+// ============================================
+
 function extractCodeFromColunaA(colunaA){if(!colunaA)return'0000';const timeMatch=colunaA.match(/(\d{1,2}):(\d{2})/);if(timeMatch){const hours=timeMatch[1].padStart(2,'0');const minutes=timeMatch[2];return hours+minutes}return'0000'}
 function extractCleanTime(timeStr){if(!timeStr)return'Sem horário';const timeMatch=timeStr.match(/(\d{1,2}:\d{2})\s*às\s*(\d{1,2}:\d{2})/);if(timeMatch)return`${timeMatch[1]} às ${timeMatch[2]}`;const singleTimeMatch=timeStr.match(/\d{1,2}:\d{2}/);if(singleTimeMatch)return singleTimeMatch[0];return timeStr}
 function getFormaPagamento(eventData){const colunaAG=eventData[32]||'';const pagamentoUpper=colunaAG.toString().trim().toUpperCase();if(pagamentoUpper.includes('PIX'))return'PIX';if(pagamentoUpper.includes('LINK'))return'LINK';const primeiraPalavra=pagamentoUpper.split(' ')[0]||'';if(primeiraPalavra)return primeiraPalavra;return'NÃO INFORMADO'}
@@ -689,7 +693,7 @@ function increaseRecipientFontSize(){if(currentRecipientFontSize<32){currentReci
 function decreaseRecipientFontSize(){if(currentRecipientFontSize>12){currentRecipientFontSize-=2;updatePrintPreview()}}
 function copyCartText(){const mensagemCentral=currentPrintEventData[18]||'';const mensagemPersonalizada=mensagemCentral||``;navigator.clipboard.writeText(mensagemPersonalizada).then(()=>{showNotification('✅ Texto copiado para a área de transferência!','success')}).catch(err=>{console.error('Erro ao copiar:',err);const textArea=document.createElement('textarea');textArea.value=mensagemPersonalizada;document.body.appendChild(textArea);textArea.select();document.execCommand('copy');document.body.removeChild(textArea);showNotification('✅ Texto copiado para a área de transferência!','success')})}
 function updatePrintPreview(){const codigo=extractCodeFromColunaA(currentPrintEventData[0]||'');document.getElementById('printContent').innerHTML=generateFichaHTML(currentPrintEventData,codigo)}
-function generateFichaHTML(eventData,codigo){const anonimoInfo=getAnonimoStatus(eventData);let formaPagamento=getFormaPagamento(eventData);const codigoSalvo=getPrintCode(eventData);let nomeConferente='';let codigoApenas=codigo;if(codigoSalvo&&codigoSalvo.includes(' - ')){const partes=codigoSalvo.split(' - ');if(partes.length>=2){codigoApenas=partes[0];nomeConferente=partes.slice(1).join(' - ');formaPagamento=`${formaPagamento} - ${nomeConferente}`}}const valorE=parseFloat(eventData[4]?.replace(',','.')||0);const valorF=parseFloat(eventData[5]?.replace(',','.')||0);const produtoTotal=valorE.toFixed(2).replace('.',',');const frete=valorF.toFixed(2).replace('.',',');const total=(valorE+valorF).toFixed(2).replace('.',',');const colunaJContent=getColunaJContent(eventData);const colunaLContent=getColunaLContent(eventData);const colunaRContent=getColunaRContent(eventData);const isAnonimo=anonimoInfo.isAnonimo;const cliente=eventData[1]||'';const telefone=eventData[2]||'';const vendedor=eventData[6]||'';const orderNumber=getOrderNumber(eventData);const vendedorComPedido=orderNumber?`${vendedor} <span class="order-number-print">${orderNumber}</span>`:vendedor;const endereco=eventData[10]||'';const bairro=eventData[12]||'';const cidade=eventData[13]||'';const referenciaEndereco=eventData[14]||'';const isOutraCidadeEvent=isOutraCidade(eventData);const colunaBD=eventData[55]||'';const infoBD=extractInfoFromBD(colunaBD);let dataDisplay='';let horarioDisplay='';let diaSemanaDisplay='';let cidadeComCEP=cidade;if(isOutraCidadeEvent&&infoBD.prazo){dataDisplay=infoBD.prazo;horarioDisplay=infoBD.frete||'A COMBINAR';diaSemanaDisplay='';if(infoBD.cep){cidadeComCEP=`${cidade} - ${infoBD.cep}`}}else{const dataCompleta=eventData[15]||'';const partes=dataCompleta.split(' - ');const data=partes[0]||dataCompleta;const diaSemana=getDiaSemana(data);const horario=extractCleanTime(eventData[16]||eventData[43]||'');dataDisplay=data;horarioDisplay=horario;diaSemanaDisplay=diaSemana?' - '+diaSemana:''}const recebedor=eventData[8]||'';const produtoDescricao=eventData[3]||'';const mensagemCentral=eventData[18]||'';const colunaAW=eventData[48]||'';const colunaA=eventData[0]||'';let fichaEndereco='';let fichaBairroCidade='';if(!endereco.trim()&&!bairro.trim()&&!cidade.trim()){fichaEndereco='<span style="font-weight:bold;color:#D32F2F">(RETIRADA LOJA)</span>';fichaBairroCidade='<span style="font-weight:bold;color:#D32F2F">(RETIRADA LOJA)</span>'}else{fichaEndereco=endereco;fichaBairroCidade=bairro}const fichaSuperiorCliente=cliente;const fichaSuperiorTelefone=telefone;const fichaInferiorCliente=isAnonimo?'ANONIMO':cliente;const fichaInferiorTelefone=isAnonimo?'ANONIMO':telefone;const mensagemPersonalizada=mensagemCentral||``;const justificativaAnonimo=anonimoInfo.explicacao?`<div class="anonimo-justificativa-print">${anonimoInfo.explicacao}</div>`:'';return`<div class="a4-page"><div class="a4-top"><table style="margin-bottom:0"><tr><td class="bg-gray">Nome Comprador</td><td colspan="2" style="font-size:${fontSettings.comprador}px !important">${fichaSuperiorCliente}</td><td colspan="2" style="font-size:${fontSettings.telefone}px !important">${fichaSuperiorTelefone}</td></tr><tr><td class="bg-gray" style="font-size:${fontSettings.cartao}px !important">Cartão:${colunaRContent||'Não'}</td><td colspan="1" style="font-size:${fontSettings.cartao}px !important">${colunaAW}</td><td colspan="3" style="font-size:${fontSettings.vendedor}px !important">Vendedor:${vendedorComPedido}</td></tr><td><td class="bg-gray">Endereço entrega</td><td colspan="2" style="font-size:${fontSettings.endereco}px !important">${fichaEndereco}</td><td colspan="2" style="font-size:${fontSettings.bairro}px !important;font-weight:bold">${fichaBairroCidade}</td></tr><tr><td class="bg-gray">Número/Compl.</td><td colspan="2" style="font-size:${fontSettings.cidade}px !important">${colunaLContent}</td><td colspan="2" style="font-size:${fontSettings.cidade}px !important">${cidadeComCEP}</td></tr><tr><td style="font-size:${fontSettings.referencia}px !important">${colunaA}</td><td class="bg-gray" colspan="4" style="font-size:${fontSettings.referencia}px !important">Referência:${referenciaEndereco}</td></tr><tr><td class="bg-gray">${isOutraCidadeEvent?'Prazo Entrega':'Dia da Entrega'}</td><td colspan="2" class="delivery-day" style="font-size:${fontSettings.dia_entrega}px !important"><b>${dataDisplay}${diaSemanaDisplay}</b></td><td colspan="2" class="delivery-time" style="font-size:${fontSettings.horario_entrega}px !important"><b>${horarioDisplay}</b></td></tr><tr><td class="bg-gray">Quem vai Receber</td><td colspan="3" style="font-size:${fontSettings.recebedor}px !important">${recebedor}</td><td style="font-size:${fontSettings.colunaJ}px !important">${colunaJContent||'&nbsp;'}</td></tr><tr><td colspan="3" class="product-description-large" style="font-size:${fontSettings.produto}px !important"><b>${produtoDescricao}</b></td><td style="font-size:${fontSettings.produto_valor}px !important;vertical-align:top">Prod:${produtoTotal}<br>Frete:${frete}</td><td style="font-weight:bold;text-align:center;vertical-align:top"><b style="font-size:${fontSettings.total}px !important">Total<br>${total}</b><br><small style="font-size:${fontSettings.forma_pagamento}px !important">${formaPagamento}</small></td></tr></table>${justificativaAnonimo}</div><div class="a4-middle"><div class="message-text-container"><div class="message-text" style="font-size:${currentFontSize}px !important">${mensagemPersonalizada}</div></div></div><div class="a4-bottom"><span class="recipient-highlight" style="font-size:${currentRecipientFontSize}px !important">${recebedor}<div class="text-size-controls"><button class="copy-btn" onclick="copyCartText()" title="Copiar texto do cartão">📋</button><button class="text-size-btn" onclick="increaseFontSize()" title="Aumentar texto do cartão (máx.80px)">A+</button><button class="text-size-btn" onclick="decreaseFontSize()" title="Diminuir texto do cartão">A-</button><button class="text-size-btn" onclick="increaseRecipientFontSize()" title="Aumentar nome">N+</button><button class="text-size-btn" onclick="decreaseRecipientFontSize()" title="Diminuir nome">N-</button></div></span><table style="margin-bottom:0"><tr><td class="bg-gray">Nome Comprador</td><td colspan="2" style="font-size:${fontSettings.comprador}px !important">${fichaInferiorCliente}</td><td colspan="2" style="font-size:${fontSettings.telefone}px !important">${fichaInferiorTelefone}</td></tr><tr><td class="bg-gray" style="font-size:${fontSettings.cartao}px !important">Cartão:${colunaRContent||'Não'}</td><td colspan="1" style="font-size:${fontSettings.cartao}px !important">${colunaAW}</td><td colspan="3" style="font-size:${fontSettings.vendedor}px !important">Vendedor:${vendedorComPedido}</td></tr><tr><td class="bg-gray">Endereço entrega</td><td colspan="2" style="font-size:${fontSettings.endereco}px !important">${fichaEndereco}</td><td colspan="2" style="font-size:${fontSettings.bairro}px !important;font-weight:bold">${fichaBairroCidade}</td></tr><tr><td class="bg-gray">Número/Compl.</td><td colspan="2" style="font-size:${fontSettings.cidade}px !important">${colunaLContent}</td><td colspan="2" style="font-size:${fontSettings.cidade}px !important">${cidadeComCEP}</td></tr><tr><td style="font-size:${fontSettings.referencia}px !important">${colunaA}</td><td class="bg-gray" colspan="4" style="font-size:${fontSettings.referencia}px !important">Referência:${referenciaEndereco}</td></tr><tr><td class="bg-gray">${isOutraCidadeEvent?'Prazo Entrega':'Dia da Entrega'}</td><td colspan="2" class="delivery-day" style="font-size:${fontSettings.dia_entrega}px !important"><b>${dataDisplay}${diaSemanaDisplay}</b></td><td colspan="2" class="delivery-time" style="font-size:${fontSettings.horario_entrega}px !important"><b>${horarioDisplay}</b></td></tr><tr><td class="bg-gray">Quem vai Receber</td><td colspan="3" style="font-size:${fontSettings.recebedor}px !important">${recebedor}</td><td style="font-size:${fontSettings.colunaJ}px !important">${colunaJContent||'&nbsp;'}</td></tr><tr><td colspan="3" class="product-description-large" style="font-size:${fontSettings.produto}px !important"><b>${produtoDescricao}</b></td><td style="font-size:${fontSettings.produto_valor}px !important;vertical-align:top"><br><br><span style="font-size:8px">Recebido:</span></td><td style="text-align:center;font-weight:bold;vertical-align:top">CÓDIGO<br><span style="font-size:${fontSettings.codigo}px !important">${codigoApenas}</span><br><small style="font-size:${fontSettings.forma_pagamento}px !important">${formaPagamento}</small></td></tr></table>${justificativaAnonimo}</div></div>`}
+function generateFichaHTML(eventData,codigo){const anonimoInfo=getAnonimoStatus(eventData);let formaPagamento=getFormaPagamento(eventData);const codigoSalvo=getPrintCode(eventData);let nomeConferente='';let codigoApenas=codigo;if(codigoSalvo&&codigoSalvo.includes(' - ')){const partes=codigoSalvo.split(' - ');if(partes.length>=2){codigoApenas=partes[0];nomeConferente=partes.slice(1).join(' - ');formaPagamento=`${formaPagamento} - ${nomeConferente}`}}const valorE=parseFloat(eventData[4]?.replace(',','.')||0);const valorF=parseFloat(eventData[5]?.replace(',','.')||0);const produtoTotal=valorE.toFixed(2).replace('.',',');const frete=valorF.toFixed(2).replace('.',',');const total=(valorE+valorF).toFixed(2).replace('.',',');const colunaJContent=getColunaJContent(eventData);const colunaLContent=getColunaLContent(eventData);const colunaRContent=getColunaRContent(eventData);const isAnonimo=anonimoInfo.isAnonimo;const cliente=eventData[1]||'';const telefone=eventData[2]||'';const vendedor=eventData[6]||'';const orderNumber=getOrderNumber(eventData);const vendedorComPedido=orderNumber?`${vendedor} <span class="order-number-print">${orderNumber}</span>`:vendedor;const endereco=eventData[10]||'';const bairro=eventData[12]||'';const cidade=eventData[13]||'';const referenciaEndereco=eventData[14]||'';const isOutraCidadeEvent=isOutraCidade(eventData);const colunaBD=eventData[55]||'';const infoBD=extractInfoFromBD(colunaBD);let dataDisplay='';let horarioDisplay='';let diaSemanaDisplay='';let cidadeComCEP=cidade;if(isOutraCidadeEvent&&infoBD.prazo){dataDisplay=infoBD.prazo;horarioDisplay=infoBD.frete||'A COMBINAR';diaSemanaDisplay='';if(infoBD.cep){cidadeComCEP=`${cidade} - ${infoBD.cep}`}}else{const dataCompleta=eventData[15]||'';const partes=dataCompleta.split(' - ');const data=partes[0]||dataCompleta;const diaSemana=getDiaSemana(data);const horario=extractCleanTime(eventData[16]||eventData[43]||'');dataDisplay=data;horarioDisplay=horario;diaSemanaDisplay=diaSemana?' - '+diaSemana:''}const recebedor=eventData[8]||'';const produtoDescricao=eventData[3]||'';const mensagemCentral=eventData[18]||'';const colunaAW=eventData[48]||'';const colunaA=eventData[0]||'';let fichaEndereco='';let fichaBairroCidade='';if(!endereco.trim()&&!bairro.trim()&&!cidade.trim()){fichaEndereco='<span style="font-weight:bold;color:#D32F2F">(RETIRADA LOJA)</span>';fichaBairroCidade='<span style="font-weight:bold;color:#D32F2F">(RETIRADA LOJA)</span>'}else{fichaEndereco=endereco;fichaBairroCidade=bairro}const fichaSuperiorCliente=cliente;const fichaSuperiorTelefone=telefone;const fichaInferiorCliente=isAnonimo?'ANONIMO':cliente;const fichaInferiorTelefone=isAnonimo?'ANONIMO':telefone;const mensagemPersonalizada=mensagemCentral||``;const justificativaAnonimo=anonimoInfo.explicacao?`<div class="anonimo-justificativa-print">${anonimoInfo.explicacao}</div>`:'';return`<div class="a4-page"><div class="a4-top"><table style="margin-bottom:0"><tr><td class="bg-gray">Nome Comprador</td><td colspan="2" style="font-size:${fontSettings.comprador}px !important">${fichaSuperiorCliente}</td><td colspan="2" style="font-size:${fontSettings.telefone}px !important">${fichaSuperiorTelefone}</td><tr><td><td class="bg-gray" style="font-size:${fontSettings.cartao}px !important">Cartão:${colunaRContent||'Não'}</td><td colspan="1" style="font-size:${fontSettings.cartao}px !important">${colunaAW}</td><td colspan="3" style="font-size:${fontSettings.vendedor}px !important">Vendedor:${vendedorComPedido}</td></tr><tr><td class="bg-gray">Endereço entrega</td><td colspan="2" style="font-size:${fontSettings.endereco}px !important">${fichaEndereco}</td><td colspan="2" style="font-size:${fontSettings.bairro}px !important;font-weight:bold">${fichaBairroCidade}</td></tr><tr><td class="bg-gray">Número/Compl.</td><td colspan="2" style="font-size:${fontSettings.cidade}px !important">${colunaLContent}</td><td colspan="2" style="font-size:${fontSettings.cidade}px !important">${cidadeComCEP}</td></tr><tr><td style="font-size:${fontSettings.referencia}px !important">${colunaA}</td><td class="bg-gray" colspan="4" style="font-size:${fontSettings.referencia}px !important">Referência:${referenciaEndereco}</td></tr><tr><td class="bg-gray">${isOutraCidadeEvent?'Prazo Entrega':'Dia da Entrega'}</td><td colspan="2" class="delivery-day" style="font-size:${fontSettings.dia_entrega}px !important"><b>${dataDisplay}${diaSemanaDisplay}</b></td><td colspan="2" class="delivery-time" style="font-size:${fontSettings.horario_entrega}px !important"><b>${horarioDisplay}</b></td></tr><tr><td class="bg-gray">Quem vai Receber</td><td colspan="3" style="font-size:${fontSettings.recebedor}px !important">${recebedor}</td><td style="font-size:${fontSettings.colunaJ}px !important">${colunaJContent||'&nbsp;'}</td></tr><tr><td colspan="3" class="product-description-large" style="font-size:${fontSettings.produto}px !important"><b>${produtoDescricao}</b></td><td style="font-size:${fontSettings.produto_valor}px !important;vertical-align:top">Prod:${produtoTotal}<br>Frete:${frete}</td><td style="font-weight:bold;text-align:center;vertical-align:top"><b style="font-size:${fontSettings.total}px !important">Total<br>${total}</b><br><small style="font-size:${fontSettings.forma_pagamento}px !important">${formaPagamento}</small></td></tr></table>${justificativaAnonimo}</div><div class="a4-middle"><div class="message-text-container"><div class="message-text" style="font-size:${currentFontSize}px !important">${mensagemPersonalizada}</div></div></div><div class="a4-bottom"><span class="recipient-highlight" style="font-size:${currentRecipientFontSize}px !important">${recebedor}<div class="text-size-controls"><button class="copy-btn" onclick="copyCartText()" title="Copiar texto do cartão">📋</button><button class="text-size-btn" onclick="increaseFontSize()" title="Aumentar texto do cartão (máx.80px)">A+</button><button class="text-size-btn" onclick="decreaseFontSize()" title="Diminuir texto do cartão">A-</button><button class="text-size-btn" onclick="increaseRecipientFontSize()" title="Aumentar nome">N+</button><button class="text-size-btn" onclick="decreaseRecipientFontSize()" title="Diminuir nome">N-</button></div></span><table style="margin-bottom:0"><tr><td class="bg-gray">Nome Comprador</td><td colspan="2" style="font-size:${fontSettings.comprador}px !important">${fichaInferiorCliente}</td><td colspan="2" style="font-size:${fontSettings.telefone}px !important">${fichaInferiorTelefone}</td></tr><tr><td class="bg-gray" style="font-size:${fontSettings.cartao}px !important">Cartão:${colunaRContent||'Não'}</td><td colspan="1" style="font-size:${fontSettings.cartao}px !important">${colunaAW}</td><td colspan="3" style="font-size:${fontSettings.vendedor}px !important">Vendedor:${vendedorComPedido}</td></tr><tr><td class="bg-gray">Endereço entrega</td><td colspan="2" style="font-size:${fontSettings.endereco}px !important">${fichaEndereco}</td><td colspan="2" style="font-size:${fontSettings.bairro}px !important;font-weight:bold">${fichaBairroCidade}</td></tr><tr><td class="bg-gray">Número/Compl.</td><td colspan="2" style="font-size:${fontSettings.cidade}px !important">${colunaLContent}</td><td colspan="2" style="font-size:${fontSettings.cidade}px !important">${cidadeComCEP}</td></tr><tr><td style="font-size:${fontSettings.referencia}px !important">${colunaA}</td><td class="bg-gray" colspan="4" style="font-size:${fontSettings.referencia}px !important">Referência:${referenciaEndereco}</td></tr><tr><td class="bg-gray">${isOutraCidadeEvent?'Prazo Entrega':'Dia da Entrega'}</td><td colspan="2" class="delivery-day" style="font-size:${fontSettings.dia_entrega}px !important"><b>${dataDisplay}${diaSemanaDisplay}</b></td><td colspan="2" class="delivery-time" style="font-size:${fontSettings.horario_entrega}px !important"><b>${horarioDisplay}</b></td></tr><tr><td class="bg-gray">Quem vai Receber</td><td colspan="3" style="font-size:${fontSettings.recebedor}px !important">${recebedor}</td><td style="font-size:${fontSettings.colunaJ}px !important">${colunaJContent||'&nbsp;'}</td></tr><tr><td colspan="3" class="product-description-large" style="font-size:${fontSettings.produto}px !important"><b>${produtoDescricao}</b></td><td style="font-size:${fontSettings.produto_valor}px !important;vertical-align:top"><br><br><span style="font-size:8px">Recebido:</span></td><td style="text-align:center;font-weight:bold;vertical-align:top">CÓDIGO<br><span style="font-size:${fontSettings.codigo}px !important">${codigoApenas}</span><br><small style="font-size:${fontSettings.forma_pagamento}px !important">${formaPagamento}</small></td></tr></table>${justificativaAnonimo}</div></div>`}
 function requestPrintCode(){const codigo=extractCodeFromColunaA(currentPrintEventData[0]||'');generatedPrintCode=codigo;const codigoSalvo=getPrintCode(currentPrintEventData);existingConferenteName=getConferenteNameFromCode(codigoSalvo);if(existingConferenteName){document.getElementById('conferenteExistente').style.display='block';document.getElementById('conferenteNovo').style.display='none';document.getElementById('nomeConferenteExistente').textContent=existingConferenteName}else{document.getElementById('conferenteExistente').style.display='none';document.getElementById('conferenteNovo').style.display='block';document.getElementById('codeDisplay').textContent=codigo;document.getElementById('codeInput').value='';document.getElementById('conferenteName').value=''}document.getElementById('codeModal').style.display='flex';if(!existingConferenteName){setTimeout(()=>document.getElementById('codeInput').focus(),100)}}
 async function verifyPrintCode(){const inputCode=document.getElementById('codeInput').value.trim();const conferenteName=document.getElementById('conferenteName').value.trim();if(inputCode!==generatedPrintCode){showNotification('❌ Código incorreto','error');return}if(!conferenteName){showNotification('❌ Digite o nome de quem conferiu o pagamento','error');return}showLoading('Salvando código e nome...');const codigoComNome=`${generatedPrintCode} - ${conferenteName}`;const event=allEvents.find(e=>e.rowNumber===currentRowNumber);if(!event){showNotification('❌ Pedido não encontrado. Atualize a página.','error');hideLoading();return}const orderNumber=getOrderNumber(event.data);const payload={senha:'562938',linha:currentRowNumber,numero_pedido:orderNumber,tipo:'imprimir',codigo:codigoComNome};console.log('Enviando código de impressão com nome:',payload);const result=await saveToSpreadsheet(payload);if(result.success){showNotification('✅ Impressão confirmada!','success');const codigo=extractCodeFromColunaA(currentPrintEventData[0]||'');const printHTML=generateFichaHTML(currentPrintEventData,codigo);printIsolatedContent(printHTML).then(()=>{closePrintModal();closeCodeModal();setTimeout(()=>{fetchData()},500)})}else{showNotification('❌ '+result.message,'error')}hideLoading()}
 async function verifyExistingPrintCode(){showLoading('Imprimindo ficha...');const codigo=extractCodeFromColunaA(currentPrintEventData[0]||'');const printHTML=generateFichaHTML(currentPrintEventData,codigo);printIsolatedContent(printHTML).then(()=>{closeCodeModal();closePrintModal();showNotification('✅ Ficha reimpressa!','success');hideLoading()})}
@@ -1041,7 +1045,7 @@ function loadEmailPage(){
 }
 
 // ==============================================
-// FUNÇÕES PARA VENDA BALCÃO
+// FUNÇÕES PARA VENDA BALCÃO (ADICIONADAS)
 // ==============================================
 
 function openBalcaoModal() {
@@ -1115,6 +1119,8 @@ function removerProdutoLista(index) {
     atualizarTabelaProdutos();
     atualizarTotalVenda();
 }
+
+// Continuação das funções de Venda Balcão
 
 function atualizarTabelaProdutos() {
     const tbody = document.getElementById('tabelaProdutosBody');
@@ -1464,97 +1470,15 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-document.addEventListener('DOMContentLoaded',function(){
-    fetchData();
-    currentDisplayDate=new Date();
-    updateDateTitle(currentDisplayDate);
-    refreshInterval=setInterval(fetchData,autoRefreshTime);
-    setInterval(updateRefreshProgress,1000);
-    alertCheckInterval=setInterval(checkForLateOrders,30000);
-    
-    const modals=['printModal','itemsModal','codeModal','confirmationModal','editModal','addOrderModal','balcaoModal','historicoVendasModal','reimprimirModal'];
-    modals.forEach(modalId=>{
-        const modal=document.getElementById(modalId);
-        if(modal){
-            modal.addEventListener('click',function(e){
-                if(e.target===modal){
-                    modal.style.display='none';
-                }
-            });
-        }
-    });
-    
-    document.getElementById('searchInput').addEventListener('keyup',function(e){
-        if(e.key==='Enter'){
-            performSearch();
-        }
-    });
-    
-    document.addEventListener('keydown',function(e){
-        if(e.key==='Escape'){
-            const modals=document.querySelectorAll('.modal-overlay, .edit-modal-overlay');
-            modals.forEach(modal=>{
-                modal.style.display='none';
-            });
-        }
-    });
-    
-    lastEventCount=0;
-});
-
-// Exportar funções para o escopo global
-window.openPrintModal=openPrintModal;
-window.openItemsModal=openItemsModal;
-window.saveAndPrintItems=saveAndPrintItems;
-window.closeItemsModal=closeItemsModal;
-window.startAction=startAction;
-window.confirmCompletion=confirmCompletion;
-window.cancelCompletion=cancelCompletion;
-window.requestPrintCode=requestPrintCode;
-window.verifyPrintCode=verifyPrintCode;
-window.verifyExistingPrintCode=verifyExistingPrintCode;
-window.closeCodeModal=closeCodeModal;
-window.closePrintModal=closePrintModal;
-window.printA4Page=printIsolatedContent;
-window.filterToday=filterToday;
-window.openDatePicker=openDatePicker;
-window.filterByDate=filterByDate;
-window.filterUnprinted=filterUnprinted;
-window.filterEnvios=filterEnvios;
-window.refreshData=refreshData;
-window.increaseFontSize=increaseFontSize;
-window.decreaseFontSize=decreaseFontSize;
-window.increaseRecipientFontSize=increaseRecipientFontSize;
-window.decreaseRecipientFontSize=decreaseRecipientFontSize;
-window.copyCartText=copyCartText;
-window.updatePrintPreview=updatePrintPreview;
-window.validateItemsCount=validateItemsCount;
-window.openEditModal=openEditModal;
-window.closeEditModal=closeEditModal;
-window.saveEdits=saveEdits;
-window.updateDiaSemanaEdit=updateDiaSemanaEdit;
-window.performSearch=performSearch;
-window.clearAllFields=clearAllFields;
-window.excluirPedido=excluirPedido;
-window.cancelarPedido=cancelarPedido;
-window.navigateDate=navigateDate;
-window.openAddOrderModal=openAddOrderModal;
-window.closeAddOrderModal=closeAddOrderModal;
-window.switchTab=switchTab;
-window.copyFromLojaIntegrada=copyFromLojaIntegrada;
-window.loadIfoodPage=loadIfoodPage;
-window.loadEmailPage=loadEmailPage;
-window.openBalcaoModal=openBalcaoModal;
-window.closeBalcaoModal=closeBalcaoModal;
-window.adicionarProdutoLista=adicionarProdutoLista;
-window.removerProdutoLista=removerProdutoLista;
-window.salvarVendaBalcao=salvarVendaBalcao;
-window.salvarEImprimirBalcao=salvarEImprimirBalcao;
-window.verUltimasVendasBalcao=verUltimasVendasBalcao;
-window.reimprimirVendaBalcao=reimprimirVendaBalcao;
-window.closeHistoricoModal=closeHistoricoModal;
-window.closeReimprimirModal=closeReimprimirModal;
-window.calcularTroco=calcularTroco;
-</script>
-</body>
-</html>
+// Exportar funções do Venda Balcão para o escopo global
+window.openBalcaoModal = openBalcaoModal;
+window.closeBalcaoModal = closeBalcaoModal;
+window.adicionarProdutoLista = adicionarProdutoLista;
+window.removerProdutoLista = removerProdutoLista;
+window.salvarVendaBalcao = salvarVendaBalcao;
+window.salvarEImprimirBalcao = salvarEImprimirBalcao;
+window.verUltimasVendasBalcao = verUltimasVendasBalcao;
+window.reimprimirVendaBalcao = reimprimirVendaBalcao;
+window.closeHistoricoModal = closeHistoricoModal;
+window.closeReimprimirModal = closeReimprimirModal;
+window.calcularTroco = calcularTroco;
